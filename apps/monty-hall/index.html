@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="직접 플레이하고 자동 시뮬레이션으로 확인하는 몬티홀 문제 실험실">
+  <title>몬티홀 실험실</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="gallery-home" href="../../index.html">⌂ 앱 서재</a>
+  <main class="app">
+    <header class="hero">
+      <p class="eyebrow">확률을 눈으로 확인하는 작은 실험</p>
+      <h1>몬티홀 실험실</h1>
+      <p class="intro">자동차가 숨겨진 문을 고른 뒤, 염소가 나온 문 하나를 열어드립니다. 선택을 바꾸는 편이 정말 유리할까요?</p>
+    </header>
+
+    <section class="panel game-panel" aria-labelledby="game-title">
+      <div class="section-heading">
+        <div>
+          <p class="step-label" id="stepLabel">1단계 · 문을 고르세요</p>
+          <h2 id="game-title">직접 플레이</h2>
+        </div>
+        <button class="secondary-button" id="newGameButton" type="button">새 게임</button>
+      </div>
+
+      <div class="doors" id="doors" aria-label="세 개의 문">
+        <button class="door" data-door="0" type="button" aria-label="1번 문">
+          <span class="door-number">1</span>
+          <span class="door-content" aria-hidden="true">?</span>
+        </button>
+        <button class="door" data-door="1" type="button" aria-label="2번 문">
+          <span class="door-number">2</span>
+          <span class="door-content" aria-hidden="true">?</span>
+        </button>
+        <button class="door" data-door="2" type="button" aria-label="3번 문">
+          <span class="door-number">3</span>
+          <span class="door-content" aria-hidden="true">?</span>
+        </button>
+      </div>
+
+      <p class="message" id="message" aria-live="polite">마음이 가는 문을 하나 선택해 보세요.</p>
+
+      <div class="choice-actions" id="choiceActions" hidden>
+        <button class="primary-button" id="stayButton" type="button">선택 유지</button>
+        <button class="accent-button" id="switchButton" type="button">다른 문으로 변경</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="stats-title">
+      <div class="section-heading">
+        <div>
+          <p class="step-label">내 플레이 기록</p>
+          <h2 id="stats-title">누적 결과</h2>
+        </div>
+        <button class="text-button" id="resetStatsButton" type="button">기록 초기화</button>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span>전체 게임</span>
+          <strong id="totalGames">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>유지 승률</span>
+          <strong id="stayRate">—</strong>
+          <small id="stayDetail">0승 / 0회</small>
+        </article>
+        <article class="stat-card accent-stat">
+          <span>변경 승률</span>
+          <strong id="switchRate">—</strong>
+          <small id="switchDetail">0승 / 0회</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel simulation-panel" aria-labelledby="simulation-title">
+      <div class="section-heading">
+        <div>
+          <p class="step-label">큰 수의 법칙</p>
+          <h2 id="simulation-title">자동 실험</h2>
+        </div>
+      </div>
+      <p class="simulation-copy">같은 첫 선택을 두 전략으로 나눠 비교합니다. 횟수가 늘수록 유지 전략은 약 33%, 변경 전략은 약 67%에 가까워집니다.</p>
+
+      <div class="simulation-controls">
+        <label for="simulationCount">실험 횟수</label>
+        <select id="simulationCount">
+          <option value="100">100회</option>
+          <option value="1000" selected>1,000회</option>
+          <option value="10000">10,000회</option>
+          <option value="100000">100,000회</option>
+        </select>
+        <button class="primary-button" id="runSimulationButton" type="button">실험 실행</button>
+      </div>
+
+      <div class="result-bars" id="simulationResults" hidden>
+        <div class="bar-row">
+          <div class="bar-label"><span>선택 유지</span><strong id="simStayRate">0%</strong></div>
+          <div class="bar-track"><div class="bar stay-bar" id="stayBar"></div></div>
+          <small id="simStayDetail"></small>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>선택 변경</span><strong id="simSwitchRate">0%</strong></div>
+          <div class="bar-track"><div class="bar switch-bar" id="switchBar"></div></div>
+          <small id="simSwitchDetail"></small>
+        </div>
+      </div>
+    </section>
+
+    <section class="explanation" aria-labelledby="why-title">
+      <div>
+        <p class="step-label">왜 그럴까요?</p>
+        <h2 id="why-title">처음 선택이 맞을 확률은 1/3뿐입니다.</h2>
+      </div>
+      <p>처음 고른 문이 자동차일 확률은 1/3, 나머지 두 문 중 하나에 자동차가 있을 확률은 2/3입니다. 사회자는 자동차 위치를 알고 반드시 염소 문을 열기 때문에, 남은 한 문으로 바꾸면 그 2/3 확률을 가져오게 됩니다.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

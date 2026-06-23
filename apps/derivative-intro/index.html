@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="곡선을 확대하며 접선과 미분의 아이디어를 발견하는 수업용 활동">
+  <title>곡선 속에 숨은 직선</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="gallery-home" href="../../index.html">⌂ 앱 서재</a>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">미분의 첫 만남</p>
+        <h1>곡선 속에<br><em>직선</em>이 숨어 있다?</h1>
+      </div>
+      <p class="lead">곡선 위 한 점을 점점 가까이 들여다보세요. 구불구불하던 곡선은 어떤 모습으로 변할까요?</p>
+    </header>
+
+    <section class="stage-card">
+      <div class="stage-toolbar">
+        <div>
+          <span class="phase" id="phaseLabel">관찰 1</span>
+          <strong id="instruction">곡선 위의 빛나는 점을 좌우로 움직여 보세요.</strong>
+        </div>
+        <button class="reset-button" id="resetButton" type="button">처음으로</button>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="curveCanvas" aria-label="구불구불한 곡선과 이동 가능한 돋보기"></canvas>
+        <div class="hint" id="dragHint">점 또는 곡선을 눌러 위치를 바꿔 보세요</div>
+      </div>
+
+      <div class="controls">
+        <div class="point-control">
+          <label for="pointSlider">
+            관찰할 점 <span id="xValue">x = 0.40</span>
+          </label>
+          <input id="pointSlider" type="range" min="0.08" max="0.92" step="0.001" value="0.40">
+        </div>
+
+        <div class="lens-controls" role="group" aria-label="돋보기 크기 선택">
+          <button class="lens-button active" type="button" data-level="0">
+            <span class="lens-icon large"></span>
+            <span><strong>큰 돋보기</strong><small>넓게 보기</small></span>
+          </button>
+          <button class="lens-button" type="button" data-level="1">
+            <span class="lens-icon medium"></span>
+            <span><strong>중간 돋보기</strong><small>더 가까이</small></span>
+          </button>
+          <button class="lens-button" type="button" data-level="2">
+            <span class="lens-icon small"></span>
+            <span><strong>작은 돋보기</strong><small>아주 가까이</small></span>
+          </button>
+          <button class="lens-button" type="button" data-level="3">
+            <span class="lens-icon tiny"></span>
+            <span><strong>아주아주 작은 돋보기</strong><small>한 점에 가깝게</small></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="delta-panel">
+        <div class="delta-copy">
+          <span>관찰 범위</span>
+          <strong id="deltaValue">Δx = 1.60</strong>
+        </div>
+        <div class="delta-track" aria-hidden="true">
+          <div class="delta-fill" id="deltaFill"></div>
+          <i class="target-mark"></i>
+        </div>
+        <p id="observation">아직 곡선의 굽은 모습이 뚜렷하게 보여요.</p>
+      </div>
+    </section>
+
+    <section class="discovery-card">
+      <div class="discovery-text">
+        <p class="eyebrow">마법의 순간</p>
+        <h2>Δx가 0에 가까워지면?</h2>
+        <p>관찰하는 구간이 한 점에 가까워질수록 곡선은 그 점을 스치는 하나의 직선처럼 보입니다.</p>
+      </div>
+      <button class="magic-button" id="magicButton" type="button">
+        <span>✨</span>
+        접선 발견하기
+      </button>
+      <div class="formula" id="formula" aria-live="polite">
+        <span>곡선 위 두 점을 잇는 직선</span>
+        <strong>할선</strong>
+        <i>→</i>
+        <span>두 점이 한 점으로 가까워지면</span>
+        <strong>접선</strong>
+      </div>
+    </section>
+
+    <footer>
+      <p>오늘의 질문</p>
+      <strong>“한없이 가까워진다”는 것을 수학으로 어떻게 표현할 수 있을까?</strong>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
