@@ -23,7 +23,20 @@ const apps = [
     url: "./apps/monty-hall/index.html",
     date: "2026. 6. 23.",
   },
+  {
+    title: "삼각함수 탱크 대전",
+    subject: "수학",
+    category: "삼각함수",
+    description: "모둠별 탱크가 삼각함수식을 입력해 미사일 궤적을 만들고 좌표, 그래프, 전략을 함께 탐구하는 활동입니다.",
+    tags: ["삼각함수", "좌표평면", "그래프", "게임"],
+    icon: "🎯",
+    colors: ["#1f9d62", "#155f8a"],
+    subjectColors: ["#e7f7ee", "#1f7a4c"],
+    url: "./apps/trig-tank-game/index.html",
+    date: "2026. 6. 25.",
+  },
 ];
+
 
 const appGrid = document.querySelector("#appGrid");
 const filters = document.querySelector("#filters");
@@ -32,11 +45,14 @@ const appCount = document.querySelector("#appCount");
 const resultText = document.querySelector("#resultText");
 const emptyState = document.querySelector("#emptyState");
 
+
 let selectedCategory = "전체";
+
 
 function categories() {
   return ["전체", ...new Set(apps.map((app) => app.category))];
 }
+
 
 function renderFilters() {
   filters.innerHTML = categories()
@@ -48,6 +64,7 @@ function renderFilters() {
     )
     .join("");
 
+
   filters.querySelectorAll("button").forEach((button) => {
     button.addEventListener("click", () => {
       selectedCategory = button.dataset.category;
@@ -56,6 +73,7 @@ function renderFilters() {
     });
   });
 }
+
 
 function filteredApps() {
   const query = searchInput.value.trim().toLowerCase();
@@ -74,6 +92,7 @@ function filteredApps() {
     return categoryMatch && (!query || searchable.includes(query));
   });
 }
+
 
 function renderApps() {
   const visibleApps = filteredApps();
@@ -107,6 +126,7 @@ function renderApps() {
     )
     .join("");
 
+
   appGrid.hidden = visibleApps.length === 0;
   emptyState.hidden = visibleApps.length !== 0;
   resultText.textContent =
@@ -115,7 +135,10 @@ function renderApps() {
       : `${visibleApps.length}개의 앱을 찾았습니다.`;
 }
 
+
 searchInput.addEventListener("input", renderApps);
 appCount.textContent = apps.length;
 renderFilters();
 renderApps();
+
+
