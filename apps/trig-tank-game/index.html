@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>삼각함수 탱크 대전</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="stage" aria-label="게임 화면">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">25명 참여 · 5명씩 5모둠</p>
+            <h1>삼각함수 탱크 대전</h1>
+            <div class="rules">
+              <strong>규칙</strong>
+              <span>현재 탱크의 지면 접점 = 원점 (0,0)</span>
+              <span>식: a sin(bx+c)+d, a cos(bx+c)+d, a tan(bx+c)+d</span>
+              <span>원점을 지나지 않는 식: 자기 탱크 HP 감소</span>
+              <span>미리보기: 턴마다 2회</span>
+              <span>직전 자기 턴의 삼각함수 재사용 금지</span>
+              <span>제한시간: 턴마다 3분</span>
+              <span>모둠 이름: 오른쪽 상태표에서 수정</span>
+            </div>
+          </div>
+          <div class="turn-card">
+            <span class="label">현재 턴</span>
+            <strong><span id="turnName">1모둠</span> <span class="timer" id="turnTimer">3:00</span></strong>
+            <button class="tiny start" id="startBtn" type="button">게임 시작</button>
+          </div>
+        </div>
+
+        <div class="battle-wrap">
+          <canvas id="battlefield" width="1280" height="720"></canvas>
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <aside class="panel" aria-label="조작 패널">
+        <section class="panel-section current">
+          <div class="tank-badge" id="currentBadge"></div>
+          <div>
+            <p class="label">현재 탱크의 지면 접점이 원점</p>
+            <h2 id="currentTitle">1모둠</h2>
+          </div>
+        </section>
+
+        <section class="panel-section controls">
+          <label for="formula">미사일 함수식</label>
+          <div class="formula-row">
+            <span>y =</span>
+            <input
+              id="formula"
+              spellcheck="false"
+              autocomplete="off"
+              value=""
+              placeholder="예: -cosx, 3sinx, 4cos(0.5x+1)-2"
+              aria-label="미사일 함수식"
+            />
+          </div>
+          <div class="hint">예: -cosx, 3sinx, 4cos(0.5x+1)-2</div>
+
+          <div class="control-label">미사일 방향</div>
+          <div class="direction-row" role="group" aria-label="미사일 방향">
+            <button class="icon-btn" id="leftBtn" type="button" title="왼쪽으로 발사">←</button>
+            <button class="icon-btn selected" id="rightBtn" type="button" title="오른쪽으로 발사">→</button>
+          </div>
+          <div class="control-label">탱크 이동방향</div>
+          <div class="move-row" role="group" aria-label="탱크 이동방향">
+            <button class="icon-btn" id="moveLeftBtn" type="button" title="왼쪽으로 1칸 안에서 이동">⇤</button>
+            <input id="moveSlider" type="range" min="-1" max="1" step="0.05" value="0" aria-label="탱크 이동 조절" />
+            <button class="icon-btn" id="moveRightBtn" type="button" title="오른쪽으로 1칸 안에서 이동">⇥</button>
+          </div>
+          <div class="hint" id="moveHint">이동: 0</div>
+
+          <button class="fire" id="fireBtn" type="button">발사</button>
+          <button class="ghost" id="previewBtn" type="button">그래프 미리보기</button>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-head">
+            <h3>모둠 이름과 상태</h3>
+            <button class="tiny" id="resetBtn" type="button">초기화</button>
+          </div>
+          <div class="teams" id="teams"></div>
+        </section>
+
+        <section class="panel-section examples">
+          <h3>예시 함수</h3>
+          <button type="button" data-example="-cosx">-cosx</button>
+          <button type="button" data-example="3sinx">3sinx</button>
+          <button type="button" data-example="4cos(0.5x+0)-4">4cos(0.5x+0)-4</button>
+        </section>
+      </aside>
+    </main>
+
+    <div class="results hidden" id="resultsPanel" role="dialog" aria-modal="true" aria-labelledby="resultsTitle">
+      <div class="results-box">
+        <div class="section-head">
+          <h2 id="resultsTitle">최종 순위</h2>
+          <button class="tiny" id="closeResultsBtn" type="button">닫기</button>
+        </div>
+        <ol class="ranking" id="rankingList"></ol>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
