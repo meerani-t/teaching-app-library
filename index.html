@@ -1,3 +1,73 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="직접 만든 수업 활동과 실험 앱을 한곳에서 찾아 실행하는 서재">
+  <title>나의 수업 앱 서재</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">MY TEACHING LAB</p>
+        <h1>나의 수업 앱 서재</h1>
+        <p>만든 활동을 잊어버리지 않도록 한곳에 모았습니다. 수업 전에 찾아서 바로 실행해 보세요.</p>
+      </div>
+      <div class="count-card" aria-label="등록된 앱 수">
+        <span>현재 모아둔 앱</span>
+        <strong id="appCount">0</strong>
+        <small>앞으로 계속 늘어납니다</small>
+      </div>
+    </header>
+
+
+    <section class="toolbox" aria-label="앱 검색과 분류">
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="앱 이름이나 수업 주제로 검색" autocomplete="off">
+      </label>
+      <div class="filters" id="filters" aria-label="과목 분류"></div>
+    </section>
+
+
+    <section>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">COLLECTION</p>
+          <h2>내가 만든 활동</h2>
+        </div>
+        <p id="resultText">전체 앱을 보여드려요.</p>
+      </div>
+
+
+      <div class="app-grid" id="appGrid"></div>
+      <div class="empty-state" id="emptyState" hidden>
+        <span>🔎</span>
+        <strong>검색 결과가 없습니다.</strong>
+        <p>다른 검색어나 분류를 선택해 보세요.</p>
+      </div>
+    </section>
+
+
+    <section class="future-card">
+      <div>
+        <p class="eyebrow">NEXT IDEA</p>
+        <h2>다음에는 무엇을 만들어 볼까요?</h2>
+        <p>새로운 앱을 만들 때마다 이 서재에 제목, 과목, 간단한 설명과 함께 추가할 수 있습니다.</p>
+      </div>
+      <div class="idea-chips" aria-label="앱 아이디어 예시">
+        <span>함수 그래프 탐구</span>
+        <span>확률 실험</span>
+        <span>기하 시각화</span>
+        <span>수업 퀴즈</span>
+      </div>
+    </section>
+  </main>
+  <script src="app.js?v=20260627-limit-zombie"></script>
+</body>
+</html>
 <!doctype html>
 <html lang="ko">
 <head>
