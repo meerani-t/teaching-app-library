@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>극한 좀비 생존전</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="hud" aria-label="게임 상태">
+        <div class="brand">
+          <span class="brand-mark">lim</span>
+          <div>
+            <h1>극한 좀비 생존전</h1>
+            <p>고2 미적분 극한값 계산</p>
+          </div>
+        </div>
+        <div class="level-picker" aria-label="레벨 선택">
+          <button type="button" class="level-choice is-active" data-level-choice="1">레벨 1</button>
+          <button type="button" class="level-choice" data-level-choice="2">레벨 2</button>
+          <button type="button" class="level-choice" data-level-choice="3">레벨 3</button>
+        </div>
+        <div class="stat-grid">
+          <div class="stat">
+            <span>레벨</span>
+            <strong id="levelText">1</strong>
+          </div>
+          <div class="stat">
+            <span>남은 시간</span>
+            <strong id="timeText">03:00</strong>
+          </div>
+          <div class="stat">
+            <span>점수</span>
+            <strong id="scoreText">0</strong>
+          </div>
+          <div class="stat hp-stat">
+            <span>HP</span>
+            <strong id="hpText" aria-label="남은 체력">♥ ♥ ♥</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="team-panel" aria-label="모둠과 학생 이름 입력">
+        <label>
+          <span>모둠 이름</span>
+          <input id="groupNameInput" type="text" autocomplete="off" placeholder="예: 3모둠" />
+        </label>
+        <label>
+          <span>레벨 1 학생</span>
+          <input id="level1StudentInput" type="text" autocomplete="off" placeholder="이름" />
+        </label>
+        <label>
+          <span>레벨 2 학생</span>
+          <input id="level2StudentInput" type="text" autocomplete="off" placeholder="이름" />
+        </label>
+        <label>
+          <span>레벨 3 학생</span>
+          <input id="level3StudentInput" type="text" autocomplete="off" placeholder="이름" />
+        </label>
+      </section>
+
+      <section class="arena" aria-label="좀비 전투 화면">
+        <div class="skyline">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="road">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div id="zombieTrack" class="zombie-track" aria-live="polite"></div>
+        <div id="formulaLayer" class="formula-layer" aria-live="polite"></div>
+        <div id="biteFlash" class="bite-flash">물렸다!</div>
+        <div class="danger-line">
+          <span>접근 한계선</span>
+        </div>
+      </section>
+
+      <section class="answer-panel" aria-label="정답 입력">
+        <label for="answerInput">정답</label>
+        <div class="answer-row">
+          <input
+            id="answerInput"
+            type="text"
+            inputmode="text"
+            autocomplete="off"
+            placeholder="예: 3, -2, 1/2, ∞, -∞, √2"
+          />
+          <button id="submitBtn" class="primary-btn" type="button">제출</button>
+        </div>
+        <div class="quick-keys" aria-label="수학 기호 빠른 입력">
+          <button type="button" data-insert="√">√</button>
+          <button type="button" data-insert="∞">∞</button>
+          <button type="button" data-insert="-∞">-∞</button>
+          <button type="button" data-insert="/">/</button>
+          <button type="button" data-clear="true">지우기</button>
+        </div>
+        <p id="feedback" class="feedback" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-panel">
+        <h2 id="modalTitle">극한 좀비 생존전</h2>
+        <p id="modalText">
+          좀비 몸에 붙은 극한값을 계산하세요. 정답을 맞히면 좀비가 쓰러지고,
+          30초 안에 못 맞히면 물립니다.
+        </p>
+        <div id="levelSummary" class="level-summary"></div>
+        <button id="modalBtn" class="primary-btn" type="button">닫기</button>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
