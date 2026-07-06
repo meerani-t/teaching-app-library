@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>퍼셉트론 손글씨 숫자 분류 실습</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17212b;
+      --muted: #5c6978;
+      --line: #d8e1ea;
+      --paper: #f7f9fb;
+      --panel: #ffffff;
+      --accent: #147a7e;
+      --accent-2: #c9473c;
+      --good: #1f8a5b;
+      --shadow: 0 10px 30px rgba(29, 45, 63, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef5f8 0%, #f8fafc 34%, #eef3f5 100%);
+      letter-spacing: 0;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 7px;
+      min-height: 38px;
+      padding: 0 12px;
+      cursor: pointer;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+    }
+
+    button.primary {
+      border-color: #0f6467;
+      background: var(--accent);
+      color: white;
+    }
+
+    button.warn {
+      border-color: #a13b33;
+      color: #8c2f28;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .app {
+      width: min(1420px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 3.5vw, 40px);
+      line-height: 1.08;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(92px, 1fr));
+      gap: 8px;
+      min-width: min(420px, 100%);
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 22px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(460px, 1fr) minmax(320px, 420px);
+      gap: 14px;
+      align-items: start;
+    }
+
+    section {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    section > h2 {
+      margin: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 17px;
+      background: rgba(247, 250, 252, 0.92);
+    }
+
+    .section-body {
+      padding: 14px;
+    }
+
+    .draw-wrap {
+      display: grid;
+      place-items: center;
+      background: #f9fbfc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    canvas.draw {
+      width: min(100%, 360px);
+      aspect-ratio: 1;
+      touch-action: none;
+      background: white;
+      border: 1px solid #bdc8d3;
+      border-radius: 6px;
+      cursor: crosshair;
+    }
+
+    .toolbar, .trainbar, .digits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .digits {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+    }
+
+    .digit {
+      padding: 0;
+      min-width: 0;
+      aspect-ratio: 1.08;
+      font-weight: 700;
+    }
+
+    .digit.active {
+      background: #dff2f1;
+      border-color: var(--accent);
+      color: #08595c;
+    }
+
+    .sample-counts {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .sample-counts span {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      text-align: center;
+      padding: 5px 0;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .matrix-area {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      align-items: start;
+      margin-top: 12px;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      width: 120px;
+      aspect-ratio: 1;
+      border: 1px solid #aebbc7;
+      background: #fff;
+    }
+
+    .matrix div, .heat div {
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      min-width: 0;
+    }
+
+    .binary-text {
+      margin: 0;
+      max-height: 120px;
+      overflow: auto;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfe;
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.36;
+      white-space: pre;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input[type="number"], input[type="range"] {
+      width: 100%;
+    }
+
+    input[type="number"] {
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 10px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .heat-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(90px, 1fr));
+      gap: 10px;
+    }
+
+    .heat-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: #fff;
+    }
+
+    .heat-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .heat {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      aspect-ratio: 1;
+      border: 1px solid #cad5df;
+    }
+
+    .output-list {
+      display: grid;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 58px;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 16px;
+      border: 1px solid var(--line);
+      background: #edf2f5;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+    }
+
+    .result {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfe;
+    }
+
+    .big-prediction {
+      text-align: center;
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--accent);
+    }
+
+    .formula {
+      margin: 0;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #27384a;
+    }
+
+    .phone-panel {
+      margin-top: 14px;
+    }
+
+    .phone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .slot {
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+    }
+
+    .slot canvas {
+      width: 68px;
+      height: 68px;
+      background: #fff;
+      border: 1px solid #bdc8d3;
+      border-radius: 6px;
+      touch-action: none;
+    }
+
+    .slot b {
+      min-height: 22px;
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    .phone-output {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 46px;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 24px;
+      font-weight: 800;
+      color: #16323a;
+      word-break: break-all;
+    }
+
+    .log {
+      min-height: 34px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1180px) {
+      main {
+        grid-template-columns: minmax(320px, 430px) 1fr;
+      }
+
+      section.visual {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 10px;
+      }
+
+      header {
+        display: block;
+      }
+
+      .stats {
+        margin-top: 12px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .heat-grid {
+        grid-template-columns: repeat(2, minmax(90px, 1fr));
+      }
+
+      .matrix-area, .result {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>퍼셉트론 손글씨 숫자 분류 실습</h1>
+        <p class="subtitle">10 x 10 이진 행렬, 10개의 퍼셉트론, 가중치 변화와 결과값 확인</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="sampleTotal">0</b><span>학습 자료</span></div>
+        <div class="stat"><b id="epochTotal">0</b><span>반복 학습</span></div>
+        <div class="stat"><b id="accuracy">-</b><span>자료 정확도</span></div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>자료 만들기</h2>
+        <div class="section-body">
+          <div class="draw-wrap">
+            <canvas id="drawCanvas" class="draw" width="300" height="300" aria-label="숫자 그리기"></canvas>
+          </div>
+
+          <div class="toolbar">
+            <button id="clearBtn" title="지우기">지우기</button>
+            <button id="addSampleBtn" class="primary" title="현재 숫자 자료 추가">자료 추가</button>
+            <button id="undoSampleBtn" title="마지막 자료 삭제">마지막 삭제</button>
+          </div>
+
+          <div class="digits" id="digitButtons"></div>
+          <div class="sample-counts" id="sampleCounts"></div>
+
+          <div class="matrix-area">
+            <div class="matrix" id="matrixPreview" aria-label="10 x 10 행렬"></div>
+            <pre class="binary-text" id="binaryText"></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="visual">
+        <h2>가중치 행렬</h2>
+        <div class="section-body">
+          <div class="trainbar">
+            <button id="trainOnceBtn" class="primary">1회 학습</button>
+            <button id="trainManyBtn">반복 학습</button>
+            <button id="resetModelBtn" class="warn">가중치 초기화</button>
+            <button id="resetAllBtn" class="warn">완전 초기화</button>
+          </div>
+
+          <div class="controls">
+            <label>반복 횟수
+              <input id="epochInput" type="number" value="20" min="1" max="500">
+            </label>
+            <label>학습률
+              <input id="rateInput" type="number" value="0.15" min="0.01" max="1" step="0.01">
+            </label>
+          </div>
+
+          <div class="heat-grid" id="heatGrid" style="margin-top:14px"></div>
+          <div class="log" id="trainLog">가중치가 0에서 시작합니다.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>분류 결과</h2>
+        <div class="section-body">
+          <button id="predictBtn" class="primary">현재 그림 분류</button>
+          <div class="result">
+            <div class="big-prediction" id="prediction">-</div>
+            <p class="formula" id="formula">score = w1x1 + ... + w100x100 + b</p>
+          </div>
+          <div class="output-list" id="scoreList"></div>
+
+          <div class="phone-panel">
+            <h2 style="padding:0;border:0;background:transparent;margin:0 0 8px;font-size:17px">휴대폰 번호 읽기</h2>
+            <div class="toolbar">
+              <button id="addSlotBtn">칸 추가</button>
+              <button id="removeSlotBtn">칸 삭제</button>
+              <button id="readPhoneBtn" class="primary">번호 읽기</button>
+              <button id="clearPhoneBtn">전체 지우기</button>
+            </div>
+            <div class="phone-grid" id="phoneGrid"></div>
+            <div class="phone-output" id="phoneOutput">-</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const SIZE = 10;
+    const INPUTS = SIZE * SIZE;
+    const DIGITS = 10;
+    const drawCanvas = document.getElementById("drawCanvas");
+    const drawCtx = drawCanvas.getContext("2d", { willReadFrequently: true });
+    const matrixPreview = document.getElementById("matrixPreview");
+    const binaryText = document.getElementById("binaryText");
+    const digitButtons = document.getElementById("digitButtons");
+    const sampleCounts = document.getElementById("sampleCounts");
+    const heatGrid = document.getElementById("heatGrid");
+    const scoreList = document.getElementById("scoreList");
+    const prediction = document.getElementById("prediction");
+    const formula = document.getElementById("formula");
+    const trainLog = document.getElementById("trainLog");
+    const phoneGrid = document.getElementById("phoneGrid");
+    const phoneOutput = document.getElementById("phoneOutput");
+    const samples = [];
+    let selectedDigit = 0;
+    let weights = Array.from({ length: DIGITS }, () => Array(INPUTS).fill(0));
+    let bias = Array(DIGITS).fill(0);
+    let epochs = 0;
+    let phoneSlots = [];
+
+    function fillWhite(ctx, canvas) {
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function setupCanvasDrawing(canvas, onChange) {
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      fillWhite(ctx, canvas);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.lineWidth = Math.max(14, Math.round(canvas.width * 0.055));
+      ctx.strokeStyle = "#111";
+      let drawing = false;
+      let last = null;
+
+      function point(event) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: (event.clientX - rect.left) * canvas.width / rect.width,
+          y: (event.clientY - rect.top) * canvas.height / rect.height
+        };
+      }
+
+      canvas.addEventListener("pointerdown", (event) => {
+        canvas.setPointerCapture(event.pointerId);
+        drawing = true;
+        last = point(event);
+        ctx.beginPath();
+        ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2);
+        ctx.fillStyle = "#111";
+        ctx.fill();
+        onChange?.();
+      });
+
+      canvas.addEventListener("pointermove", (event) => {
+        if (!drawing) return;
+        const now = point(event);
+        ctx.beginPath();
+        ctx.moveTo(last.x, last.y);
+        ctx.lineTo(now.x, now.y);
+        ctx.stroke();
+        last = now;
+        onChange?.();
+      });
+
+      function end() {
+        drawing = false;
+        last = null;
+      }
+
+      canvas.addEventListener("pointerup", end);
+      canvas.addEventListener("pointercancel", end);
+
+      return { ctx, clear: () => { fillWhite(ctx, canvas); onChange?.(); } };
+    }
+
+    const mainDraw = setupCanvasDrawing(drawCanvas, updateMatrixPreview);
+
+    function cropBounds(ctx, canvas) {
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let minX = canvas.width, minY = canvas.height, maxX = -1, maxY = -1;
+      for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+          const i = (y * canvas.width + x) * 4;
+          if (data[i] < 245 || data[i + 1] < 245 || data[i + 2] < 245) {
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          }
+        }
+      }
+      if (maxX < 0) return null;
+      return { minX, minY, maxX, maxY };
+    }
+
+    function canvasToBinary(canvas) {
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const bounds = cropBounds(ctx, canvas);
+      const temp = document.createElement("canvas");
+      temp.width = SIZE;
+      temp.height = SIZE;
+      const tctx = temp.getContext("2d", { willReadFrequently: true });
+      fillWhite(tctx, temp);
+
+      if (bounds) {
+        const w = Math.max(1, bounds.maxX - bounds.minX + 1);
+        const h = Math.max(1, bounds.maxY - bounds.minY + 1);
+        const scale = Math.min(8 / w, 8 / h);
+        const dw = Math.max(1, w * scale);
+        const dh = Math.max(1, h * scale);
+        const dx = (SIZE - dw) / 2;
+        const dy = (SIZE - dh) / 2;
+        tctx.imageSmoothingEnabled = true;
+        tctx.drawImage(canvas, bounds.minX, bounds.minY, w, h, dx, dy, dw, dh);
+      }
+
+      const data = tctx.getImageData(0, 0, SIZE, SIZE).data;
+      const x = [];
+      for (let i = 0; i < data.length; i += 4) {
+        const darkness = 255 - (data[i] + data[i + 1] + data[i + 2]) / 3;
+        x.push(darkness > 28 ? 1 : 0);
+      }
+      return x;
+    }
+
+    function renderMatrix(container, values, mode = "binary") {
+      container.innerHTML = "";
+      values.forEach((value) => {
+        const cell = document.createElement("div");
+        if (mode === "binary") {
+          cell.style.background = value ? "#17212b" : "#fff";
+        } else {
+          const strength = Math.min(1, Math.abs(value) / 3);
+          if (value > 0) cell.style.background = `rgba(20, 122, 126, ${0.12 + strength * 0.88})`;
+          else if (value < 0) cell.style.background = `rgba(201, 71, 60, ${0.12 + strength * 0.88})`;
+          else cell.style.background = "#f1f4f7";
+        }
+        container.appendChild(cell);
+      });
+    }
+
+    function updateMatrixPreview() {
+      const x = canvasToBinary(drawCanvas);
+      renderMatrix(matrixPreview, x);
+      binaryText.textContent = Array.from({ length: SIZE }, (_, r) =>
+        x.slice(r * SIZE, r * SIZE + SIZE).join(" ")
+      ).join("\n");
+    }
+
+    function dot(w, x) {
+      let sum = 0;
+      for (let i = 0; i < INPUTS; i++) sum += w[i] * x[i];
+      return sum;
+    }
+
+    function scores(x) {
+      return weights.map((w, digit) => dot(w, x) + bias[digit]);
+    }
+
+    function predict(x) {
+      const s = scores(x);
+      let best = 0;
+      for (let i = 1; i < s.length; i++) {
+        if (s[i] > s[best]) best = i;
+      }
+      return { digit: best, scores: s };
+    }
+
+    function trainEpoch() {
+      if (samples.length === 0) return 0;
+      let mistakes = 0;
+      const rate = Number(document.getElementById("rateInput").value) || 0.15;
+      const shuffled = [...samples].sort(() => Math.random() - 0.5);
+      shuffled.forEach((sample) => {
+        const result = predict(sample.x);
+        if (result.digit !== sample.y) {
+          mistakes++;
+          for (let i = 0; i < INPUTS; i++) {
+            weights[sample.y][i] += rate * sample.x[i];
+            weights[result.digit][i] -= rate * sample.x[i];
+          }
+          bias[sample.y] += rate;
+          bias[result.digit] -= rate;
+        }
+      });
+      epochs++;
+      return mistakes;
+    }
+
+    function evaluate() {
+      if (samples.length === 0) return null;
+      let correct = 0;
+      samples.forEach((sample) => {
+        if (predict(sample.x).digit === sample.y) correct++;
+      });
+      return correct / samples.length;
+    }
+
+    function renderDigits() {
+      digitButtons.innerHTML = "";
+      sampleCounts.innerHTML = "";
+      for (let i = 0; i < DIGITS; i++) {
+        const btn = document.createElement("button");
+        btn.className = "digit" + (i === selectedDigit ? " active" : "");
+        btn.textContent = i;
+        btn.addEventListener("click", () => {
+          selectedDigit = i;
+          renderDigits();
+        });
+        digitButtons.appendChild(btn);
+
+        const count = document.createElement("span");
+        count.textContent = samples.filter((sample) => sample.y === i).length;
+        sampleCounts.appendChild(count);
+      }
+    }
+
+    function renderWeights() {
+      heatGrid.innerHTML = "";
+      for (let digit = 0; digit < DIGITS; digit++) {
+        const card = document.createElement("div");
+        card.className = "heat-card";
+        const title = document.createElement("div");
+        title.className = "heat-title";
+        title.innerHTML = `<b>${digit}</b><span>b=${bias[digit].toFixed(2)}</span>`;
+        const heat = document.createElement("div");
+        heat.className = "heat";
+        renderMatrix(heat, weights[digit], "heat");
+        card.append(title, heat);
+        heatGrid.appendChild(card);
+      }
+    }
+
+    function renderScores(s) {
+      const min = Math.min(...s);
+      const max = Math.max(...s);
+      const spread = Math.max(1e-6, max - min);
+      scoreList.innerHTML = "";
+      s.forEach((value, digit) => {
+        const row = document.createElement("div");
+        row.className = "score-row";
+        const pct = ((value - min) / spread) * 100;
+        row.innerHTML = `<b>${digit}</b><div class="bar"><div class="fill" style="width:${pct}%"></div></div><span>${value.toFixed(2)}</span>`;
+        scoreList.appendChild(row);
+      });
+    }
+
+    function renderStats() {
+      document.getElementById("sampleTotal").textContent = samples.length;
+      document.getElementById("epochTotal").textContent = epochs;
+      const acc = evaluate();
+      document.getElementById("accuracy").textContent = acc === null ? "-" : `${Math.round(acc * 100)}%`;
+      renderDigits();
+      renderWeights();
+    }
+
+    function showPredictionFor(canvas) {
+      const x = canvasToBinary(canvas);
+      const result = predict(x);
+      prediction.textContent = result.digit;
+      renderScores(result.scores);
+      formula.textContent = `예측: ${result.digit}\n가장 큰 결과값: ${Math.max(...result.scores).toFixed(2)}\nscore_k = W_k · X + b_k`;
+      return result;
+    }
+
+    function addPhoneSlot() {
+      const canvas = document.createElement("canvas");
+      canvas.width = 120;
+      canvas.height = 120;
+      const pred = document.createElement("b");
+      pred.textContent = "-";
+      const slot = document.createElement("div");
+      slot.className = "slot";
+      slot.append(canvas, pred);
+      phoneGrid.appendChild(slot);
+      const drawing = setupCanvasDrawing(canvas);
+      phoneSlots.push({ canvas, pred, drawing });
+    }
+
+    function readPhone() {
+      const digits = phoneSlots.map((slot) => {
+        const result = predict(canvasToBinary(slot.canvas));
+        slot.pred.textContent = result.digit;
+        return result.digit;
+      });
+      let text = digits.join("");
+      if (digits.length === 11) text = `${text.slice(0, 3)}-${text.slice(3, 7)}-${text.slice(7)}`;
+      phoneOutput.textContent = text || "-";
+    }
+
+    function resetModel(message = "가중치가 0으로 돌아갔습니다.") {
+      weights = Array.from({ length: DIGITS }, () => Array(INPUTS).fill(0));
+      bias = Array(DIGITS).fill(0);
+      epochs = 0;
+      prediction.textContent = "-";
+      formula.textContent = "score = w1x1 + ... + w100x100 + b";
+      scoreList.innerHTML = "";
+      trainLog.textContent = message;
+      renderStats();
+      renderScores(Array(DIGITS).fill(0));
+    }
+
+    function clearPhoneDrawings() {
+      phoneSlots.forEach((slot) => {
+        slot.drawing.clear();
+        slot.pred.textContent = "-";
+      });
+      phoneOutput.textContent = "-";
+    }
+
+    document.getElementById("clearBtn").addEventListener("click", mainDraw.clear);
+    document.getElementById("addSampleBtn").addEventListener("click", () => {
+      samples.push({ y: selectedDigit, x: canvasToBinary(drawCanvas) });
+      trainLog.textContent = `${selectedDigit} 자료를 추가했습니다.`;
+      mainDraw.clear();
+      renderStats();
+    });
+    document.getElementById("undoSampleBtn").addEventListener("click", () => {
+      samples.pop();
+      renderStats();
+    });
+    document.getElementById("trainOnceBtn").addEventListener("click", () => {
+      const mistakes = trainEpoch();
+      trainLog.textContent = `1회 학습 완료: 틀린 자료 ${mistakes}개`;
+      renderStats();
+      showPredictionFor(drawCanvas);
+    });
+    document.getElementById("trainManyBtn").addEventListener("click", () => {
+      const n = Math.max(1, Math.min(500, Number(document.getElementById("epochInput").value) || 20));
+      let last = 0;
+      for (let i = 0; i < n; i++) last = trainEpoch();
+      trainLog.textContent = `${n}회 학습 완료: 마지막 반복의 틀린 자료 ${last}개`;
+      renderStats();
+      showPredictionFor(drawCanvas);
+    });
+    document.getElementById("resetModelBtn").addEventListener("click", () => {
+      resetModel();
+    });
+    document.getElementById("resetAllBtn").addEventListener("click", () => {
+      samples.length = 0;
+      selectedDigit = 0;
+      mainDraw.clear();
+      clearPhoneDrawings();
+      resetModel("학습 자료, 학습 횟수, 가중치, 그림을 모두 초기화했습니다.");
+    });
+    document.getElementById("predictBtn").addEventListener("click", () => showPredictionFor(drawCanvas));
+    document.getElementById("addSlotBtn").addEventListener("click", addPhoneSlot);
+    document.getElementById("removeSlotBtn").addEventListener("click", () => {
+      const slot = phoneSlots.pop();
+      if (slot) slot.canvas.parentElement.remove();
+      readPhone();
+    });
+    document.getElementById("readPhoneBtn").addEventListener("click", readPhone);
+    document.getElementById("clearPhoneBtn").addEventListener("click", () => {
+      clearPhoneDrawings();
+    });
+
+    for (let i = 0; i < 11; i++) addPhoneSlot();
+    updateMatrixPreview();
+    renderStats();
+    renderScores(Array(DIGITS).fill(0));
+  </script>
+</body>
+</html>

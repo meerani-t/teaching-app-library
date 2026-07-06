@@ -47,6 +47,18 @@
     url: "./apps/limit-zombie-game/index.html",
     date: "2026. 6. 27.",
   },
+  {
+    title: "퍼셉트론 손글씨 숫자 분류",
+    subject: "인공지능 수학",
+    category: "퍼셉트론",
+    description: "학생이 직접 쓴 숫자를 10 x 10 이진 행렬로 바꾸고, 퍼셉트론의 가중치와 편향 변화를 보며 숫자를 분류하는 실습입니다.",
+    tags: ["퍼셉트론", "이미지분류", "손글씨", "가중치", "편향"],
+    icon: "✍️",
+    colors: ["#147a7e", "#8c2f28"],
+    subjectColors: ["#e3f4f3", "#0f6467"],
+    url: "./apps/perceptron-handwriting-lab/index.html",
+    date: "2026. 7. 6.",
+  },
 ];
 
 
