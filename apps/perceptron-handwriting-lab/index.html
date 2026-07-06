@@ -568,6 +568,23 @@
         display: block;
       }
     }
+
+    body.pdf-capture-mode {
+      background: #fff;
+    }
+
+    body.pdf-capture-mode .no-print {
+      display: none !important;
+    }
+
+    body.pdf-capture-mode .answer-field input,
+    body.pdf-capture-mode .answer-field textarea {
+      display: none;
+    }
+
+    body.pdf-capture-mode .print-answer {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -683,6 +700,7 @@
     </main>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     const SIZE = 10;
     const INPUTS = SIZE * SIZE;
@@ -1064,21 +1082,53 @@
       document.getElementById("printAnswerReflection").textContent = reflection || " ";
     }
 
-    function savePracticePdf() {
+    function safePdfFileName(name) {
+      return name.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim() || "퍼셉트론 손글씨 실습";
+    }
+
+    async function savePracticePdf() {
       syncPrintAnswers();
       const name = document.getElementById("answerName").value.trim();
       const baseName = name ? `퍼셉트론 손글씨 실습_${name}` : "퍼셉트론 손글씨 실습";
       const fileName = prompt("PDF 파일 이름을 입력하세요.", baseName);
       if (fileName === null) return;
+      const cleanName = safePdfFileName(fileName) + ".pdf";
+      const saveButton = document.getElementById("savePdfBtn");
+      const originalText = saveButton.textContent;
       const originalTitle = document.title;
-      document.title = fileName.trim() || baseName;
-      const restoreTitle = () => {
+      saveButton.textContent = "PDF 만드는 중...";
+      saveButton.disabled = true;
+      document.title = cleanName.replace(/\.pdf$/i, "");
+      document.body.classList.add("pdf-capture-mode");
+
+      try {
+        if (!window.html2pdf) throw new Error("pdf-library-not-ready");
+        await html2pdf()
+          .set({
+            margin: 8,
+            filename: cleanName,
+            image: { type: "jpeg", quality: 0.96 },
+            html2canvas: {
+              scale: Math.min(2, window.devicePixelRatio || 1.5),
+              backgroundColor: "#ffffff",
+              useCORS: true,
+              scrollX: 0,
+              scrollY: 0,
+              windowWidth: document.documentElement.scrollWidth
+            },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            pagebreak: { mode: ["css", "legacy"], avoid: ["section", ".student-sheet"] }
+          })
+          .from(document.querySelector(".app"))
+          .save();
+      } catch (error) {
+        window.print();
+      } finally {
+        document.body.classList.remove("pdf-capture-mode");
         document.title = originalTitle;
-        window.removeEventListener("afterprint", restoreTitle);
-      };
-      window.addEventListener("afterprint", restoreTitle);
-      window.print();
-      setTimeout(restoreTitle, 1200);
+        saveButton.disabled = false;
+        saveButton.textContent = originalText;
+      }
     }
 
     document.getElementById("clearBtn").addEventListener("click", mainDraw.clear);
