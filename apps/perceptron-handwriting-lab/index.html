@@ -368,10 +368,22 @@
     }
 
     .phone-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 8px;
       margin-top: 10px;
+    }
+
+    .phone-group {
+      display: grid;
+      grid-template-columns: repeat(var(--slots), 68px);
+      gap: 8px;
+      align-items: start;
+    }
+
+    .phone-group + .phone-group {
+      padding-top: 4px;
+      border-top: 1px dashed var(--line);
     }
 
     .slot {
@@ -422,6 +434,59 @@
       line-height: 1.45;
     }
 
+    .student-sheet {
+      grid-column: 1 / -1;
+    }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .answer-field {
+      display: grid;
+      gap: 7px;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .answer-field input,
+    .answer-field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .answer-field input {
+      min-height: 42px;
+    }
+
+    .answer-field textarea {
+      min-height: 110px;
+      line-height: 1.5;
+    }
+
+    .print-answer {
+      display: none;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      white-space: pre-wrap;
+      background: #fff;
+    }
+
+    .pdf-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 14px;
+    }
+
     @media (max-width: 1180px) {
       main {
         grid-template-columns: minmax(320px, 430px) 1fr;
@@ -453,8 +518,54 @@
         grid-template-columns: repeat(2, minmax(90px, 1fr));
       }
 
+      .answer-grid {
+        grid-template-columns: 1fr;
+      }
+
       .matrix-area, .result {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      html, body {
+        overflow: visible !important;
+        position: static !important;
+        width: auto !important;
+        background: #fff !important;
+      }
+
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .app {
+        width: 100%;
+        padding: 0;
+      }
+
+      header, main {
+        display: block;
+      }
+
+      section {
+        break-inside: avoid;
+        box-shadow: none;
+        margin-bottom: 10px;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .answer-field input,
+      .answer-field textarea {
+        display: none;
+      }
+
+      .print-answer {
+        display: block;
       }
     }
   </style>
@@ -534,13 +645,38 @@
           <div class="phone-panel">
             <h2 style="padding:0;border:0;background:transparent;margin:0 0 8px;font-size:17px">휴대폰 번호 읽기</h2>
             <div class="toolbar">
-              <button id="addSlotBtn">칸 추가</button>
-              <button id="removeSlotBtn">칸 삭제</button>
               <button id="readPhoneBtn" class="primary">번호 읽기</button>
               <button id="clearPhoneBtn">전체 지우기</button>
             </div>
-            <div class="phone-grid" id="phoneGrid"></div>
+            <div class="phone-grid" id="phoneGrid">
+              <div class="phone-group" id="phoneGroup0" style="--slots:3"></div>
+              <div class="phone-group" id="phoneGroup1" style="--slots:4"></div>
+              <div class="phone-group" id="phoneGroup2" style="--slots:4"></div>
+            </div>
             <div class="phone-output" id="phoneOutput">-</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="student-sheet">
+        <h2>실습 기록</h2>
+        <div class="section-body">
+          <div class="answer-grid">
+            <label class="answer-field">1번) 학번이름을 적으세요.
+              <input id="answerName" type="text" autocomplete="off">
+              <div class="print-answer" id="printAnswerName"></div>
+            </label>
+            <label class="answer-field">2번) 손글씨를 읽어내는 정확도를 올리려면 무엇을 하면 될까?
+              <textarea id="answerAccuracy"></textarea>
+              <div class="print-answer" id="printAnswerAccuracy"></div>
+            </label>
+            <label class="answer-field">3번) 퍼셉트론을 이용한 손글씨 읽기 프로그램을 직접 사용해본 느낌은?
+              <textarea id="answerReflection"></textarea>
+              <div class="print-answer" id="printAnswerReflection"></div>
+            </label>
+          </div>
+          <div class="pdf-row">
+            <button id="savePdfBtn" class="primary no-print">PDF로 저장</button>
           </div>
         </div>
       </section>
@@ -564,6 +700,11 @@
     const trainLog = document.getElementById("trainLog");
     const phoneGrid = document.getElementById("phoneGrid");
     const phoneOutput = document.getElementById("phoneOutput");
+    const phoneGroups = [
+      document.getElementById("phoneGroup0"),
+      document.getElementById("phoneGroup1"),
+      document.getElementById("phoneGroup2")
+    ];
     const samples = [];
     let selectedDigit = 0;
     let weights = Array.from({ length: DIGITS }, () => Array(INPUTS).fill(0));
@@ -876,7 +1017,9 @@
       const slot = document.createElement("div");
       slot.className = "slot";
       slot.append(canvas, pred);
-      phoneGrid.appendChild(slot);
+      const index = phoneSlots.length;
+      const group = index < 3 ? phoneGroups[0] : index < 7 ? phoneGroups[1] : phoneGroups[2];
+      group.appendChild(slot);
       const drawing = setupCanvasDrawing(canvas);
       phoneSlots.push({ canvas, pred, drawing });
     }
@@ -910,6 +1053,32 @@
         slot.pred.textContent = "-";
       });
       phoneOutput.textContent = "-";
+    }
+
+    function syncPrintAnswers() {
+      const name = document.getElementById("answerName").value.trim();
+      const accuracy = document.getElementById("answerAccuracy").value.trim();
+      const reflection = document.getElementById("answerReflection").value.trim();
+      document.getElementById("printAnswerName").textContent = name || " ";
+      document.getElementById("printAnswerAccuracy").textContent = accuracy || " ";
+      document.getElementById("printAnswerReflection").textContent = reflection || " ";
+    }
+
+    function savePracticePdf() {
+      syncPrintAnswers();
+      const name = document.getElementById("answerName").value.trim();
+      const baseName = name ? `퍼셉트론 손글씨 실습_${name}` : "퍼셉트론 손글씨 실습";
+      const fileName = prompt("PDF 파일 이름을 입력하세요.", baseName);
+      if (fileName === null) return;
+      const originalTitle = document.title;
+      document.title = fileName.trim() || baseName;
+      const restoreTitle = () => {
+        document.title = originalTitle;
+        window.removeEventListener("afterprint", restoreTitle);
+      };
+      window.addEventListener("afterprint", restoreTitle);
+      window.print();
+      setTimeout(restoreTitle, 1200);
     }
 
     document.getElementById("clearBtn").addEventListener("click", mainDraw.clear);
@@ -948,8 +1117,8 @@
       resetModel("학습 자료, 학습 횟수, 가중치, 그림을 모두 초기화했습니다.");
     });
     document.getElementById("predictBtn").addEventListener("click", () => showPredictionFor(drawCanvas));
-    document.getElementById("addSlotBtn").addEventListener("click", addPhoneSlot);
-    document.getElementById("removeSlotBtn").addEventListener("click", () => {
+    document.getElementById("addSlotBtn")?.addEventListener("click", addPhoneSlot);
+    document.getElementById("removeSlotBtn")?.addEventListener("click", () => {
       const slot = phoneSlots.pop();
       if (slot) slot.canvas.parentElement.remove();
       readPhone();
@@ -958,6 +1127,7 @@
     document.getElementById("clearPhoneBtn").addEventListener("click", () => {
       clearPhoneDrawings();
     });
+    document.getElementById("savePdfBtn").addEventListener("click", savePracticePdf);
 
     for (let i = 0; i < 11; i++) addPhoneSlot();
     updateMatrixPreview();
