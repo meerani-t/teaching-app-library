@@ -56,7 +56,7 @@
     icon: "✍️",
     colors: ["#147a7e", "#8c2f28"],
     subjectColors: ["#e3f4f3", "#0f6467"],
-    url: "./apps/perceptron-handwriting-lab/index.html?v=20260707-mobile-pdf-link",
+    url: "./apps/perceptron-handwriting-lab/index.html?v=20260707-pdf-record-first",
     date: "2026. 7. 6.",
   },
 ];
