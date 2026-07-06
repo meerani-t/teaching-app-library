@@ -22,6 +22,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      overscroll-behavior: none;
+    }
+
     body {
       margin: 0;
       font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
@@ -31,6 +35,7 @@
       overscroll-behavior: none;
     }
 
+    html.drawing-active,
     body.drawing-active {
       overflow: hidden;
       position: fixed;
@@ -162,6 +167,9 @@
       border: 1px solid #bdc8d3;
       border-radius: 6px;
       cursor: crosshair;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .toolbar, .trainbar, .digits {
@@ -379,6 +387,9 @@
       border: 1px solid #bdc8d3;
       border-radius: 6px;
       touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .slot b {
@@ -572,23 +583,34 @@
       activeDrawingCanvas = canvas;
       lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
       document.body.style.top = `-${lockedScrollY}px`;
+      document.documentElement.classList.add("drawing-active");
       document.body.classList.add("drawing-active");
     }
 
     function unlockPageScroll(canvas) {
       if (activeDrawingCanvas !== canvas) return;
       activeDrawingCanvas = null;
+      document.documentElement.classList.remove("drawing-active");
       document.body.classList.remove("drawing-active");
       document.body.style.top = "";
       window.scrollTo(0, lockedScrollY);
     }
 
-    function preventScrollWhileDrawing(event) {
-      if (!activeDrawingCanvas) return;
-      event.preventDefault();
+    function eventTouchesCanvas(event) {
+      if (event.target?.closest?.("canvas")) return true;
+      return event.composedPath?.().some((node) => node instanceof HTMLCanvasElement) || false;
     }
 
+    function preventScrollWhileDrawing(event) {
+      if (!activeDrawingCanvas && !eventTouchesCanvas(event)) return;
+      event.preventDefault();
+      if (activeDrawingCanvas) window.scrollTo(0, lockedScrollY);
+    }
+
+    document.addEventListener("touchstart", preventScrollWhileDrawing, { passive: false, capture: true });
     document.addEventListener("touchmove", preventScrollWhileDrawing, { passive: false, capture: true });
+    document.addEventListener("pointerdown", preventScrollWhileDrawing, { passive: false, capture: true });
+    document.addEventListener("pointermove", preventScrollWhileDrawing, { passive: false, capture: true });
     document.addEventListener("gesturestart", preventScrollWhileDrawing, { passive: false, capture: true });
     document.addEventListener("wheel", preventScrollWhileDrawing, { passive: false, capture: true });
 
