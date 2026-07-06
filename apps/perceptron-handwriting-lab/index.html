@@ -33,6 +33,8 @@
 
     body.drawing-active {
       overflow: hidden;
+      position: fixed;
+      width: 100%;
     }
 
     button, input, select {
@@ -557,11 +559,38 @@
     let bias = Array(DIGITS).fill(0);
     let epochs = 0;
     let phoneSlots = [];
+    let lockedScrollY = 0;
+    let activeDrawingCanvas = null;
 
     function fillWhite(ctx, canvas) {
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
+
+    function lockPageScroll(canvas) {
+      if (activeDrawingCanvas) return;
+      activeDrawingCanvas = canvas;
+      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.style.top = `-${lockedScrollY}px`;
+      document.body.classList.add("drawing-active");
+    }
+
+    function unlockPageScroll(canvas) {
+      if (activeDrawingCanvas !== canvas) return;
+      activeDrawingCanvas = null;
+      document.body.classList.remove("drawing-active");
+      document.body.style.top = "";
+      window.scrollTo(0, lockedScrollY);
+    }
+
+    function preventScrollWhileDrawing(event) {
+      if (!activeDrawingCanvas) return;
+      event.preventDefault();
+    }
+
+    document.addEventListener("touchmove", preventScrollWhileDrawing, { passive: false, capture: true });
+    document.addEventListener("gesturestart", preventScrollWhileDrawing, { passive: false, capture: true });
+    document.addEventListener("wheel", preventScrollWhileDrawing, { passive: false, capture: true });
 
     function setupCanvasDrawing(canvas, onChange) {
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -588,7 +617,7 @@
       canvas.addEventListener("pointerdown", (event) => {
         event.preventDefault();
         canvas.setPointerCapture(event.pointerId);
-        document.body.classList.add("drawing-active");
+        lockPageScroll(canvas);
         drawing = true;
         last = point(event);
         ctx.beginPath();
@@ -613,13 +642,15 @@
       function end() {
         drawing = false;
         last = null;
-        document.body.classList.remove("drawing-active");
+        unlockPageScroll(canvas);
       }
 
       canvas.addEventListener("pointerup", end);
       canvas.addEventListener("pointercancel", end);
       canvas.addEventListener("touchstart", blockPageScroll, { passive: false });
       canvas.addEventListener("touchmove", blockPageScroll, { passive: false });
+      canvas.addEventListener("touchend", end, { passive: false });
+      canvas.addEventListener("touchcancel", end, { passive: false });
 
       return { ctx, clear: () => { fillWhite(ctx, canvas); onChange?.(); } };
     }
