@@ -483,8 +483,23 @@
 
     .pdf-row {
       display: flex;
-      justify-content: flex-end;
+      align-items: flex-end;
+      flex-direction: column;
+      gap: 8px;
       margin-top: 14px;
+    }
+
+    .pdf-link {
+      display: none;
+      color: var(--accent);
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    .pdf-status {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
     }
 
     @media (max-width: 1180px) {
@@ -694,6 +709,8 @@
           </div>
           <div class="pdf-row">
             <button id="savePdfBtn" class="primary no-print">PDF로 저장</button>
+            <a id="pdfDownloadLink" class="pdf-link no-print" href="#" download>PDF 다운로드 열기</a>
+            <div id="pdfStatus" class="pdf-status no-print"></div>
           </div>
         </div>
       </section>
@@ -1086,6 +1103,20 @@
       return name.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim() || "퍼셉트론 손글씨 실습";
     }
 
+    let latestPdfUrl = "";
+
+    function showPdfLink(blob, fileName) {
+      if (latestPdfUrl) URL.revokeObjectURL(latestPdfUrl);
+      latestPdfUrl = URL.createObjectURL(blob);
+      const link = document.getElementById("pdfDownloadLink");
+      const status = document.getElementById("pdfStatus");
+      link.href = latestPdfUrl;
+      link.download = fileName;
+      link.style.display = "inline";
+      link.textContent = `${fileName} 다시 열기`;
+      status.textContent = "저장이 바로 보이지 않으면 위 링크를 눌러 다운로드하거나 공유/파일 저장을 선택하세요.";
+    }
+
     async function savePracticePdf() {
       syncPrintAnswers();
       const name = document.getElementById("answerName").value.trim();
@@ -1094,16 +1125,18 @@
       if (fileName === null) return;
       const cleanName = safePdfFileName(fileName) + ".pdf";
       const saveButton = document.getElementById("savePdfBtn");
+      const status = document.getElementById("pdfStatus");
       const originalText = saveButton.textContent;
       const originalTitle = document.title;
       saveButton.textContent = "PDF 만드는 중...";
       saveButton.disabled = true;
+      status.textContent = "";
       document.title = cleanName.replace(/\.pdf$/i, "");
       document.body.classList.add("pdf-capture-mode");
 
       try {
         if (!window.html2pdf) throw new Error("pdf-library-not-ready");
-        await html2pdf()
+        const worker = html2pdf()
           .set({
             margin: 8,
             filename: cleanName,
@@ -1119,9 +1152,17 @@
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["css", "legacy"], avoid: ["section", ".student-sheet"] }
           })
-          .from(document.querySelector(".app"))
-          .save();
+          .from(document.querySelector(".app"));
+        const pdfBlob = await worker.outputPdf("blob");
+        showPdfLink(pdfBlob, cleanName);
+        const autoLink = document.createElement("a");
+        autoLink.href = latestPdfUrl;
+        autoLink.download = cleanName;
+        document.body.appendChild(autoLink);
+        autoLink.click();
+        autoLink.remove();
       } catch (error) {
+        status.textContent = "PDF 파일 만들기가 막혀서 인쇄 저장 화면을 엽니다.";
         window.print();
       } finally {
         document.body.classList.remove("pdf-capture-mode");
