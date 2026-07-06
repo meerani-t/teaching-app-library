@@ -28,6 +28,11 @@
       color: var(--ink);
       background: linear-gradient(180deg, #eef5f8 0%, #f8fafc 34%, #eef3f5 100%);
       letter-spacing: 0;
+      overscroll-behavior: none;
+    }
+
+    body.drawing-active {
+      overflow: hidden;
     }
 
     button, input, select {
@@ -576,8 +581,14 @@
         };
       }
 
+      function blockPageScroll(event) {
+        event.preventDefault();
+      }
+
       canvas.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
         canvas.setPointerCapture(event.pointerId);
+        document.body.classList.add("drawing-active");
         drawing = true;
         last = point(event);
         ctx.beginPath();
@@ -589,6 +600,7 @@
 
       canvas.addEventListener("pointermove", (event) => {
         if (!drawing) return;
+        event.preventDefault();
         const now = point(event);
         ctx.beginPath();
         ctx.moveTo(last.x, last.y);
@@ -601,10 +613,13 @@
       function end() {
         drawing = false;
         last = null;
+        document.body.classList.remove("drawing-active");
       }
 
       canvas.addEventListener("pointerup", end);
       canvas.addEventListener("pointercancel", end);
+      canvas.addEventListener("touchstart", blockPageScroll, { passive: false });
+      canvas.addEventListener("touchmove", blockPageScroll, { passive: false });
 
       return { ctx, clear: () => { fillWhite(ctx, canvas); onChange?.(); } };
     }
