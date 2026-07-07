@@ -972,7 +972,8 @@
     </main>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const SIZE = 10;
     const INPUTS = SIZE * SIZE;
@@ -1472,7 +1473,7 @@
         autoLink.click();
         autoLink.remove();
       } catch (error) {
-        status.textContent = "PDF 파일을 만들지 못했습니다. 새로고침 후 다시 눌러주세요.";
+        status.textContent = "PDF 파일을 만들지 못했습니다. 인터넷 연결을 확인하고 새로고침 후 다시 눌러주세요.";
         pdfReport?.remove();
         pdfReport = null;
         document.body.classList.remove("pdf-capture-mode");
