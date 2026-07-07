@@ -38,7 +38,6 @@
     html.drawing-active,
     body.drawing-active {
       overflow: hidden;
-      position: fixed;
       width: 100%;
     }
 
@@ -591,9 +590,9 @@
     body.pdf-capture-mode .app {
       display: flex;
       flex-direction: column;
-      width: 820px;
+      width: 390px;
       max-width: none;
-      padding: 14px;
+      padding: 10px;
       margin: 0 auto;
       background: #fff;
     }
@@ -604,7 +603,7 @@
     }
 
     body.pdf-capture-mode h1 {
-      font-size: 24px;
+      font-size: 20px;
     }
 
     body.pdf-capture-mode .subtitle {
@@ -612,9 +611,10 @@
     }
 
     body.pdf-capture-mode .stats {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr 1fr;
       margin-top: 8px;
       min-width: 0;
+      gap: 5px;
     }
 
     body.pdf-capture-mode .stat {
@@ -628,7 +628,7 @@
     body.pdf-capture-mode main {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     body.pdf-capture-mode .student-sheet {
@@ -647,27 +647,27 @@
     }
 
     body.pdf-capture-mode .section-body {
-      padding: 10px;
-    }
-
-    body.pdf-capture-mode .draw-wrap {
-      max-width: 240px;
       padding: 8px;
     }
 
+    body.pdf-capture-mode .draw-wrap {
+      max-width: 190px;
+      padding: 6px;
+    }
+
     body.pdf-capture-mode canvas.draw {
-      width: 220px;
-      max-width: 220px;
+      width: 170px;
+      max-width: 170px;
     }
 
     body.pdf-capture-mode .matrix-area,
     body.pdf-capture-mode .result {
-      grid-template-columns: 110px 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 7px;
     }
 
     body.pdf-capture-mode .matrix {
-      width: 110px;
+      width: 105px;
     }
 
     body.pdf-capture-mode .binary-text {
@@ -677,8 +677,8 @@
     }
 
     body.pdf-capture-mode .heat-grid {
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
     }
 
     body.pdf-capture-mode .heat-card {
@@ -691,19 +691,19 @@
     }
 
     body.pdf-capture-mode .phone-group {
-      grid-template-columns: repeat(var(--slots), 70px);
+      grid-template-columns: repeat(var(--slots), 58px);
       justify-content: start;
     }
 
     body.pdf-capture-mode .phone-slot canvas,
     body.pdf-capture-mode .slot canvas {
-      width: 70px;
-      height: 70px;
+      width: 58px;
+      height: 58px;
     }
 
     body.pdf-capture-mode .answer-grid {
       grid-template-columns: 1fr;
-      gap: 8px;
+      gap: 7px;
     }
 
     body.pdf-capture-mode .print-answer {
@@ -881,7 +881,6 @@
       if (activeDrawingCanvas) return;
       activeDrawingCanvas = canvas;
       lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      document.body.style.top = `-${lockedScrollY}px`;
       document.documentElement.classList.add("drawing-active");
       document.body.classList.add("drawing-active");
     }
@@ -891,7 +890,6 @@
       activeDrawingCanvas = null;
       document.documentElement.classList.remove("drawing-active");
       document.body.classList.remove("drawing-active");
-      document.body.style.top = "";
       window.scrollTo(0, lockedScrollY);
     }
 
@@ -922,6 +920,7 @@
       ctx.strokeStyle = "#111";
       let drawing = false;
       let last = null;
+      let activePointerId = null;
 
       function point(event) {
         const rect = canvas.getBoundingClientRect();
@@ -936,8 +935,10 @@
       }
 
       canvas.addEventListener("pointerdown", (event) => {
+        if (!event.isPrimary || activePointerId !== null) return;
         event.preventDefault();
-        canvas.setPointerCapture(event.pointerId);
+        activePointerId = event.pointerId;
+        canvas.setPointerCapture?.(event.pointerId);
         lockPageScroll(canvas);
         drawing = true;
         last = point(event);
@@ -949,20 +950,26 @@
       });
 
       canvas.addEventListener("pointermove", (event) => {
-        if (!drawing) return;
+        if (!drawing || event.pointerId !== activePointerId) return;
         event.preventDefault();
-        const now = point(event);
-        ctx.beginPath();
-        ctx.moveTo(last.x, last.y);
-        ctx.lineTo(now.x, now.y);
-        ctx.stroke();
-        last = now;
+        const events = typeof event.getCoalescedEvents === "function" ? event.getCoalescedEvents() : [event];
+        for (const moveEvent of events) {
+          const now = point(moveEvent);
+          const mid = { x: (last.x + now.x) / 2, y: (last.y + now.y) / 2 };
+          ctx.beginPath();
+          ctx.moveTo(last.x, last.y);
+          ctx.quadraticCurveTo(last.x, last.y, mid.x, mid.y);
+          ctx.stroke();
+          last = now;
+        }
         onChange?.();
       });
 
-      function end() {
+      function end(event) {
+        if (event?.pointerId !== undefined && event.pointerId !== activePointerId) return;
         drawing = false;
         last = null;
+        activePointerId = null;
         unlockPageScroll(canvas);
       }
 
@@ -1270,7 +1277,7 @@
               useCORS: true,
               scrollX: 0,
               scrollY: 0,
-              windowWidth: 850
+              windowWidth: 420
             },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["css", "legacy"], avoid: ["section", ".student-sheet"] }
