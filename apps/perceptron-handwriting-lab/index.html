@@ -1263,9 +1263,15 @@
       status.textContent = "";
       document.title = cleanName.replace(/\.pdf$/i, "");
       document.body.classList.add("pdf-capture-mode");
+      const app = document.querySelector(".app");
+      const studentSheet = document.querySelector(".student-sheet");
+      const originalStudentParent = studentSheet.parentNode;
+      const originalStudentNext = studentSheet.nextSibling;
 
       try {
         if (!window.html2pdf) throw new Error("pdf-library-not-ready");
+        app.insertBefore(studentSheet, app.firstChild);
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         const worker = html2pdf()
           .set({
             margin: 8,
@@ -1295,6 +1301,11 @@
         status.textContent = "PDF 파일 만들기가 막혀서 인쇄 저장 화면을 엽니다.";
         window.print();
       } finally {
+        if (originalStudentNext && originalStudentNext.parentNode === originalStudentParent) {
+          originalStudentParent.insertBefore(studentSheet, originalStudentNext);
+        } else {
+          originalStudentParent.appendChild(studentSheet);
+        }
         document.body.classList.remove("pdf-capture-mode");
         document.title = originalTitle;
         saveButton.disabled = false;
