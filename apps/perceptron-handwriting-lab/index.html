@@ -806,6 +806,10 @@
       display: block;
       min-height: 30px;
       padding: 8px;
+      height: auto;
+      white-space: pre-wrap;
+      overflow: visible;
+      word-break: break-word;
     }
 
     .pdf-report .draw-wrap {
@@ -1370,9 +1374,10 @@
       const status = document.getElementById("pdfStatus");
       link.href = latestPdfUrl;
       link.download = fileName;
+      link.target = "_blank";
       link.style.display = "inline";
-      link.textContent = `${fileName} 다시 열기`;
-      status.textContent = "저장이 바로 보이지 않으면 위 링크를 눌러 다운로드하거나 공유/파일 저장을 선택하세요.";
+      link.textContent = `${fileName} 다운로드`;
+      status.textContent = "파일 다운로드를 시작했습니다. 저장창이 안 보이면 위 다운로드 링크를 한 번 더 누르세요.";
     }
 
     function cloneWithCanvas(source) {
@@ -1426,7 +1431,7 @@
       let pdfReport = null;
 
       try {
-        if (!window.html2pdf || !window.html2canvas) throw new Error("pdf-library-not-ready");
+        if (!window.html2canvas) throw new Error("pdf-library-not-ready");
         pdfReport = buildPdfReport();
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         const canvas = await html2canvas(pdfReport, {
@@ -1467,11 +1472,10 @@
         autoLink.click();
         autoLink.remove();
       } catch (error) {
-        status.textContent = "PDF 파일 만들기가 막혀서 인쇄 저장 화면을 엽니다.";
+        status.textContent = "PDF 파일을 만들지 못했습니다. 새로고침 후 다시 눌러주세요.";
         pdfReport?.remove();
         pdfReport = null;
         document.body.classList.remove("pdf-capture-mode");
-        window.print();
       } finally {
         pdfReport?.remove();
         document.body.classList.remove("pdf-capture-mode");
