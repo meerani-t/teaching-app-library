@@ -723,6 +723,130 @@
     body.pdf-capture-mode .print-answer {
       display: block;
     }
+
+    body.pdf-capture-mode > .app {
+      display: none !important;
+    }
+
+    .pdf-report {
+      width: 390px;
+      max-width: none;
+      padding: 10px;
+      background: #fff;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    .pdf-report header,
+    .pdf-report main {
+      display: block;
+    }
+
+    .pdf-report header {
+      margin: 0 0 8px;
+    }
+
+    .pdf-report h1 {
+      font-size: 20px;
+    }
+
+    .pdf-report .subtitle {
+      font-size: 12px;
+    }
+
+    .pdf-report .stats {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5px;
+      min-width: 0;
+      margin-top: 8px;
+    }
+
+    .pdf-report .stat {
+      padding: 7px;
+    }
+
+    .pdf-report .stat b {
+      font-size: 18px;
+    }
+
+    .pdf-report section {
+      width: 100%;
+      margin-bottom: 8px;
+      box-shadow: none;
+      break-inside: avoid;
+    }
+
+    .pdf-report section > h2 {
+      padding: 8px 10px;
+      font-size: 15px;
+    }
+
+    .pdf-report .section-body {
+      padding: 8px;
+    }
+
+    .pdf-report .answer-grid,
+    .pdf-report .matrix-area,
+    .pdf-report .result {
+      grid-template-columns: 1fr;
+      gap: 7px;
+    }
+
+    .pdf-report .no-print,
+    .pdf-report input,
+    .pdf-report textarea {
+      display: none !important;
+    }
+
+    .pdf-report .print-answer {
+      display: block;
+      min-height: 30px;
+      padding: 8px;
+    }
+
+    .pdf-report .draw-wrap {
+      max-width: 190px;
+      padding: 6px;
+    }
+
+    .pdf-report canvas.draw {
+      width: 170px;
+      max-width: 170px;
+    }
+
+    .pdf-report .matrix {
+      width: 105px;
+    }
+
+    .pdf-report .binary-text {
+      max-height: none;
+      font-size: 10px;
+      overflow: visible;
+    }
+
+    .pdf-report .heat-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    .pdf-report .heat-card {
+      padding: 6px;
+      break-inside: avoid;
+    }
+
+    .pdf-report .phone-grid {
+      gap: 8px;
+    }
+
+    .pdf-report .phone-group {
+      grid-template-columns: repeat(var(--slots), 58px);
+      justify-content: start;
+    }
+
+    .pdf-report .slot canvas {
+      width: 58px;
+      height: 58px;
+    }
   </style>
 </head>
 <body>
@@ -1247,6 +1371,37 @@
       status.textContent = "저장이 바로 보이지 않으면 위 링크를 눌러 다운로드하거나 공유/파일 저장을 선택하세요.";
     }
 
+    function cloneWithCanvas(source) {
+      const clone = source.cloneNode(true);
+      const sourceCanvases = source.querySelectorAll("canvas");
+      const cloneCanvases = clone.querySelectorAll("canvas");
+      sourceCanvases.forEach((sourceCanvas, index) => {
+        const cloneCanvas = cloneCanvases[index];
+        if (!cloneCanvas) return;
+        cloneCanvas.width = sourceCanvas.width;
+        cloneCanvas.height = sourceCanvas.height;
+        cloneCanvas.getContext("2d").drawImage(sourceCanvas, 0, 0);
+      });
+      return clone;
+    }
+
+    function buildPdfReport() {
+      const report = document.createElement("div");
+      report.className = "pdf-report";
+      const main = document.querySelector("main");
+      const header = document.querySelector("header");
+      const studentSheet = document.querySelector(".student-sheet");
+
+      report.appendChild(cloneWithCanvas(studentSheet));
+      report.appendChild(cloneWithCanvas(header));
+      [...main.children].forEach((section) => {
+        if (section.classList.contains("student-sheet")) return;
+        report.appendChild(cloneWithCanvas(section));
+      });
+      document.body.appendChild(report);
+      return report;
+    }
+
     async function savePracticePdf() {
       syncPrintAnswers();
       const name = document.getElementById("answerName").value.trim();
@@ -1263,14 +1418,11 @@
       status.textContent = "";
       document.title = cleanName.replace(/\.pdf$/i, "");
       document.body.classList.add("pdf-capture-mode");
-      const app = document.querySelector(".app");
-      const studentSheet = document.querySelector(".student-sheet");
-      const originalStudentParent = studentSheet.parentNode;
-      const originalStudentNext = studentSheet.nextSibling;
+      let pdfReport = null;
 
       try {
         if (!window.html2pdf) throw new Error("pdf-library-not-ready");
-        app.insertBefore(studentSheet, app.firstChild);
+        pdfReport = buildPdfReport();
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         const worker = html2pdf()
           .set({
@@ -1288,7 +1440,7 @@
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["css", "legacy"], avoid: ["section", ".student-sheet"] }
           })
-          .from(document.querySelector(".app"));
+          .from(pdfReport);
         const pdfBlob = await worker.outputPdf("blob");
         showPdfLink(pdfBlob, cleanName);
         const autoLink = document.createElement("a");
@@ -1301,11 +1453,7 @@
         status.textContent = "PDF 파일 만들기가 막혀서 인쇄 저장 화면을 엽니다.";
         window.print();
       } finally {
-        if (originalStudentNext && originalStudentNext.parentNode === originalStudentParent) {
-          originalStudentParent.insertBefore(studentSheet, originalStudentNext);
-        } else {
-          originalStudentParent.appendChild(studentSheet);
-        }
+        pdfReport?.remove();
         document.body.classList.remove("pdf-capture-mode");
         document.title = originalTitle;
         saveButton.disabled = false;
