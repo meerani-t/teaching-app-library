@@ -729,6 +729,10 @@
     }
 
     .pdf-report {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 9999;
       width: 390px;
       max-width: none;
       padding: 10px;
@@ -1388,6 +1392,7 @@
     function buildPdfReport() {
       const report = document.createElement("div");
       report.className = "pdf-report";
+      report.setAttribute("aria-hidden", "true");
       const main = document.querySelector("main");
       const header = document.querySelector("header");
       const studentSheet = document.querySelector(".student-sheet");
@@ -1421,27 +1426,39 @@
       let pdfReport = null;
 
       try {
-        if (!window.html2pdf) throw new Error("pdf-library-not-ready");
+        if (!window.html2pdf || !window.html2canvas) throw new Error("pdf-library-not-ready");
         pdfReport = buildPdfReport();
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        const worker = html2pdf()
-          .set({
-            margin: 8,
-            filename: cleanName,
-            image: { type: "jpeg", quality: 0.96 },
-            html2canvas: {
-              scale: Math.min(2, window.devicePixelRatio || 1.5),
-              backgroundColor: "#ffffff",
-              useCORS: true,
-              scrollX: 0,
-              scrollY: 0,
-              windowWidth: 420
-            },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-            pagebreak: { mode: ["css", "legacy"], avoid: ["section", ".student-sheet"] }
-          })
-          .from(pdfReport);
-        const pdfBlob = await worker.outputPdf("blob");
+        const canvas = await html2canvas(pdfReport, {
+          scale: Math.min(2, window.devicePixelRatio || 1.5),
+          backgroundColor: "#ffffff",
+          useCORS: true,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: 420,
+          windowHeight: Math.max(pdfReport.scrollHeight + 40, 800)
+        });
+        if (!canvas.width || !canvas.height) throw new Error("empty-pdf-canvas");
+        const jsPdfClass = window.jspdf?.jsPDF || window.jsPDF;
+        if (!jsPdfClass) throw new Error("pdf-engine-not-ready");
+        const pdf = new jsPdfClass("p", "mm", "a4");
+        const margin = 8;
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imageWidth = pageWidth - margin * 2;
+        const imageHeight = canvas.height * imageWidth / canvas.width;
+        const imageData = canvas.toDataURL("image/jpeg", 0.96);
+        let remainingHeight = imageHeight;
+        let y = margin;
+        pdf.addImage(imageData, "JPEG", margin, y, imageWidth, imageHeight);
+        remainingHeight -= pageHeight - margin * 2;
+        while (remainingHeight > 0) {
+          pdf.addPage();
+          y = margin - (imageHeight - remainingHeight);
+          pdf.addImage(imageData, "JPEG", margin, y, imageWidth, imageHeight);
+          remainingHeight -= pageHeight - margin * 2;
+        }
+        const pdfBlob = pdf.output("blob");
         showPdfLink(pdfBlob, cleanName);
         const autoLink = document.createElement("a");
         autoLink.href = latestPdfUrl;
@@ -1451,6 +1468,9 @@
         autoLink.remove();
       } catch (error) {
         status.textContent = "PDF 파일 만들기가 막혀서 인쇄 저장 화면을 엽니다.";
+        pdfReport?.remove();
+        pdfReport = null;
+        document.body.classList.remove("pdf-capture-mode");
         window.print();
       } finally {
         pdfReport?.remove();
