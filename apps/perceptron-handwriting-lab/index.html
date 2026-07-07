@@ -591,10 +591,124 @@
     body.pdf-capture-mode .app {
       display: flex;
       flex-direction: column;
+      width: 820px;
+      max-width: none;
+      padding: 14px;
+      margin: 0 auto;
+      background: #fff;
+    }
+
+    body.pdf-capture-mode header {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    body.pdf-capture-mode h1 {
+      font-size: 24px;
+    }
+
+    body.pdf-capture-mode .subtitle {
+      font-size: 12px;
+    }
+
+    body.pdf-capture-mode .stats {
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 8px;
+      min-width: 0;
+    }
+
+    body.pdf-capture-mode .stat {
+      padding: 7px;
+    }
+
+    body.pdf-capture-mode .stat b {
+      font-size: 18px;
+    }
+
+    body.pdf-capture-mode main {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     body.pdf-capture-mode .student-sheet {
       order: -1;
+    }
+
+    body.pdf-capture-mode section {
+      width: 100%;
+      box-shadow: none;
+      break-inside: avoid;
+    }
+
+    body.pdf-capture-mode section > h2 {
+      padding: 8px 10px;
+      font-size: 15px;
+    }
+
+    body.pdf-capture-mode .section-body {
+      padding: 10px;
+    }
+
+    body.pdf-capture-mode .draw-wrap {
+      max-width: 240px;
+      padding: 8px;
+    }
+
+    body.pdf-capture-mode canvas.draw {
+      width: 220px;
+      max-width: 220px;
+    }
+
+    body.pdf-capture-mode .matrix-area,
+    body.pdf-capture-mode .result {
+      grid-template-columns: 110px 1fr;
+      gap: 10px;
+    }
+
+    body.pdf-capture-mode .matrix {
+      width: 110px;
+    }
+
+    body.pdf-capture-mode .binary-text {
+      max-height: none;
+      font-size: 10px;
+      overflow: visible;
+    }
+
+    body.pdf-capture-mode .heat-grid {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    body.pdf-capture-mode .heat-card {
+      padding: 6px;
+      break-inside: avoid;
+    }
+
+    body.pdf-capture-mode .phone-grid {
+      gap: 8px;
+    }
+
+    body.pdf-capture-mode .phone-group {
+      grid-template-columns: repeat(var(--slots), 70px);
+      justify-content: start;
+    }
+
+    body.pdf-capture-mode .phone-slot canvas,
+    body.pdf-capture-mode .slot canvas {
+      width: 70px;
+      height: 70px;
+    }
+
+    body.pdf-capture-mode .answer-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    body.pdf-capture-mode .print-answer {
+      min-height: 30px;
+      padding: 8px;
     }
 
     body.pdf-capture-mode .no-print {
@@ -1156,7 +1270,7 @@
               useCORS: true,
               scrollX: 0,
               scrollY: 0,
-              windowWidth: document.documentElement.scrollWidth
+              windowWidth: 850
             },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
             pagebreak: { mode: ["css", "legacy"], avoid: ["section", ".student-sheet"] }
