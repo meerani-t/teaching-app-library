@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>손실함수 스프레드시트 실험실</title>
+<style>
+:root{--bg:#f5f7fb;--line:#cbd5e1;--text:#172033;--muted:#64748b;--blue:#2563eb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",system-ui,sans-serif}
+header{padding:18px 22px;background:linear-gradient(135deg,#1e40af,#2563eb,#0ea5e9);color:white}header h1{margin:0 0 5px;font-size:25px}header p{margin:0;opacity:.92}
+main{max-width:1380px;margin:16px auto;padding:0 14px 30px}.grid{display:grid;grid-template-columns:minmax(680px,1fr) 390px;gap:14px;align-items:start}
+.card{background:white;border:1px solid #dbe3ef;border-radius:14px;padding:14px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:15px 0 8px}label{display:block;font-size:13px;color:#334155;margin:8px 0 4px}
+input,select,button,textarea{font:inherit}input[type=text],input[type=number],select,textarea{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:white}.math-editor{width:100%;min-height:42px;padding:9px 10px;border:2px solid #93c5fd;border-radius:8px;background:white;font-family:"Cambria Math","Times New Roman",serif;font-size:19px;line-height:1.25;outline:none}.math-editor:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}textarea{min-height:76px;resize:vertical}
+button{border:0;border-radius:8px;padding:8px 11px;font-weight:700;cursor:pointer;background:#e2e8f0;color:#0f172a}button.primary{background:var(--blue);color:white}button.good{background:#dcfce7;color:#166534}button.danger{background:#fee2e2;color:#991b1b}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.hint{font-size:12px;color:var(--muted);line-height:1.55}
+#datasetSelect{display:none}.start-overlay{position:fixed;inset:0;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}.start-box{background:white;border-radius:18px;padding:24px;max-width:620px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.28);text-align:center}.start-box h2{font-size:24px;margin-bottom:8px}.dataset-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.dataset-buttons button{padding:18px 8px;font-size:18px;background:#dbeafe;color:#1e3a8a;border:2px solid #93c5fd}.dataset-buttons button:hover{background:#2563eb;color:white}.dataset-chip{display:inline-block;padding:5px 10px;border-radius:999px;background:#e0f2fe;color:#075985;font-weight:800;font-size:13px;margin-bottom:8px}.seq-wrap{border:1px solid #dbe3ef;border-radius:10px;padding:10px;background:#f8fafc}.seq-input-row{display:grid;grid-template-columns:1fr auto;gap:8px}.symbol-buttons{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.symbol-buttons button{padding:6px 9px;background:#e0e7ff;color:#3730a3}.inline-editor{width:100%;height:36px;border:2px solid #2563eb;padding:5px;text-align:center;background:#fff}.loss-input-wrap{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin-top:8px}.loss-label{font-family:"Cambria Math","Times New Roman",serif;font-size:20px;font-weight:700;text-align:right}.loss-formula-input{height:42px;border:2px solid #93c5fd!important;font-family:"Cambria Math","Times New Roman",serif;font-size:17px}
+.sheet-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:white}table.sheet{border-collapse:collapse;min-width:620px;width:100%;table-layout:fixed}.sheet th,.sheet td{border:1px solid #cbd5e1;height:42px;text-align:center;position:relative}.sheet th{background:#eef2f7;font-size:12px}.sheet .rowhead{background:#eef2f7;width:44px}.sheet td{background:white;padding:0 5px;font-size:14px}.sheet td.data{background:#f8fafc}.sheet td.input{background:#fffdf5}.sheet td.selected{outline:3px solid #2563eb;outline-offset:-3px;z-index:1}.sheet td.ref{box-shadow:inset 0 0 0 3px #f59e0b;background:#fffbeb}.sheet td.error{color:#b91c1c;background:#fef2f2}.cell-formula{font-size:11px;color:#475569;word-break:break-all}.cell-value{font-weight:650}
+.mathout{font-family:"Cambria Math","Times New Roman",serif;background:white;border:1px solid #dbe3ef;border-radius:9px;padding:11px;min-height:46px;line-height:1.65;overflow:auto}.status{padding:9px 10px;border-radius:8px;background:#eff6ff;color:#1e3a8a;font-size:13px;margin-top:8px}.status.ok{background:#dcfce7;color:#166534}.status.bad{background:#fee2e2;color:#991b1b}
+canvas{display:block;width:100%;border:1px solid #dbe3ef;border-radius:10px;background:white}#scatterCanvas{height:300px;margin-top:8px}#lossCanvas{height:300px}.prediction-box{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:start;margin:12px 0}.prediction-box textarea{min-height:82px}.section-note{padding:10px;border-radius:9px;background:#eff6ff;color:#1e3a8a;font-size:13px;line-height:1.55}.smalltable{width:100%;border-collapse:collapse;font-size:12px}.smalltable th,.smalltable td{border:1px solid #dbe3ef;padding:6px;text-align:center}.smalltable th{background:#eff6ff}.scroll{max-height:250px;overflow:auto}.student-card{margin-bottom:14px}.student-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.save-note{margin-top:8px;padding:9px 10px;border-radius:8px;background:#f0fdf4;color:#166534;font-size:12px;line-height:1.5}@media(max-width:700px){.student-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:1050px){.grid{grid-template-columns:1fr}}@media print{header,.no-print{display:none!important}body{background:white}.card{box-shadow:none}.grid{display:block}}
+</style>
+</head>
+<body>
+<div id="startOverlay" class="start-overlay"><div class="start-box"><div class="dataset-chip">수행평가 자료 선택</div><h2>데이터 번호를 선택하세요</h2><p class="hint">1번부터 6번 중 하나를 선택하면 해당 데이터로 수행평가가 시작됩니다.</p><div class="dataset-buttons"><button data-set="A">1번</button><button data-set="B">2번</button><button data-set="C">3번</button><button data-set="D">4번</button><button data-set="E">5번</button><button data-set="F">6번</button></div></div></div>
+<header><h1>손실함수와 최적 추세선 구하기 수행평가</h1><p>창원대암고 3학년 인공지능 수학</p></header>
+<main>
+<section class="card student-card">
+  <h2>학생 정보</h2>
+  <div class="student-grid">
+    <div><label>학년</label><input id="studentGrade" type="text" inputmode="numeric" placeholder="학년"></div>
+    <div><label>반</label><input id="studentClass" type="text" inputmode="numeric" placeholder="반"></div>
+    <div><label>번호</label><input id="studentNumber" type="text" inputmode="numeric" placeholder="번호"></div>
+    <div><label>이름</label><input id="studentName" type="text" placeholder="이름"></div>
+    <div><label>선택 데이터 번호</label><input id="initialDatasetNumber" type="text" readonly placeholder="자동 기록"></div>
+  </div>
+  <div class="save-note">학년·반·번호·이름을 모두 입력해야 제출용 HTML 파일을 저장할 수 있습니다. 처음 선택한 데이터 번호는 자동으로 기록됩니다.</div>
+</section>
+<div class="grid">
+<section class="card">
+<select id="datasetSelect" aria-hidden="true"></select>
+<h2>1. 최적 추세선 예측하기</h2>
+<div class="section-note">아래 자료의 산점도를 관찰하고, 원점을 지나는 추세선 <b>ŷ = a·x</b>의 최적 기울기를 먼저 예상하세요.</div>
+<canvas id="scatterCanvas"></canvas>
+<div class="prediction-box">
+  <div><label>예상 기울기 a</label><input id="predictedSlope" type="number" step="any" placeholder="예: 2"></div>
+  <div><label>그렇게 예상한 이유</label><textarea id="predictionReason" placeholder="점들의 분포와 x, y의 변화 관계를 근거로 작성하세요."></textarea>
+<div class="btns no-print" style="margin-top:10px">
+  <button id="confirmPrediction" class="primary">예상 추세선 확인</button>
+</div>
+<div id="predictionStatus" class="status">예상 기울기를 정한 뒤 예상 추세선을 한 번만 확인할 수 있습니다.</div></div>
+</div>
+<p class="hint">B열은 x, C열은 실제값 y입니다. D열과 E열의 셀을 <b>더블클릭</b>하여 수식을 작성하세요. 수식 편집 중 다른 셀을 클릭하면 셀 주소가 수식의 현재 커서 위치에 삽입되고, 곧바로 이어서 연산 기호나 문자를 입력할 수 있습니다.</p>
+<h2 style="margin-top:18px">2. 손실함수 구하기</h2>
+<div class="sheet-wrap"><table class="sheet" id="sheet"></table></div>
+<div class="btns no-print"><button id="fillDownD">C2 아래로 채우기</button><button id="fillDownE">D2 아래로 채우기</button><button id="clearFormulas" class="danger">수식 지우기</button></div>
+<h3>손실함수 L(a)</h3>
+<div class="loss-input-wrap"><div class="loss-label">L(a) =</div><input id="lossFormulaInput" class="loss-formula-input" type="text" placeholder=""></div><div class="btns no-print"><button id="showSymbolic" class="good">손실함수 전개·정리</button></div>
+<h3>전개·정리된 손실함수</h3><div id="expandedLoss" class="mathout">아직 정리하지 않았습니다.</div>
+<h2 style="margin-top:18px">3. 미분으로 최적 추세선 구하기</h2>
+<h3>직접 미분한 식 입력</h3><input id="derivativeInput" type="text" placeholder=""><p class="hint">학생이 직접 미분한 식을 입력합니다. 입력한 식은 별도로 정답 확인하지 않고 경사하강 계산에 그대로 사용됩니다.</p>
+<h3>정확한 최적값(a값)</h3><input id="optimumInput" type="text" inputmode="text" placeholder=""><div id="optimumDecimal" class="status" style="display:none"></div><p class="hint">정수, 소수 또는 기약분수 형태로 입력할 수 있습니다.</p>
+</section>
+<aside class="card"><h2>4. 경사하강법으로 최적 추세선 구하기</h2>
+<input id="aValue" type="hidden" value="1">
+<div class="row">
+  <div><label>초깃값 a₀</label><input id="a0" type="number" value="0" readonly></div>
+  <div><label>학습률 r</label><input id="learningRate" type="number" value="0" min="0" step="0.01"></div>
+</div>
+<div class="row">
+  <div><label>반복 횟수</label><input id="iterations" type="number" value="10" readonly></div>
+  <div></div>
+</div>
+<div class="status" id="rateGuide">초깃값은 a₀=0으로 고정되어 있습니다. 학습률 r을 직접 정하고 경사하강을 실행하여 적절한 값을 찾아보세요.</div>
+
+<div class="btns no-print"><button id="runGD" class="primary">경사하강 실행</button></div>
+
+<div id="gdGraphStage" style="display:none">
+  <h3>손실함수 그래프와 이동 경로</h3>
+  <canvas id="lossCanvas"></canvas>
+</div>
+
+<div id="finalCalcStage" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid #dbe3ef">
+  <h3>수열의 귀납적 정의</h3>
+  <div class="seq-wrap">
+    <div class="seq-input-row">
+      <div id="recurrenceInput" class="math-editor" contenteditable="true" aria-label="수열의 귀납적 정의 입력"></div>
+      <button id="clearRecurrence" class="danger no-print">지우기</button>
+    </div>
+    <div class="symbol-buttons no-print">
+      <button data-insert="a_n">aₙ</button>
+      <button data-insert="a_(n+1)">aₙ₊₁</button>
+    </div>
+    <p class="hint">aₙ과 aₙ₊₁은 버튼으로 입력하고, 선택한 학습률 r과 미분식을 직접 입력하여 귀납적 정의를 완성하세요.</p>
+  </div>
+
+  <h3>수열의 귀납적 정의로부터 직접 계산</h3>
+  <p class="hint">위 귀납적 정의를 이용하여 a₁, a₂를 직접 구해 입력하세요. 정수, 소수 또는 분수로 입력할 수 있습니다.</p>
+  <div class="row">
+    <input id="manualA1" type="text" placeholder="a₁">
+    <input id="manualA2" type="text" placeholder="a₂">
+  </div>
+  <div id="manualStatus" class="status">귀납적 정의와 a₁, a₂를 모두 작성하면 반복 계산표를 확인할 수 있습니다.</div>
+  <div class="btns no-print"><button id="showCalcTable" class="primary" disabled>반복 계산표 보기</button></div>
+
+  <div id="calcTableStage" style="display:none">
+    <h3>반복 계산표</h3>
+    <div class="scroll">
+      <table class="smalltable">
+        <thead><tr><th>n</th><th>aₙ</th><th>L'(aₙ)</th><th>변화량</th><th>L(aₙ)</th></tr></thead>
+        <tbody id="gdRows"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<h3>경사하강법으로 찾은 최적 추세선</h3>
+<label for="optimizedTrendline">최적 추세선 식</label>
+<input id="optimizedTrendline" type="text" placeholder="ŷ = ">
+<h2>6. 분석내용 기록</h2>
+<label for="analysisText1"><b>1)</b> 최적 추세선 식을 위와 같이 찾은 이유에 대해서 손실함수의 변화와 연관지어 설명하시오.</label>
+<textarea id="analysisText1" placeholder="손실함수 값이 어떻게 변화하며 최적 추세선에 도달하는지 설명하세요."></textarea>
+<label for="analysisText2" style="margin-top:12px"><b>2)</b> 최적 추세선의 예상 기울기 a, 미분을 통해 찾은 기울기 a, 경사하강법으로 찾은 기울기 a를 비교하여 설명하시오.</label>
+<textarea id="analysisText2" placeholder="세 가지 방법으로 얻은 기울기 a를 비교하여 설명하세요."></textarea>
+</aside></div>
+
+<section class="card" id="submissionSaveArea" style="margin-top:14px">
+<h2>작성 내용 저장</h2>
+<div class="btns no-print"><button id="saveHtmlBtn" class="good">작성 내용 HTML 저장</button><button id="printBtn">인쇄·PDF 저장</button><button id="resetAll" class="danger">전체 초기화</button></div>
+<div id="saveStatus" class="status">학생 정보를 모두 입력하면 HTML 저장이 가능합니다.</div>
+</section>
+
+</main>
+<script>
+(()=>{
+const datasets={
+ "A":[[1,1.6],[2,2.6],[3,4.4],[5,6.8],[6,8.2],[9,12.8]],
+ "B":[[1,1.6],[2,2.6],[3,4.4],[5,6.8],[6,8.2],[9,12.8]],
+ "C":[[1,1.6],[2,2.6],[3,4.4],[5,6.8],[6,8.2],[9,12.8]],
+ "D":[[1,1.6],[2,2.6],[3,4.4],[5,6.8],[6,8.2],[9,12.8]],
+ "E":[[1,1.6],[2,2.6],[3,4.4],[5,6.8],[6,8.2],[9,12.8]],
+ "F":[[1,1.6],[2,2.6],[3,4.4],[5,6.8],[6,8.2],[9,12.8]]
+}
+const $=id=>document.getElementById(id),cols=['A','B','C','D'];let selected='C2',editing=false,cells={},polyLoss=null,gdHistory=[];
+function initDatasets(){Object.keys(datasets).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=k;$('datasetSelect').appendChild(o)});$('datasetSelect').onchange=()=>loadDataset($('datasetSelect').value)}
+function buildSheet(){let h='<tr><th class="rowhead"></th>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';for(let r=1;r<=7;r++){h+=`<tr><th class="rowhead">${r}</th>`;for(const c of cols)h+=`<td data-cell="${c}${r}"></td>`;h+='</tr>'}$('sheet').innerHTML=h;document.querySelectorAll('#sheet td').forEach(td=>{td.addEventListener('mousedown',e=>{if(editing&&window.activeEditor&&td.dataset.cell!==selected){e.preventDefault();insertReference(td.dataset.cell);flashRef(td.dataset.cell)}});td.addEventListener('click',e=>{if(!(editing&&window.activeEditor))onCellClick(td.dataset.cell)});td.addEventListener('dblclick',e=>{e.preventDefault();startEdit(td.dataset.cell)})})}
+function loadDataset(name){
+  cells={};let data=datasets[name];
+  cells.A1={value:'x'};cells.B1={value:'실제값 y'};cells.C1={value:'예측값'};cells.D1={value:'제곱오차'};
+  data.forEach((p,i)=>{let r=i+2;cells[`A${r}`]={value:p[0]};cells[`B${r}`]={value:p[1]};cells[`C${r}`]={formula:''};cells[`D${r}`]={formula:''}});
+  polyLoss=null;gdHistory=[];
+  renderSheet();selectCell('C2');
+  $('lossFormulaInput').value='';$('expandedLoss').textContent='아직 정리하지 않았습니다.';
+  $('gdRows').innerHTML='';$('predictedSlope').value='';$('predictionReason').value='';$('predictedSlope').disabled=false;$('predictionReason').disabled=false;$('confirmPrediction').disabled=false;window.previewedSlope=null;$('predictionStatus').textContent='예상 기울기를 정한 뒤 예상 추세선을 한 번만 확인할 수 있습니다.';$('predictionStatus').className='status';window.predictionLocked=false;window.previewedSlope=null;
+  $('derivativeInput').value='';$('optimumInput').value='';$('optimumDecimal').style.display='none';$('optimumDecimal').textContent='';
+  $('optimizedTrendline').value='';$('analysisText1').value='';$('analysisText2').value='';
+  $('a0').value=0;$('learningRate').value=0;$('iterations').value=10;
+  $('recurrenceInput').textContent='';$('recurrenceInput').contentEditable='true';
+  $('manualA1').value='';$('manualA2').value='';$('manualA1').disabled=false;$('manualA2').disabled=false;
+  document.querySelectorAll('[data-insert]').forEach(b=>b.disabled=false);$('clearRecurrence').disabled=false;
+  $('gdGraphStage').style.display='none';$('finalCalcStage').style.display='none';$('calcTableStage').style.display='none';
+  $('showCalcTable').disabled=true;$('learningRate').disabled=false;$('runGD').disabled=false;
+  $('manualStatus').textContent='귀납적 정의와 a₁, a₂를 모두 작성하면 반복 계산표를 확인할 수 있습니다.';$('manualStatus').className='status';
+  $('rateGuide').textContent='초깃값은 a₀=0으로 고정되어 있습니다. 학습률 r을 직접 정하고 경사하강을 실행하여 적절한 값을 찾아보세요.';$('rateGuide').className='status';
+  drawScatter();
+}
+function renderSheet(mode='symbolic'){document.querySelectorAll('#sheet td').forEach(td=>{let addr=td.dataset.cell,c=cells[addr]||{};td.className='';td.classList.add(['A','B','C'].includes(addr[0])?'data':'input');if(addr===selected)td.classList.add('selected');td.innerHTML='';if(c.formula){try{let text;if(mode==='numeric'){text=formatNum(evaluateCell(addr,+$('aValue').value,{}))}else{text=formatPoly(symbolicCell(addr,{}))}let d=document.createElement('div');d.className='cell-value';d.textContent=text;td.appendChild(d);td.title=c.formula}catch(e){td.classList.add('error');td.textContent='#오류';td.title=c.formula}}else if(c.value!==undefined)td.textContent=c.value})}
+function selectCell(addr){selected=addr;document.querySelectorAll('#sheet td').forEach(td=>td.classList.toggle('selected',td.dataset.cell===addr))}
+function startEdit(addr){if(['A','B'].includes(addr[0]))return;if(editing&&window.activeEditor&&selected!==addr){if(selected==='LOSS'){editing=false;window.activeEditor=null}else commitInline(selected,window.activeEditor.value)}selectCell(addr);editing=true;let td=document.querySelector(`[data-cell="${addr}"]`);td.innerHTML='';let inp=document.createElement('input');inp.className='inline-editor';inp.value=cells[addr]?.formula||'=';td.appendChild(inp);window.activeEditor=inp;requestAnimationFrame(()=>{inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length)});inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitInline(addr,inp.value)}if(e.key==='Escape'){editing=false;window.activeEditor=null;renderSheet();selectCell(addr)}})}
+function onCellClick(addr){if(editing&&window.activeEditor&&addr!==selected){insertReference(addr);flashRef(addr);return}selectCell(addr)}
+function insertReference(addr){let i=window.activeEditor;if(!i)return;let s=Number.isInteger(i.selectionStart)?i.selectionStart:i.value.length,e=Number.isInteger(i.selectionEnd)?i.selectionEnd:s;i.value=i.value.slice(0,s)+addr+i.value.slice(e);let p=s+addr.length;requestAnimationFrame(()=>{i.focus();i.setSelectionRange(p,p)})}
+function flashRef(addr){let td=document.querySelector(`[data-cell="${addr}"]`);td.classList.add('ref');setTimeout(()=>td.classList.remove('ref'),350)}
+function commitInline(addr,v){if(!cells[addr])cells[addr]={};cells[addr].formula=v.trim();editing=false;window.activeEditor=null;renderSheet();selectCell(addr)}
+function shiftFormula(f,d){return f.replace(/(\$?)([A-D])(\$?)(\d+)/g,(z,ac,c,ar,r)=>`${ac}${c}${ar}${ar?r:+r+d}`)}function fillDown(col){let f=cells[`${col}2`]?.formula;if(!f)return alert(`${col}2에 먼저 수식을 입력하세요.`);for(let r=3;r<=7;r++)cells[`${col}${r}`]={formula:shiftFormula(f,r-2)};renderSheet()}
+$('fillDownD').onclick=()=>fillDown('C');$('fillDownE').onclick=()=>fillDown('D');$('clearFormulas').onclick=()=>{for(let r=2;r<=7;r++){cells[`C${r}`]={formula:''};cells[`D${r}`]={formula:''}}polyLoss=null;$('lossFormulaInput').value='';renderSheet();selectCell('C2')};
+function pTrim(p){while(p.length>1&&Math.abs(p.at(-1))<1e-12)p.pop();return p}function pAdd(a,b){let n=Math.max(a.length,b.length),r=Array(n).fill(0);for(let i=0;i<n;i++)r[i]=(a[i]||0)+(b[i]||0);return pTrim(r)}function pNeg(a){return a.map(x=>-x)}function pSub(a,b){return pAdd(a,pNeg(b))}function pMul(a,b){let r=Array(a.length+b.length-1).fill(0);for(let i=0;i<a.length;i++)for(let j=0;j<b.length;j++)r[i+j]+=a[i]*b[j];return pTrim(r)}function pDiv(a,b){if(b.length!==1)throw Error('문자식으로 나눌 수 없습니다.');return a.map(x=>x/b[0])}function pPow(a,n){if(!Number.isInteger(n)||n<0||n>6)throw Error('지원하지 않는 거듭제곱입니다.');let r=[1];for(let i=0;i<n;i++)r=pMul(r,a);return r}function pDeriv(a){return a.length===1?[0]:a.slice(1).map((x,i)=>x*(i+1))}function pEval(p,x){return p.reduce((s,c,i)=>s+c*x**i,0)}function nearly(a,b,t=1e-6){return Math.abs(a-b)<=t*Math.max(1,Math.abs(a),Math.abs(b))}function formatNum(x){return !Number.isFinite(x)?String(x):(Math.abs(x)<1e-10?'0':(+x.toFixed(6)).toString())}
+function formatPoly(p){let t=[];for(let i=p.length-1;i>=0;i--){let c=p[i];if(Math.abs(c)<1e-10)continue;let sign=c<0?'-':'+',ac=Math.abs(c),body=i===0?formatNum(ac):(nearly(ac,1)?'':formatNum(ac)+'·')+'a'+(i===1?'':`^${i}`);t.push({sign,body})}return t.length?t.map((x,i)=>(i===0?(x.sign==='-'?'-':''):` ${x.sign} `)+x.body).join(''):'0'}
+function tokenize(s){s=s.replace(/\s+/g,'').replace(/^=/,'');let out=[],i=0;while(i<s.length){let ch=s[i];if(/[0-9.]/.test(ch)){let j=i+1;while(j<s.length&&/[0-9.]/.test(s[j]))j++;out.push({t:'num',v:+s.slice(i,j)});i=j}else if(/[A-Za-z$]/.test(ch)){let j=i+1;while(j<s.length&&/[A-Za-z0-9$]/.test(s[j]))j++;let w=s.slice(i,j).toUpperCase();out.push(w==='A'?{t:'var',v:'a'}:{t:'id',v:w});i=j}else if('+-*/^():,'.includes(ch)){out.push({t:ch,v:ch});i++}else throw Error('지원하지 않는 문자: '+ch)}return out}
+function parseAddr(a){let m=a.match(/^([A-D])(\d+)$/);return m?{c:m[1],r:+m[2]}:null}function rangeCells(s,e){let a=parseAddr(s),b=parseAddr(e),out=[];if(!a||!b)throw Error('범위가 올바르지 않습니다.');for(let ci=Math.min(cols.indexOf(a.c),cols.indexOf(b.c));ci<=Math.max(cols.indexOf(a.c),cols.indexOf(b.c));ci++)for(let r=Math.min(a.r,b.r);r<=Math.max(a.r,b.r);r++)out.push(cols[ci]+r);return out}
+function parser(formula,symbolic=true){let ts=tokenize(formula),pos=0,peek=()=>ts[pos],take=t=>{if(!peek()||peek().t!==t)throw Error(t+'가 필요합니다.');return ts[pos++]};function expr(){let v=term();while(peek()&&['+','-'].includes(peek().t)){let op=ts[pos++].t,w=term();v=op==='+'?(symbolic?pAdd(v,w):v+w):(symbolic?pSub(v,w):v-w)}return v}function term(){let v=power();while(peek()&&['*','/'].includes(peek().t)){let op=ts[pos++].t,w=power();v=op==='*'?(symbolic?pMul(v,w):v*w):(symbolic?pDiv(v,w):v/w)}return v}function power(){let v=unary();if(peek()&&peek().t==='^'){pos++;let n=unary(),nv=symbolic?n[0]:n;v=symbolic?pPow(v,nv):v**nv}return v}function unary(){if(peek()&&peek().t==='+'){pos++;return unary()}if(peek()&&peek().t==='-'){pos++;let v=unary();return symbolic?pNeg(v):-v}return atom()}function atom(){let t=peek();if(!t)throw Error('식이 끝났습니다.');if(t.t==='num'){pos++;return symbolic?[t.v]:t.v}if(t.t==='var'){pos++;return symbolic?[0,1]:+$('aValue').value}if(t.t==='('){pos++;let v=expr();take(')');return v}if(t.t==='id'){pos++;let id=t.v;if((id==='SUM'||id==='AVERAGE')&&peek()&&peek().t==='('){pos++;let s=take('id').v;take(':');let e=take('id').v;take(')');let vals=rangeCells(s,e).map(a=>symbolic?symbolicCell(a,{}):evaluateCell(a,+$('aValue').value,{})),sum=vals.reduce((q,v)=>symbolic?pAdd(q,v):q+v,symbolic?[0]:0);return id==='AVERAGE'?(symbolic?pDiv(sum,[vals.length]):sum/vals.length):sum}if(/^[A-D]\d+$/.test(id))return symbolic?symbolicCell(id,{}):evaluateCell(id,+$('aValue').value,{});throw Error('알 수 없는 이름: '+id)}throw Error('식을 해석할 수 없습니다.')}let v=expr();if(pos!==ts.length)throw Error('수식 끝부분을 확인하세요.');return v}
+function symbolicCell(addr,stack={}){if(stack[addr])throw Error('순환 참조입니다.');stack[addr]=1;let c=cells[addr]||{},v;if(c.formula)v=parser(c.formula,true);else if(typeof c.value==='number')v=[c.value];else throw Error(addr+'에 수치나 수식이 없습니다.');delete stack[addr];return v}
+function evaluateCell(addr,aVal,stack={}){if(stack[addr])throw Error('순환 참조입니다.');stack[addr]=1;let c=cells[addr]||{},v;if(c.formula){let old=$('aValue').value;$('aValue').value=aVal;v=parser(c.formula,false);$('aValue').value=old}else if(typeof c.value==='number')v=c.value;else throw Error(addr+'가 비어 있습니다.');delete stack[addr];return v}
+
+const lossEditor=$('lossFormulaInput');
+lossEditor.addEventListener('focus',()=>{editing=true;selected='LOSS';window.activeEditor=lossEditor;document.querySelectorAll('#sheet td').forEach(td=>td.classList.remove('selected'));});
+lossEditor.addEventListener('mousedown',()=>{editing=true;selected='LOSS';window.activeEditor=lossEditor;});
+lossEditor.addEventListener('keydown',e=>{if(e.key==='Escape'){editing=false;window.activeEditor=null;lossEditor.blur();}if(e.key==='Enter'){e.preventDefault();editing=false;window.activeEditor=null;$('showSymbolic').click();}});
+lossEditor.addEventListener('blur',()=>{setTimeout(()=>{if(window.activeEditor===lossEditor){editing=false;window.activeEditor=null}},0)});
+$('showSymbolic').onclick=()=>{try{let formula=$('lossFormulaInput').value.trim();if(!formula)throw Error('손실함수를 입력하세요.');let p=parser(formula,true);if(p.length>3)throw Error('손실함수가 이차식을 넘습니다.');polyLoss=p;$('expandedLoss').textContent='L(a) = '+formatPoly(p);drawGraph()}catch(e){$('expandedLoss').textContent='오류: '+e.message}};
+function parseFractionValue(text){let t=String(text).trim();if(!t)throw Error('값을 입력하세요.');if(/^[-+]?\d+(?:\.\d+)?$/.test(t))return Number(t);let m=t.match(/^([-+]?\d+(?:\.\d+)?)\s*\/\s*([-+]?\d+(?:\.\d+)?)$/);if(!m||Number(m[2])===0)throw Error('정수, 소수 또는 분수 형태로 입력하세요.');return Number(m[1])/Number(m[2]);}
+
+function updateOptimumDecimal(){
+  const raw=$('optimumInput').value.trim();
+  const box=$('optimumDecimal');
+  if(!raw){
+    box.style.display='none';
+    box.textContent='';
+    return;
+  }
+  try{
+    const value=parseFractionValue(raw);
+    if(Number.isFinite(value)){
+      box.style.display='block';
+      box.className='status ok';
+      box.textContent='대략적인 소수값: ≈ '+value.toFixed(3);
+    }else{
+      box.style.display='none';
+      box.textContent='';
+    }
+  }catch(e){
+    box.style.display='none';
+    box.textContent='';
+  }
+}
+$('optimumInput').addEventListener('input',updateOptimumDecimal);
+
+function setStatus(id,msg,ok){let e=$(id);e.textContent=msg;e.className='status '+(ok?'ok':'bad')}
+$('runGD').onclick=()=>{
+  if(!polyLoss)return alert('먼저 손실함수를 전개·정리하세요.');
+  const derivativeText=$('derivativeInput').value.trim();
+  if(!derivativeText)return alert('직접 미분한 식을 먼저 입력하세요.');
+
+  const r=Number($('learningRate').value);
+  if(!Number.isFinite(r)||r<=0)return alert('학습률 r을 0보다 큰 값으로 입력하세요.');
+
+  let d;
+  try{
+    d=parser(derivativeText,true);
+  }catch(e){
+    return alert('입력한 미분식을 해석할 수 없습니다: '+e.message);
+  }
+
+  const graphIterations=10;
+  let a=0;
+  gdHistory=[];
+
+  for(let n=0;n<=graphIterations;n++){
+    const grad=pEval(d,a);
+    const L=pEval(polyLoss,a);
+    const delta=-r*grad;
+    gdHistory.push({n,a,grad,delta,L});
+    if(n<graphIterations)a+=delta;
+    if(!Number.isFinite(a)||Math.abs(a)>1e150)break;
+  }
+
+  $('gdGraphStage').style.display='block';
+  $('finalCalcStage').style.display='block';
+  $('calcTableStage').style.display='none';
+  $('gdRows').innerHTML='';
+
+  $('manualA1').value='';
+  $('manualA2').value='';
+  $('manualA1').disabled=false;
+  $('manualA2').disabled=false;
+  $('recurrenceInput').textContent='';
+  $('recurrenceInput').contentEditable='true';
+  document.querySelectorAll('[data-insert]').forEach(b=>b.disabled=false);
+  $('clearRecurrence').disabled=false;
+  $('showCalcTable').disabled=true;
+
+  $('manualStatus').textContent='이 학습률을 최종 선택하려면 귀납적 정의와 a₁, a₂를 작성한 뒤 반복 계산표를 확인하세요.';
+  $('manualStatus').className='status';
+
+  $('rateGuide').textContent=`학습률 r=${r.toFixed(2)}로 10회 경사하강을 실행했습니다. 그래프에는 n=0부터 n=${gdHistory[gdHistory.length-1].n}까지의 이동 경로가 표시됩니다.`;
+  $('rateGuide').className='status ok';
+
+  drawGraph();
+};
+function drawScatter(){let cv=$('scatterCanvas'),ctx=cv.getContext('2d'),dpr=devicePixelRatio||1,rect=cv.getBoundingClientRect();cv.width=rect.width*dpr;cv.height=300*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);let w=rect.width,h=300;ctx.clearRect(0,0,w,h);ctx.fillStyle='white';ctx.fillRect(0,0,w,h);let data=datasets[$('datasetSelect').value]||datasets.A,xmax=Math.max(...data.map(p=>p[0]))+1,ymax=Math.max(...data.map(p=>p[1]))+3;let px=x=>48+(w-68)*x/xmax,py=y=>h-35-(h-55)*y/ymax;ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;for(let x=0;x<=xmax;x++){ctx.beginPath();ctx.moveTo(px(x),15);ctx.lineTo(px(x),h-35);ctx.stroke()}for(let y=0;y<=ymax;y+=Math.max(1,Math.ceil(ymax/8))){ctx.beginPath();ctx.moveTo(48,py(y));ctx.lineTo(w-20,py(y));ctx.stroke()}ctx.strokeStyle='#64748b';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(48,h-35);ctx.lineTo(w-20,h-35);ctx.stroke();ctx.beginPath();ctx.moveTo(48,15);ctx.lineTo(48,h-35);ctx.stroke();ctx.fillStyle='#64748b';ctx.font='11px sans-serif';for(let x=0;x<=xmax;x++)ctx.fillText(String(x),px(x)-3,h-17);let step=Math.max(1,Math.ceil(ymax/8));for(let y=0;y<=ymax;y+=step)ctx.fillText(String(y),20,py(y)+4);data.forEach(p=>{ctx.beginPath();ctx.arc(px(p[0]),py(p[1]),6,0,Math.PI*2);ctx.fillStyle='#2563eb';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke()});let slope=window.previewedSlope;if(window.predictionLocked&&Number.isFinite(slope)){ctx.strokeStyle='#f97316';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(px(0),py(0));ctx.lineTo(px(xmax),py(slope*xmax));ctx.stroke();ctx.fillStyle='#c2410c';ctx.font='12px sans-serif';ctx.fillText('예상 추세선',Math.max(55,px(xmax)-82),Math.max(25,py(slope*xmax)-8))}ctx.fillStyle='#334155';ctx.font='12px sans-serif';ctx.fillText('x',w-18,h-18);ctx.fillText('y',34,18)}
+$('predictedSlope').addEventListener('input',()=>{});
+
+$('learningRate').addEventListener('input',()=>{
+  if($('learningRate').disabled)return;
+  gdHistory=[];
+  $('gdGraphStage').style.display='none';
+  $('finalCalcStage').style.display='none';
+  $('calcTableStage').style.display='none';
+  $('gdRows').innerHTML='';
+  $('rateGuide').textContent='학습률 r을 변경했습니다. 경사하강 실행을 눌러 이동 경로를 확인하세요.';
+  $('rateGuide').className='status';
+});
+
+function drawGraph(){
+  const cv=$('lossCanvas'),ctx=cv.getContext('2d'),dpr=devicePixelRatio||1,rect=cv.getBoundingClientRect();
+  cv.width=rect.width*dpr;cv.height=300*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const w=rect.width,h=300;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='white';ctx.fillRect(0,0,w,h);
+
+  if(!polyLoss){
+    ctx.fillStyle='#64748b';ctx.font='14px sans-serif';
+    ctx.fillText('손실함수를 정리하면 그래프가 표시됩니다.',20,35);
+    return;
+  }
+
+  const d=pDeriv(polyLoss);
+  const opt=d.length>1?-d[0]/d[1]:0;
+  const minL=pEval(polyLoss,opt);
+  const finiteHistory=gdHistory.filter(v=>Number.isFinite(v.a)&&Number.isFinite(v.L));
+  const A=polyLoss.length>=3?polyLoss[2]:0;
+  const rate=Number($('learningRate').value);
+  const q=A?1-2*A*rate:0;
+  const diverging=Math.abs(q)>1.000001;
+
+  // 발산 시에는 마지막의 극단값이 아니라 "진폭이 커지는 과정"을 보여주는 데 초점을 둔다.
+  let plotHistory=finiteHistory.slice();
+  let clippedCount=0;
+
+  if(diverging && finiteHistory.length>4){
+    // 처음부터 보되, 값이 앞선 진폭보다 지나치게 커져 그래프를 압도하는 시점부터 잘라낸다.
+    // 최소 4개 점은 보여 주어 좌우 교대와 진폭 증가가 드러나게 한다.
+    const selected=[];
+    let baseAmp=Math.max(Math.abs(finiteHistory[0].a-opt),0.25);
+    let lastAmp=baseAmp;
+    for(let i=0;i<finiteHistory.length;i++){
+      const row=finiteHistory[i];
+      const amp=Math.abs(row.a-opt);
+      if(i>=4 && (amp>lastAmp*4.2 || amp>baseAmp*35)){
+        clippedCount=finiteHistory.length-selected.length;
+        break;
+      }
+      selected.push(row);
+      if(amp>lastAmp)lastAmp=amp;
+    }
+    plotHistory=selected.length>=4?selected:finiteHistory.slice(0,Math.min(6,finiteHistory.length));
+    clippedCount=Math.max(clippedCount,finiteHistory.length-plotHistory.length);
+  }
+
+  let xmin,xmax;
+  if(plotHistory.length){
+    const xs=plotHistory.map(v=>v.a);
+    let lo=Math.min(opt,...xs),hi=Math.max(opt,...xs),span=hi-lo;
+    if(!diverging && span<0.8){
+      const center=(lo+hi)/2;span=0.9;xmin=center-span/2;xmax=center+span/2;
+    }else{
+      const pad=Math.max(span*0.12,0.15);xmin=lo-pad;xmax=hi+pad;
+    }
+  }else{xmin=opt-0.8;xmax=opt+0.8;}
+
+  if(!Number.isFinite(xmin)||!Number.isFinite(xmax)||xmin===xmax){xmin=opt-1;xmax=opt+1;}
+
+  const samples=[];
+  for(let i=0;i<=300;i++){
+    const x=xmin+(xmax-xmin)*i/300;
+    samples.push([x,pEval(polyLoss,x)]);
+  }
+
+  let yValues=samples.map(v=>v[1]).filter(Number.isFinite);
+  yValues.push(...plotHistory.map(v=>v.L).filter(Number.isFinite),minL);
+  let ymin=Math.min(...yValues),ymax=Math.max(...yValues),yrange=ymax-ymin;
+  if(!Number.isFinite(yrange)||yrange<=0){ymin=minL-0.5;ymax=minL+0.5;yrange=1;}
+  if(yrange<1){ymin-=0.18;ymax+=0.25;}
+  else{ymin-=Math.max(yrange*0.03,0.1);ymax+=Math.max(yrange*0.08,0.2);}
+
+  const left=56,right=18,top=28,bottom=42;
+  const px=x=>left+(w-left-right)*(x-xmin)/(xmax-xmin);
+  const py=y=>top+(h-top-bottom)*(ymax-y)/(ymax-ymin);
+
+  ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;ctx.fillStyle='#64748b';ctx.font='10px sans-serif';
+  for(let i=0;i<=5;i++){
+    const yy=top+(h-top-bottom)*i/5,val=ymax-(ymax-ymin)*i/5;
+    ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.fillText(formatNum(val),4,yy+3);
+  }
+  for(let i=0;i<=4;i++){
+    const xx=left+(w-left-right)*i/4,val=xmin+(xmax-xmin)*i/4;
+    ctx.beginPath();ctx.moveTo(xx,top);ctx.lineTo(xx,h-bottom);ctx.stroke();ctx.fillText(formatNum(val),xx-12,h-18);
+  }
+
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=2.6;ctx.beginPath();
+  samples.forEach((v,i)=>i?ctx.lineTo(px(v[0]),py(v[1])):ctx.moveTo(px(v[0]),py(v[1])));
+  ctx.stroke();
+
+  if(plotHistory.length){
+    // 각 반복점 사이를 화살표로 연결하여 이동 방향이 마지막 반복점을 향하도록 표시
+    ctx.setLineDash([]);
+    for(let i=0;i<plotHistory.length-1;i++){
+      const p1=plotHistory[i],p2=plotHistory[i+1];
+      const x1=px(p1.a),y1=py(p1.L),x2=px(p2.a),y2=py(p2.L);
+      const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;
+      const ux=dx/len,uy=dy/len;
+
+      // 점과 겹치지 않도록 선 시작/끝을 조금 줄임
+      const sx=x1+ux*7, sy=y1+uy*7;
+      const ex=x2-ux*8, ey=y2-uy*8;
+
+      ctx.strokeStyle='#f97316';
+      ctx.lineWidth=2.4;
+      ctx.beginPath();
+      ctx.moveTo(sx,sy);
+      ctx.lineTo(ex,ey);
+      ctx.stroke();
+
+      // 다음 점 방향의 화살촉
+      const ang=Math.atan2(ey-sy,ex-sx);
+      const ah=8;
+      ctx.beginPath();
+      ctx.moveTo(ex,ey);
+      ctx.lineTo(ex-ah*Math.cos(ang-Math.PI/6),ey-ah*Math.sin(ang-Math.PI/6));
+      ctx.lineTo(ex-ah*Math.cos(ang+Math.PI/6),ey-ah*Math.sin(ang+Math.PI/6));
+      ctx.closePath();
+      ctx.fillStyle='#f97316';
+      ctx.fill();
+    }
+
+    // 반복점 표시: 시작점은 초록색, 마지막 표시점은 빨간색으로 강조
+    plotHistory.forEach((r,i)=>{
+      const x=px(r.a),y=py(r.L);
+      const isFirst=i===0,isLast=i===plotHistory.length-1;
+      ctx.beginPath();
+      ctx.arc(x,y,isLast?7:(isFirst?6:5),0,Math.PI*2);
+      ctx.fillStyle=isLast?'#dc2626':(isFirst?'#16a34a':'#f97316');
+      ctx.fill();
+      ctx.fillStyle=isLast?'#991b1b':'#7c2d12';
+      ctx.font=isLast?'bold 11px sans-serif':'10px sans-serif';
+      ctx.fillText(String(r.n),x+7,y-7);
+    });
+
+    // 화면 밖으로 계속 발산하는 경우 마지막 표시점에서 바깥 방향 화살표를 그린다.
+    if(diverging && clippedCount>0 && plotHistory.length>=2){
+      const a=plotHistory[plotHistory.length-2],b=plotHistory[plotHistory.length-1];
+      let x1=px(a.a),y1=py(a.L),x2=px(b.a),y2=py(b.L);
+      let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;dx/=len;dy/=len;
+      const ex=Math.max(left+8,Math.min(w-right-8,x2+dx*22));
+      const ey=Math.max(top+8,Math.min(h-bottom-8,y2+dy*22));
+      ctx.strokeStyle='#dc2626';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(ex,ey);ctx.stroke();
+      const ang=Math.atan2(ey-y2,ex-x2);
+      ctx.beginPath();ctx.moveTo(ex,ey);
+      ctx.lineTo(ex-9*Math.cos(ang-Math.PI/6),ey-9*Math.sin(ang-Math.PI/6));
+      ctx.lineTo(ex-9*Math.cos(ang+Math.PI/6),ey-9*Math.sin(ang+Math.PI/6));
+      ctx.closePath();ctx.fillStyle='#dc2626';ctx.fill();
+    }
+  }
+
+  ctx.fillStyle='#16a34a';ctx.beginPath();ctx.arc(px(opt),py(minL),6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#166534';ctx.font='12px sans-serif';ctx.fillText('최솟값',Math.min(w-62,px(opt)+8),Math.max(20,py(minL)-9));
+
+  let label='',color='';
+  if(A){
+    if(Math.abs(q)<1e-9){label='매우 빠르게 최적값에 도달';color='#166534';}
+    else if(q>0&&q<1){label='한쪽에서 천천히 수렴';color='#166534';}
+    else if(q<0&&Math.abs(q)<1){label='좌우로 진동하며 수렴';color='#b45309';}
+    else if(Math.abs(Math.abs(q)-1)<1e-6){label='수렴하지 않는 경계 상태';color='#b91c1c';}
+    else if(Math.abs(q)>1){label='좌우 진동의 폭이 커지며 발산';color='#b91c1c';}
+  }
+  if(label){ctx.fillStyle=color;ctx.font='bold 12px sans-serif';ctx.fillText(label,left,17);}
+  if(diverging&&clippedCount>0){
+    ctx.fillStyle='#b91c1c';ctx.font='11px sans-serif';
+    ctx.fillText(`이후 ${clippedCount}개 점은 값이 매우 커져 화면 밖으로 이어집니다.`,left,h-4);
+  }
+}
+
+
+let initialDatasetKey=null;
+const datasetRates={A:0,B:0,C:0,D:0,E:0,F:0};
+const datasetA0={A:0,B:0,C:0,D:0,E:0,F:0};
+function chooseDataset(key){if(initialDatasetKey===null){initialDatasetKey=key;$('initialDatasetNumber').value=(['A','B','C','D','E','F'].indexOf(key)+1)+'번';}$('datasetSelect').value=key;loadDataset(key);$('startOverlay').style.display='none';updateSaveStatus();}
+document.querySelectorAll('[data-set]').forEach(btn=>btn.addEventListener('click',()=>chooseDataset(btn.dataset.set)));
+const recurrence=$('recurrenceInput');
+const displayToken={"a_n":"aₙ","a_(n+1)":"aₙ₊₁","r":"r","L'(a_n)":"L′(aₙ)"};
+function insertAtCaret(text){recurrence.focus();const sel=window.getSelection();if(!sel.rangeCount){recurrence.append(document.createTextNode(text));return}let range=sel.getRangeAt(0);if(!recurrence.contains(range.commonAncestorContainer)){range=document.createRange();range.selectNodeContents(recurrence);range.collapse(false)}range.deleteContents();const node=document.createTextNode(text);range.insertNode(node);range.setStartAfter(node);range.collapse(true);sel.removeAllRanges();sel.addRange(range)}
+document.querySelectorAll('[data-insert]').forEach(btn=>btn.addEventListener('click',()=>{insertAtCaret(displayToken[btn.dataset.insert]||btn.dataset.insert);updateTableButton()}));
+$('clearRecurrence').onclick=()=>{recurrence.textContent='';recurrence.focus();updateTableButton()};
+
+
+function updateTableButton(){
+  const recurrenceReady=$('recurrenceInput').textContent.trim().length>0;
+  const vals=['manualA1','manualA2'].map(id=>$(id).value.trim());
+  const ready=recurrenceReady&&vals.every(Boolean)&&gdHistory.length>0;
+  $('showCalcTable').disabled=!ready;
+  if(ready){
+    $('manualStatus').textContent='귀납적 정의와 a₁, a₂를 작성했습니다. 반복 계산표를 확인할 수 있습니다.';
+    $('manualStatus').className='status ok';
+  }else{
+    $('manualStatus').textContent='귀납적 정의와 a₁, a₂를 모두 작성하면 반복 계산표를 확인할 수 있습니다.';
+    $('manualStatus').className='status';
+  }
+}
+['manualA1','manualA2'].forEach(id=>$(id).addEventListener('input',updateTableButton));
+$('recurrenceInput').addEventListener('input',updateTableButton);
+
+$('showCalcTable').onclick=()=>{
+  if(!gdHistory.length)return alert('먼저 경사하강을 실행하세요.');
+  if(!$('recurrenceInput').textContent.trim()||!$('manualA1').value.trim()||!$('manualA2').value.trim()){
+    return alert('수열의 귀납적 정의와 a₁, a₂를 모두 작성하세요.');
+  }
+
+  try{
+    parseFractionValue($('manualA1').value);
+    parseFractionValue($('manualA2').value);
+  }catch(e){
+    return alert('a₁, a₂는 정수, 소수 또는 분수 형태로 입력하세요.');
+  }
+
+  const derivativeText=$('derivativeInput').value.trim();
+  let d;
+  try{
+    d=parser(derivativeText,true);
+  }catch(e){
+    return alert('입력한 미분식을 해석할 수 없습니다: '+e.message);
+  }
+
+  const r=Number($('learningRate').value);
+  let a=0;
+  const tableHistory=[];
+  const maxTableIterations=500;
+  let reachedTarget=false;
+  let diverged=false;
+
+  for(let n=0;n<=maxTableIterations;n++){
+    const grad=pEval(d,a);
+    const L=pEval(polyLoss,a);
+    const delta=-r*grad;
+    tableHistory.push({n,a,grad,delta,L});
+
+    if(Number.isFinite(L) && L<0.1){
+      reachedTarget=true;
+      break;
+    }
+
+    a+=delta;
+
+    if(!Number.isFinite(a)||Math.abs(a)>1e150||!Number.isFinite(L)){
+      diverged=true;
+      break;
+    }
+  }
+
+  $('gdRows').innerHTML=tableHistory.map(row=>`<tr><td>${row.n}</td><td>${formatNum(row.a)}</td><td>${formatNum(row.grad)}</td><td>${formatNum(row.delta)}</td><td>${formatNum(row.L)}</td></tr>`).join('');
+  $('calcTableStage').style.display='block';
+
+  const lastRow=tableHistory[tableHistory.length-1];
+
+  if(reachedTarget){
+    // 정상 수렴한 경우에만 최종 확정
+    $('manualA1').disabled=true;
+    $('manualA2').disabled=true;
+    $('recurrenceInput').contentEditable='false';
+    document.querySelectorAll('[data-insert]').forEach(b=>b.disabled=true);
+    $('clearRecurrence').disabled=true;
+    $('learningRate').disabled=true;
+    $('runGD').disabled=true;
+    $('showCalcTable').disabled=true;
+
+    $('manualStatus').textContent=`반복 계산표를 L(aₙ)<0.1이 처음 되는 n=${lastRow.n}까지 표시했습니다. 선택한 학습률, 귀납적 정의, a₁, a₂는 더 이상 수정할 수 없습니다.`;
+    $('manualStatus').className='status ok';
+  }else{
+    // 발산하거나 500회 내에 수렴하지 못하면 학습률 수정 허용
+    $('learningRate').disabled=false;
+    $('runGD').disabled=false;
+    $('showCalcTable').disabled=true;
+
+    // 기존 귀납적 정의/a1/a2는 유지하되 다시 경사하강 실행하면 새 학습률에 맞춰 재작성하도록 기존 로직이 초기화함
+    if(diverged){
+      $('manualStatus').textContent='선택한 학습률에서는 손실함수가 발산했습니다. 학습률 r을 수정한 뒤 경사하강 실행을 다시 눌러 적절한 학습률을 찾아보세요.';
+    }else{
+      $('manualStatus').textContent='500회까지 계산했지만 L(aₙ)<0.1에 도달하지 못했습니다. 학습률 r을 수정한 뒤 경사하강 실행을 다시 눌러보세요.';
+    }
+    $('manualStatus').className='status bad';
+  }
+};
+
+
+function sanitizeFilePart(value){return String(value).trim().replace(/[\\/:*?\"<>|]/g,'_').replace(/\s+/g,'_')}
+function studentInfoComplete(){return ['studentGrade','studentClass','studentNumber','studentName','initialDatasetNumber'].every(id=>$(id).value.trim())}
+function updateSaveStatus(){
+  const ready=studentInfoComplete();
+  $('saveStatus').textContent=ready?'학생 정보가 입력되었습니다. 작성 내용을 HTML로 저장할 수 있습니다.':'학년·반·번호·이름을 모두 입력하고 데이터 번호를 선택해야 저장할 수 있습니다.';
+  $('saveStatus').className='status '+(ready?'ok':'');
+}
+['studentGrade','studentClass','studentNumber','studentName'].forEach(id=>$(id).addEventListener('input',updateSaveStatus));
+function saveSubmissionHTML(){
+  if(!studentInfoComplete()){
+    alert('학년·반·번호·이름을 모두 입력하세요.');
+    ['studentGrade','studentClass','studentNumber','studentName'].find(id=>!$(id).value.trim())&&$(['studentGrade','studentClass','studentNumber','studentName'].find(id=>!$(id).value.trim())).focus();
+    return;
+  }
+  if(editing&&window.activeEditor&&selected!=='LOSS') commitInline(selected,window.activeEditor.value);
+  const clone=document.documentElement.cloneNode(true);
+  const originalControls=document.querySelectorAll('input, textarea, select');
+  const clonedControls=clone.querySelectorAll('input, textarea, select');
+  originalControls.forEach((el,i)=>{
+    const c=clonedControls[i]; if(!c)return;
+    if(el.tagName==='TEXTAREA'){c.textContent=el.value;c.setAttribute('readonly','readonly')}
+    else if(el.tagName==='SELECT'){
+      Array.from(c.options).forEach((o,j)=>{if(j===el.selectedIndex)o.setAttribute('selected','selected');else o.removeAttribute('selected')});c.setAttribute('disabled','disabled');
+    }else{
+      c.setAttribute('value',el.value);
+      if(el.type==='checkbox'||el.type==='radio'){if(el.checked)c.setAttribute('checked','checked');else c.removeAttribute('checked')}
+      c.setAttribute('readonly','readonly');
+    }
+  });
+  const origRec=$('recurrenceInput'),cloneRec=clone.querySelector('#recurrenceInput');
+  if(cloneRec){cloneRec.innerHTML=origRec.innerHTML;cloneRec.removeAttribute('contenteditable');}
+  ['scatterCanvas','lossCanvas'].forEach(id=>{
+    const original=document.getElementById(id), copied=clone.querySelector('#'+id);
+    if(original&&copied){const img=clone.ownerDocument.createElement('img');img.src=original.toDataURL('image/png');img.alt=id==='scatterCanvas'?'산점도':'손실함수 그래프와 이동 경로';img.style.cssText='display:block;width:100%;border:1px solid #dbe3ef;border-radius:10px;background:white';copied.replaceWith(img)}
+  });
+  const overlay=clone.querySelector('#startOverlay');if(overlay)overlay.remove();
+  clone.querySelectorAll('.no-print').forEach(el=>el.remove());
+  clone.querySelectorAll('script').forEach(el=>el.remove());
+  const status=clone.querySelector('#saveStatus');if(status){status.textContent='제출용 HTML 저장 완료: '+new Date().toLocaleString('ko-KR');status.className='status ok'}
+  const meta=clone.ownerDocument.createElement('div');
+  meta.style.cssText='max-width:1380px;margin:12px auto;padding:10px 14px;color:#475569;font-size:12px';
+  meta.textContent='저장 일시: '+new Date().toLocaleString('ko-KR')+' · 처음 선택한 데이터: '+($('initialDatasetNumber').value||'미기록');
+  clone.querySelector('header').after(meta);
+  const html='<!DOCTYPE html>\n'+clone.outerHTML;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const dataNo=($('initialDatasetNumber').value||'').replace(/[^0-9]/g,'');
+  const filename=`${sanitizeFilePart($('studentGrade').value)}학년_${sanitizeFilePart($('studentClass').value)}반_${sanitizeFilePart($('studentNumber').value)}번_${sanitizeFilePart($('studentName').value)}_데이터${dataNo}_손실함수수행평가.html`;
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  $('saveStatus').textContent='HTML 파일 저장을 요청했습니다. 모바일에서는 다운로드 폴더를 확인하세요.';$('saveStatus').className='status ok';
+}
+
+window.predictionLocked=false;window.previewedSlope=null;
+$('confirmPrediction').onclick=()=>{
+  if(window.predictionLocked)return;
+  const slopeText=$('predictedSlope').value.trim();
+  if(!slopeText)return alert('예상 기울기 a를 입력하세요.');
+  const slope=Number(slopeText);
+  if(!Number.isFinite(slope))return alert('예상 기울기 a를 숫자로 입력하세요.');
+
+  window.previewedSlope=slope;
+  window.predictionLocked=true;
+  $('predictedSlope').disabled=false;
+  $('confirmPrediction').disabled=true;
+  $('predictionReason').disabled=false;
+  $('predictionStatus').textContent='예상 추세선을 한 번 확인했습니다. 예상 기울기 값은 이후에도 수정할 수 있지만 추세선은 다시 확인할 수 없습니다.';
+  $('predictionStatus').className='status ok';
+  drawScatter();
+};
+
+$('saveHtmlBtn').onclick=saveSubmissionHTML;
+updateSaveStatus();
+
+window.addEventListener('resize',()=>{drawScatter();if($('gdGraphStage').style.display!=='none')drawGraph()});$('printBtn').onclick=()=>window.print();$('resetAll').onclick=()=>{if(confirm('전체 내용을 초기화하고 데이터 번호를 다시 선택할까요?')){initialDatasetKey=null;$('initialDatasetNumber').value='';loadDataset('A');$('startOverlay').style.display='flex';updateSaveStatus()}};initDatasets();buildSheet();$('datasetSelect').value='A';loadDataset('A');$('startOverlay').style.display='flex';setTimeout(()=>{drawScatter()},0)
+})();
+</script></body></html>
