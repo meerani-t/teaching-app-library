@@ -59,6 +59,30 @@
     url: "./apps/perceptron-handwriting-lab/index.html?v=20260707-pdf-library-fix",
     date: "2026. 7. 6.",
   },
+  {
+    title: "경사하강법 연습",
+    subject: "인공지능 수학",
+    category: "최적화",
+    description: "경사하강법의 반복 계산 과정을 연습하고 최적값에 가까워지는 원리를 확인하는 수행평가 연습 활동입니다.",
+    tags: ["경사하강법", "최적화", "인공지능", "연습"],
+    icon: "📉",
+    colors: ["#2f80ed", "#174a8b"],
+    subjectColors: ["#e8f2ff", "#245f9e"],
+    url: "./apps/gradient-descent-practice/index.html",
+    date: "2026. 8. 7.",
+  },
+  {
+    title: "경사하강법 수행평가",
+    subject: "인공지능 수학",
+    category: "최적화",
+    description: "주어진 자료에서 경사하강법을 적용해 최적값을 탐색하는 인공지능 수학 수행평가 실전 활동입니다.",
+    tags: ["경사하강법", "최적화", "인공지능", "수행평가"],
+    icon: "🎯",
+    colors: ["#d35454", "#8f2828"],
+    subjectColors: ["#ffecec", "#9b3333"],
+    url: "./apps/gradient-descent-assessment/index.html",
+    date: "2026. 8. 7.",
+  },
 ];
 
 
