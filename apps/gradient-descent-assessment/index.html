@@ -106,7 +106,7 @@ canvas{display:block;width:100%;border:1px solid #dbe3ef;border-radius:10px;back
     <h3>반복 계산표</h3>
     <div class="scroll">
       <table class="smalltable">
-        <thead><tr><th>n</th><th>aₙ</th><th>L'(aₙ)</th><th>변화량</th><th>L(aₙ)</th></tr></thead>
+        <thead><tr><th>n</th><th>aₙ</th><th>L'(aₙ)</th><th>L(aₙ)</th></tr></thead>
         <tbody id="gdRows"></tbody>
       </table>
     </div>
@@ -510,7 +510,7 @@ $('showCalcTable').onclick=()=>{
     const delta=-r*grad;
     tableHistory.push({n,a,grad,delta,L});
 
-    if(Number.isFinite(L) && L<0.1){
+    if(Number.isFinite(grad) && Math.abs(grad)<0.1){
       reachedTarget=true;
       break;
     }
@@ -523,7 +523,7 @@ $('showCalcTable').onclick=()=>{
     }
   }
 
-  $('gdRows').innerHTML=tableHistory.map(row=>`<tr><td>${row.n}</td><td>${formatNum(row.a)}</td><td>${formatNum(row.grad)}</td><td>${formatNum(row.delta)}</td><td>${formatNum(row.L)}</td></tr>`).join('');
+  $('gdRows').innerHTML=tableHistory.map(row=>`<tr><td>${row.n}</td><td>${formatNum(row.a)}</td><td>${formatNum(row.grad)}</td><td>${formatNum(row.L)}</td></tr>`).join('');
   $('calcTableStage').style.display='block';
 
   const lastRow=tableHistory[tableHistory.length-1];
@@ -539,7 +539,7 @@ $('showCalcTable').onclick=()=>{
     $('runGD').disabled=true;
     $('showCalcTable').disabled=true;
 
-    $('manualStatus').textContent=`반복 계산표를 L(aₙ)<0.1이 처음 되는 n=${lastRow.n}까지 표시했습니다. 선택한 학습률, 귀납적 정의, a₁, a₂는 더 이상 수정할 수 없습니다.`;
+    $('manualStatus').textContent=`반복 계산표를 |L′(aₙ)|<0.1이 처음 되는 n=${lastRow.n}까지 표시했습니다. 손실함수의 기울기가 0에 충분히 가까워졌으므로 최적값에 충분히 가까워진 것으로 판단합니다. 선택한 학습률, 귀납적 정의, a₁, a₂는 더 이상 수정할 수 없습니다.`;
     $('manualStatus').className='status ok';
   }else{
     // 발산하거나 500회 내에 수렴하지 못하면 학습률 수정 허용
@@ -549,9 +549,9 @@ $('showCalcTable').onclick=()=>{
 
     // 기존 귀납적 정의/a1/a2는 유지하되 다시 경사하강 실행하면 새 학습률에 맞춰 재작성하도록 기존 로직이 초기화함
     if(diverged){
-      $('manualStatus').textContent='선택한 학습률에서는 손실함수가 발산했습니다. 학습률 r을 수정한 뒤 경사하강 실행을 다시 눌러 적절한 학습률을 찾아보세요.';
+      $('manualStatus').textContent='선택한 학습률에서는 값이 발산하여 |L′(aₙ)|가 0에 가까워지지 않습니다. 학습률 r을 수정한 뒤 경사하강 실행을 다시 눌러 적절한 학습률을 찾아보세요.';
     }else{
-      $('manualStatus').textContent='500회까지 계산했지만 L(aₙ)<0.1에 도달하지 못했습니다. 학습률 r을 수정한 뒤 경사하강 실행을 다시 눌러보세요.';
+      $('manualStatus').textContent='500회까지 계산했지만 |L′(aₙ)|<0.1에 도달하지 못했습니다. 학습률 r을 수정한 뒤 경사하강 실행을 다시 눌러보세요.';
     }
     $('manualStatus').className='status bad';
   }
