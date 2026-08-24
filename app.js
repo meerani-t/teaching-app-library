@@ -68,7 +68,7 @@
     icon: "🎯",
     colors: ["#d35454", "#8f2828"],
     subjectColors: ["#ffecec", "#9b3333"],
-    url: "./apps/gradient-descent-assessment/index.html",
+    url: "./apps/gradient-descent-assessment/index.html?v=20260824-gradient-v2",
     date: "2026. 8. 7.",
   },
 ];
