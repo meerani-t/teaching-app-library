@@ -71,6 +71,18 @@
     url: "./apps/gradient-descent-assessment/index.html?v=20260824-gradient-v3",
     date: "2026. 8. 24.",
   },
+  {
+    title: "함수의 극한 형성평가",
+    subject: "수학",
+    category: "미적분",
+    description: "함수의 극한 개념을 게임 형식으로 풀어보며 학습 내용을 확인하는 형성평가 활동입니다.",
+    tags: ["함수의 극한", "형성평가", "게임", "미적분"],
+    icon: "🎮",
+    colors: ["#6b4fa1", "#35265c"],
+    subjectColors: ["#eee8fa", "#5b3f91"],
+    url: "./apps/function-limit-assessment/index.html?v=20260826",
+    date: "2026. 8. 26.",
+  },
 ];
 
 
