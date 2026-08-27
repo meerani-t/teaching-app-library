@@ -6,7 +6,7 @@
 <div class="field"><input id="teamName" placeholder="학생이름(팀 이름) 예) 홍길동(1모둠)" maxlength="30">
 </div>
 <div class="toolbar"><button class="primary" onclick="startGame()">게임 시작</button><button class="ghost" onclick="showHow()">게임 방법</button></div>
-<div id="how" class="hintBox hidden">기본 문제는 10~14점, 도전 문제는 16~20점입니다. 오답은 −3점, 힌트는 −2점이며 기본 문제는 30초를 초과하면 −0.1점입니다. 도전 문제는 모름을 선택해도 결과 화면까지 진행할 수 있습니다.</div>
+<div id="how" class="hintBox hidden"><b>게임 방법</b><br>기본 1~9번은 문제별 10~14점이며, 기본 문제 6개를 해결하면 도전 문제가 열립니다.<br>도전 1~6번은 문제별 16~20점입니다.<br>오답을 선택하거나 입력하면 −3점, 힌트를 사용하면 −2점입니다.<br>기본 문제는 문제를 연 뒤 30초를 초과하면 −0.1점이 적용됩니다.<br><b>첫 시도 정답 보너스는 없습니다.</b><br>도전 문제에서 답을 모르겠으면 「모름」을 선택할 수 있으며, 해당 문제는 0점으로 처리되지만 최종 결과까지 진행할 수 있습니다.<br>마지막 결과 화면에서는 각 문제를 한 번에 맞혔는지, 틀린 적이 있는지, 「모름」을 선택했는지 확인할 수 있습니다.</div>
 </section>
 <div id="app" class="hidden">
 <header class="topbar"><div class="brand">LIMIT QUEST<small id="playerLabel">함수의 극한</small></div><div class="stats"><span class="pill">XP <strong id="xp">0</strong></span><span class="pill">CLEAR <strong id="clearCount">0/15</strong></span><span class="pill">HINT <strong id="hintCount">0</strong></span><span class="pill">MISS <strong id="missCount">0</strong></span></div></header>
