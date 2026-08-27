@@ -80,8 +80,8 @@
     icon: "🎮",
     colors: ["#6b4fa1", "#35265c"],
     subjectColors: ["#eee8fa", "#5b3f91"],
-    url: "./apps/function-limit-assessment/index.html?v=20260826",
-    date: "2026. 8. 26.",
+    url: "./apps/limit-quest/index.html?v=20260827-final",
+    date: "2026. 8. 27.",
   },
 ];
 
@@ -188,5 +188,3 @@ searchInput.addEventListener("input", renderApps);
 appCount.textContent = apps.length;
 renderFilters();
 renderApps();
-
-
