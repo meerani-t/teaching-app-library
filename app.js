@@ -83,6 +83,18 @@
     url: "./apps/limit-quest/index.html?v=20260827-final",
     date: "2026. 8. 27.",
   },
+  {
+    title: "연속함수의 성질 형성평가",
+    subject: "수학",
+    category: "미적분",
+    description: "연속구간, 최대·최소 정리와 중간값 정리를 기본·도전 문제로 확인하는 게임형 형성평가입니다.",
+    tags: ["연속함수", "최대·최소", "중간값 정리", "형성평가", "게임"],
+    icon: "🔗",
+    colors: ["#176b87", "#183b59"],
+    subjectColors: ["#e3f3f7", "#176b87"],
+    url: "./apps/continuity-quest/index.html?v=20260904-v15",
+    date: "2026. 9. 4.",
+  },
 ];
 
 
