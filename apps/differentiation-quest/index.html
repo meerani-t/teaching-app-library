@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>DIFFERENTIATION QUEST - 미분 1차 형성평가</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#1f2937;--muted:#64748b;--line:#dbe3ee;--accent:#3b82f6;--accent2:#8b5cf6;--good:#16a34a;--bad:#dc2626;--gold:#f59e0b}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink)} button,input{font:inherit} button{cursor:pointer}.shell{max-width:1180px;margin:0 auto;padding:20px}.topbar{display:flex;gap:14px;justify-content:space-between;align-items:center;background:#0f172a;color:#fff;border-radius:20px;padding:16px 18px;position:sticky;top:8px;z-index:10;box-shadow:0 10px 30px rgba(15,23,42,.15)}.brand{font-weight:900;letter-spacing:.4px;font-size:20px}.brand small{display:block;font-size:12px;font-weight:700;color:#cbd5e1;margin-top:2px}.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.pill{background:#1e293b;border:1px solid #334155;padding:8px 11px;border-radius:999px;font-weight:800;font-size:13px}.pill strong{color:#fde68a}.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:18px;box-shadow:0 8px 24px rgba(15,23,42,.06)}.setup{max-width:700px;margin:40px auto}.setup h1{margin:0 0 8px;font-size:36px}.setup p{color:var(--muted);line-height:1.7}.field{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}.field input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:14px}.primary{border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;padding:13px 18px;border-radius:14px}.ghost{border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:800;padding:11px 14px;border-radius:12px}.hidden{display:none!important}.mapTitle{display:flex;align-items:end;justify-content:space-between;gap:12px}.mapTitle h2{margin:0}.mapTitle p{margin:0;color:var(--muted);font-size:14px}.stageGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.stage{min-height:115px;border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px;text-align:left;position:relative;transition:.18s}.stage:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(15,23,42,.08)}.stage.locked{opacity:.42}.stage.cleared{border-color:#86efac;background:#f0fdf4}.stage .num{font-size:12px;font-weight:900;color:var(--muted)}.stage .name{font-weight:900;margin-top:7px}.stage .meta{font-size:12px;color:var(--muted);margin-top:6px}.badge{position:absolute;right:10px;top:10px;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900;background:#eef2ff;color:#4338ca}.badge.boss{background:#fff7ed;color:#c2410c}.badge.trap{background:#fef2f2;color:#b91c1c}.star{color:var(--gold)}.gameHead{display:flex;justify-content:space-between;gap:14px;align-items:center}.gameHead h2{margin:0}.stageKind{font-size:12px;font-weight:900;color:#475569;background:#f1f5f9;border-radius:999px;padding:6px 10px}.question{margin-top:18px;padding:22px;border-radius:18px;background:#fbfdff;border:1px solid #dbeafe;font-size:25px;font-weight:800;line-height:1.7;text-align:center}.math{font-family:Georgia,"Times New Roman",serif;font-weight:500}.frac{display:inline-grid;vertical-align:middle;text-align:center;line-height:1.15;margin:0 .15em}.frac>span:first-child{border-bottom:1.6px solid currentColor;padding:0 .16em .08em}.frac>span:last-child{padding:.08em .16em 0}.smallMath{font-size:.86em}
+.piecewise{
+  display:inline-flex;
+  align-items:center;
+  vertical-align:middle;
+  margin-left:.15em;
+  white-space:nowrap;
+}
+.piecewise .brace{
+  font-family:"Times New Roman",serif;
+  font-size:3.4em;
+  font-weight:400;
+  line-height:.72;
+  margin-right:.10em;
+  transform:scaleX(.72);
+  transform-origin:center;
+}
+.piecewise .cases{
+  display:grid;
+  grid-template-columns:max-content max-content;
+  column-gap:.65em;
+  row-gap:.18em;
+  align-items:center;
+  text-align:left;
+  line-height:1.15;
+}
+.piecewise .cases > span{
+  display:block;
+}
+.piecewise .cond{
+  font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  font-size:.72em;
+  font-style:normal;
+  font-weight:600;
+  color:#475569;
+}
+.instructions{margin:14px 0 0;color:var(--muted);line-height:1.7}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px;font-weight:850}.choice:hover{border-color:#93c5fd;background:#eff6ff}.choice.correct{border-color:#86efac;background:#f0fdf4;color:#166534}.choice.wrong{border-color:#fecaca;background:#fef2f2;color:#991b1b}.answerRow{display:flex;gap:10px;margin-top:16px}.answerRow input{flex:1;border:1px solid var(--line);border-radius:14px;padding:14px;font-weight:800}.blankWork{display:grid;gap:12px;margin-top:16px}.blankLine{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}.blankLine input{flex:1;min-width:220px;border:1px solid var(--line);border-radius:12px;padding:12px;font-weight:800;background:#fff}.blankLine input.correctInput{border-color:#86efac;background:#f0fdf4}.inlineBlank{display:inline-block;width:86px;min-width:70px;border:0;border-bottom:2px solid #64748b;background:#fff7d6;padding:3px 6px;margin:0 4px;text-align:center;font-family:inherit;font-size:.95em;font-weight:900;border-radius:6px}.inlineBlank.correctInput{border-bottom-color:#16a34a;background:#ecfdf5}.inlineBlank.wrongInput{border-bottom-color:#dc2626;background:#fef2f2}.derivWork{margin:11px 0;line-height:2.15}.blankLine input.wrongInput{border-color:#fecaca;background:#fef2f2}.savedAnswer{margin-top:8px;font-size:13px;color:#475569}.hintPersist{margin-top:10px;display:grid;gap:8px}.hintPersist .hintBox{margin-top:0}.msg{margin-top:14px;padding:12px 14px;border-radius:14px;font-weight:800;line-height:1.55}.msg.good{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}.msg.bad{background:#fff1f2;color:#9f1239;border:1px solid #fecdd3}.msg.info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.hintBox{margin-top:12px;border-left:4px solid #f59e0b;background:#fffbeb;padding:12px 14px;border-radius:10px;line-height:1.6}.trapList{display:grid;gap:10px;margin-top:16px}.trapStep{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left}.trapStep:hover{background:#fff7ed;border-color:#fdba74}.graphWrap{display:flex;justify-content:center;margin:18px 0}svg{max-width:100%;height:auto}.footerNote{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.6}.resultCard{text-align:center}.grade{font-size:64px;font-weight:1000;margin:8px 0;background:linear-gradient(135deg,#2563eb,#7c3aed);-webkit-background-clip:text;color:transparent}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.sumBox{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:14px}.sumBox b{display:block;font-size:22px;margin-top:4px}@media(max-width:850px){.stageGrid{grid-template-columns:repeat(3,1fr)}.field{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.shell{padding:10px}.topbar{position:static;border-radius:16px;align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start}.stageGrid{grid-template-columns:repeat(2,1fr)}.choices{grid-template-columns:1fr}.question{font-size:20px;padding:16px}.answerRow{flex-direction:column}}
+
+math{
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;
+  font-size:1.08em;
+}
+.question math[display="block"]{
+  display:block;
+  margin:.15em auto;
+}
+.mathStack{display:grid;gap:10px;justify-items:center}
+.choice math{font-size:1.08em;pointer-events:none}
+
+
+.question math{
+  display:inline-block !important;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+.question .mathStack{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.question .mathStack math{
+  display:inline-block !important;
+}
+
+
+.eq{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.28em;
+  white-space:nowrap;
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;
+  font-weight:500;
+}
+.limbox{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  line-height:.88;
+  flex:0 0 auto;
+  margin-right:.04em;
+}
+.limbox .lim{font-size:1em}
+.limbox .sub{font-size:.52em;margin-top:.12em;letter-spacing:-.02em}
+.fr{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:stretch;
+  vertical-align:middle;
+  line-height:1.05;
+  text-align:center;
+  margin:0 .08em;
+}
+.fr .top{border-bottom:1.5px solid currentColor;padding:0 .16em .10em}
+.fr .bot{padding:.10em .16em 0}
+.sqrtx{
+  display:inline-flex;
+  align-items:flex-start;
+  position:relative;
+  padding-left:.72em;
+  line-height:1.08;
+}
+.sqrtx::before{
+  content:"√";
+  position:absolute;
+  left:0;
+  top:.02em;
+  font-size:1.17em;
+  line-height:1;
+}
+.sqrtx .rad{
+  border-top:1.5px solid currentColor;
+  padding:.02em .12em 0 .10em;
+  min-width:.55em;
+}
+.sup{font-size:.63em;vertical-align:super;line-height:0}
+.casebox{display:inline-flex;align-items:center;gap:.18em}
+.casebrace{font-size:2.25em;line-height:.9}
+.cases{display:grid;grid-template-columns:auto auto;gap:.08em .6em;text-align:left;font-size:.86em}
+.multilineEq{display:flex;flex-direction:column;align-items:center;gap:12px}
+.question .eq{font-size:1em}
+
+
+.timerWrap{
+  margin:14px auto 18px;max-width:560px;padding:16px 18px;
+  border:3px solid #93c5fd;background:#eff6ff;border-radius:18px;
+  box-shadow:0 8px 20px rgba(59,130,246,.12)
+}
+.timerTop{
+  display:flex;justify-content:center;align-items:center;gap:16px;
+  font-size:16px;font-weight:900;color:#1e3a8a;margin-bottom:10px
+}
+.timerLabel{font-size:16px}
+.timerClock{
+  min-width:110px;text-align:center;font-size:38px;line-height:1;
+  font-weight:1000;font-variant-numeric:tabular-nums;
+  letter-spacing:.03em;color:#1d4ed8
+}
+.timerTick{
+  animation:timerPop .32s ease-out
+}
+@keyframes timerPop{
+  0%{transform:scale(1.28);opacity:.45}
+  55%{transform:scale(.94);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
+.timerBar{height:14px;background:#dbeafe;border-radius:999px;overflow:hidden}
+.timerFill{height:100%;background:#22c55e;transition:width .25s linear,background .2s}
+.timerWrap.warn{border-color:#fbbf24;background:#fffbeb}
+.timerWrap.warn .timerTop,.timerWrap.warn .timerClock{color:#92400e}
+.timerWrap.warn .timerFill{background:#f59e0b}
+.timerWrap.over{border-color:#ef4444;background:#fff1f2}
+.timerWrap.over .timerTop,.timerWrap.over .timerClock{color:#b91c1c}
+.timerWrap.over .timerFill{background:#ef4444}
+
+.problemResultGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.problemResultItem{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:800;background:#fff;text-align:left;cursor:pointer;transition:.18s}
+.problemResultItem:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,23,42,.10)}
+.problemResultItem.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+.problemResultItem.retry{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+.problemResultItem.unknown{background:#f1f5f9;border-color:#cbd5e1;color:#475569}
+@media (max-width:700px){.problemResultGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.multiCheck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.multiCheck label{display:flex;align-items:center;gap:9px;padding:13px;border:1px solid var(--line);border-radius:14px;font-weight:800;background:#fff}@media(max-width:650px){.multiCheck{grid-template-columns:1fr}}
+.derivSheet{margin-top:16px;background:#fbfcff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;font-family:"Cambria Math","Times New Roman",serif;font-size:22px;overflow-x:auto}
+.derivRow{display:flex;align-items:center;justify-content:center;gap:8px;min-height:62px;white-space:nowrap}
+.derivEq{display:inline-flex;align-items:center;gap:6px}
+.dLim{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;vertical-align:middle;margin:0 3px}
+.dLim .main{font-size:1.05em}.dLim .under{font-size:.56em;margin-top:3px}
+.dFrac{display:inline-flex;flex-direction:column;align-items:stretch;text-align:center;vertical-align:middle;line-height:1.15;margin:0 4px}
+.dFrac .num{border-bottom:1.7px solid currentColor;padding:0 8px 5px}
+.dFrac .den{padding-top:5px}
+.dBlank{display:inline-block;width:70px;border:1px solid #94a3b8;border-bottom:3px solid #64748b;border-radius:9px;background:#fff;padding:7px 6px;text-align:center;font:inherit;font-weight:900;line-height:1}
+.dBlank.wide{width:105px}.dBlank.correctInput{border-color:#22c55e;background:#f0fdf4}.dBlank.wrongInput{border-color:#ef4444;background:#fef2f2}
+
+
+.hintBtn{border:1px solid #f2c94c;background:#fff8d8;color:#6b4f00;border-radius:12px;padding:11px 15px;font-weight:950;cursor:pointer;box-shadow:0 3px 10px rgba(120,90,0,.08)}
+.hintBtn:hover{background:#fff1a8;border-color:#e0b52d}.hintBtn.used{opacity:.62;cursor:default}
+.mathStep{margin:9px 0;text-align:center;font-family:"Cambria Math","Times New Roman",serif;font-size:1.05em}
+
+
+.hintActionArea{display:flex;justify-content:center;margin:16px 0 4px}
+.hintActionArea .hintBtn{font-size:16px;padding:13px 22px;min-width:190px}
+
+.challengeActionArea{display:flex;justify-content:center;margin:8px 0 12px}
+.challengeActionArea .unknownBtn{border:1px solid #fca5a5;background:#fff1f2;color:#9f1239;border-radius:12px;padding:12px 22px;min-width:190px;font-weight:950;font-size:15px;cursor:pointer}
+.challengeActionArea .unknownBtn:hover{background:#ffe4e6}
+
+.reviewNav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;border:1px solid #cbd5e1;border-radius:14px;background:#f8fafc}
+.reviewNav .reviewNote{font-size:14px;font-weight:850;color:#475569}
+.returnResultBtn{border:0;border-radius:12px;padding:11px 16px;background:#111827;color:#fff;font-weight:950;font-size:14px;cursor:pointer}
+.returnResultBtn:hover{opacity:.9}
+</style>
+</head>
+<body>
+<div class="shell">
+<section id="setup" class="panel setup">
+  <h1>DIFFERENTIATION QUEST</h1>
+  <p><b>미분 1차 형성평가</b>를 게임형으로 재구성한 수업용 프로그램입니다. 미분계수, 도함수, 접선의 방정식, 평균값 정리를 다양한 방식으로 확인합니다.</p>
+  <div class="field"><input id="teamName" placeholder="학생이름(팀 이름) 예) 홍길동(1모둠)" maxlength="30">
+</div>
+  <div class="toolbar"><button class="primary" onclick="startGame()">게임 시작</button><button class="ghost" onclick="showHow()">게임 방법</button></div>
+  <div id="how" class="hintBox hidden"><b>게임 방법</b><br>기본 스테이지는 학습지의 기본 1~9번입니다.<br>기본 문제 7개를 해결하면 도전 1~6번이 열립니다.<br>오답은 −3점, 힌트는 −2점입니다.<br>기본 문제는 문제를 연 뒤 1분을 초과하면 −1점이 적용됩니다.<br>도전 문제는 답을 모르겠으면 「모름」을 선택할 수 있으며 0점으로 처리됩니다.<br>마지막 결과 화면에서는 각 문제를 한 번에 맞혔는지, 틀린 적이 있는지, 「모름」인지 확인할 수 있고, 문항을 클릭하면 자신이 풀었던 문제 화면으로 다시 들어갈 수 있습니다.</div>
+</section>
+<div id="app" class="hidden">
+<header class="topbar"><div class="brand">DIFFERENTIATION QUEST<small id="playerLabel">미분 1차 형성평가</small></div><div class="stats"><span class="pill">점수 <strong id="xp">0</strong></span><span class="pill">CLEAR <strong id="clearCount">0/15</strong></span><span class="pill">HINT <strong id="hintCount">0</strong></span><span class="pill">MISS <strong id="missCount">0</strong></span></div></header>
+<section class="panel" id="mapPanel"><div class="mapTitle"><div><h2>스테이지 맵</h2><p>열린 문제 중 원하는 문제부터 선택하세요.</p></div><button class="ghost" onclick="resetGame()">처음부터</button></div><div class="stageGrid" id="stageGrid"></div></section>
+<section class="panel hidden" id="gamePanel"><div class="gameHead"><div><div class="stageKind" id="stageKind">STAGE</div><h2 id="stageTitle"></h2></div><button class="ghost" onclick="backToMap()">맵으로</button></div><div id="reviewNavArea"></div><div id="questionArea"></div><div id="timerArea"></div><div id="hintActionArea"></div><div id="challengeActionArea"></div><div id="interactionArea"></div><div id="messageArea"></div><div class="toolbar" id="toolbar"></div></section>
+<section class="panel hidden resultCard" id="resultPanel"><h2>QUEST COMPLETE</h2><div class="grade" id="grade">S</div><p id="resultText"></p><div class="summary"><div class="sumBox">최종 점수<b id="finalXp"></b></div><div class="sumBox">힌트 사용<b id="finalHints"></b></div><div class="sumBox">오답 횟수<b id="finalMiss"></b></div><div class="sumBox">클리어<b>15/15</b></div></div>
+      <div class="panel" style="margin-top:18px;text-align:left">
+        <h3 style="margin:0 0 10px">문제별 결과</h3>
+        <div id="problemResultList"></div>
+      </div>
+<div class="toolbar" style="justify-content:center;margin-top:20px"><button class="primary" onclick="downloadResult()">결과 저장</button><button class="ghost" onclick="resetGame()">다시 하기</button></div></section>
+<p class="footerNote">※ 풀이 과정은 종이 활동지에 남기고, 프로그램은 문제 선택·확인·힌트·점수용으로 사용할 수 있습니다.</p>
+</div></div>
+<script>
+
+const F=(a,b)=>`<span class="fr"><span class="top">${a}</span><span class="bot">${b}</span></span>`;
+const LIM=(v,to)=>`<span class="eq"><span class="limbox"><span class="lim">lim</span><span class="sub">${v}→${to}</span></span>`;
+const problems=[
+{id:1,label:'1',group:'기본',title:'평균변화율',kind:'평균변화율',base:10,
+q:`<div><span class="math">x</span>의 값이 1에서 3까지 변할 때 함수</div><div class="math"><i>f</i>(<i>x</i>)=−3<i>x</i>−2</div><div>의 평균변화율은?</div>`,
+type:'mc',choices:['−5','−3','3','5'],ans:'−3',
+hints:['평균변화율은 '+F('f(3)−f(1)','3−1')+'로 구합니다.'],
+explain:'<b>핵심:</b> f(1)=−5, f(3)=−11이므로 '+F('f(3)−f(1)','3−1')+'='+F('−11−(−5)','2')+'=−3입니다.'},
+
+{id:2,label:'2',group:'기본',title:'미분계수',kind:'미분계수',base:10,
+q:`<div>함수 <span class="math"><i>f</i>(<i>x</i>)=<i>x</i><span class="sup">2</span>+<i>x</i></span>의</div><div><span class="math"><i>x</i>=2</span>에서의 미분계수를 구하시오.</div>`,
+type:'mc',choices:['3','4','5','6'],ans:'5',
+hints:['미분계수는 f′(2), 즉 x=2에서의 순간변화율입니다.'],
+explain:'<b>핵심:</b> f′(x)=2x+1이므로 f′(2)=2·2+1=5입니다.'},
+
+{id:3,label:'3',group:'기본',title:'미분계수의 정의 변형',kind:'미분계수',base:11,
+q:`<div><span class="math"><i>f</i>′(1)=3</span>인 다항함수 <span class="math"><i>f</i>(<i>x</i>)</span>에 대하여</div><div class="eq">${LIM('h','0')}${F('<i>f</i>(1+3<i>h</i>)−<i>f</i>(1)','<i>h</i>')}</span></div><div>의 값은?</div>`,
+type:'mc',choices:['1','3','6','9'],ans:'9',
+hints:['분모를 3h로 만들면 f′(1)의 정의와 연결됩니다.'],
+explain:'<b>핵심:</b> '+F('f(1+3h)−f(1)','h')+'=3·'+F('f(1+3h)−f(1)','3h')+'이므로 극한값은 3f′(1)=9입니다.'},
+
+{id:4,label:'4',group:'기본',title:'인수분해와 미분계수',kind:'미분계수',base:11,
+q:`<div><span class="math"><i>f</i>′(1)=2</span>인 다항함수 <span class="math"><i>f</i>(<i>x</i>)</span>에 대하여</div><div class="eq">${LIM('x','1')}${F('<i>f</i>(<i>x</i>)−<i>f</i>(1)','<i>x</i><span class="sup">2</span>−1')}</span></div><div>의 값은?</div>`,
+type:'mc',choices:['1/2','1','2','4'],ans:'1',
+hints:['x²−1=(x−1)(x+1)로 인수분해하세요.'],
+explain:'<b>핵심:</b> 식을 '+F('f(x)−f(1)','x−1')+'·'+F('1','x+1')+'로 바꾸면 극한값은 f′(1)·1/2=1입니다.'},
+
+{id:5,label:'5',group:'기본',title:'도함수의 정의',kind:'도함수',base:12,
+q:`<div>함수 <span class="math"><i>f</i>(<i>x</i>)=<i>x</i><span class="sup">2</span>−<i>x</i></span>의 도함수를</div><div>도함수의 정의를 이용하여 구하시오.</div>`,
+type:'derivativefill',
+blanks:[
+ {answers:['0'],placeholder:'①'},
+ {answers:['x+h','x＋h'],placeholder:'②'},
+ {answers:['h'],placeholder:'③'}
+],
+hints:['① 도함수의 정의에서 h는 0으로 가까워집니다.','② f(   )의 괄호 안에는 x 대신 x+h를 넣습니다.','③ 2xh+h²−h를 h로 나누면 2x+h−1이 됩니다.'],
+explain:'<b>핵심:</b> 도함수의 정의에 따라 f′(x)=lim(h→0)[f(x+h)−f(x)]/h이고, f(x)=x²−x를 대입하여 정리하면 lim(h→0)(2x+h−1)=2x−1입니다.'},
+
+{id:6,label:'6',group:'기본',title:'다항함수의 미분',kind:'도함수',base:12,
+q:`<div>다음 함수의 도함수는?</div><div class="math"><i>y</i>=${F('4','3')}<i>x</i><span class="sup">3</span>−${F('1','2')}<i>x</i><span class="sup">2</span>+<i>x</i></div>`,
+type:'mc',choices:['4x²−x+1','4x²−x','4x³−x+1','4x²−2x+1'],ans:'4x²−x+1',
+hints:['각 항을 하나씩 미분하세요.'],
+explain:'<b>핵심:</b> '+F('4','3')+'x³→4x², −'+F('1','2')+'x²→−x, x→1이므로 y′=4x²−x+1입니다.'},
+
+{id:7,label:'7',group:'기본',title:'곱의 미분법',kind:'도함수',base:13,
+q:`<div>다음을 미분하시오.</div><div class="math"><i>y</i>=(2<i>x</i><span class="sup">2</span>−5)(<i>x</i><span class="sup">3</span>+<i>x</i>)</div>`,
+type:'mc',choices:['10x⁴−9x²−5','10x⁴−5x²−5','5x⁴−9x²−5','10x⁵−9x³−5x'],ans:'10x⁴−9x²−5',
+hints:['(fg)′=f′g+fg′를 이용하세요.'],
+explain:'<b>핵심:</b> y′=4x(x³+x)+(2x²−5)(3x²+1)=10x⁴−9x²−5입니다.'},
+
+{id:8,label:'8',group:'기본',title:'접선의 방정식',kind:'접선',base:13,
+q:`<div>점 <span class="math">(−1,3)</span>에서</div><div class="math"><i>y</i>=−2<i>x</i><span class="sup">2</span>+<i>x</i>+6</div><div>에 접하는 접선의 방정식을 구하시오.</div>`,
+type:'mc',choices:['y=5x+8','y=−5x−2','y=5x−8','y=−3x'],ans:'y=5x+8',
+hints:['접선의 기울기는 x=−1에서의 미분계수입니다.'],
+explain:'<b>핵심:</b> y′=−4x+1이므로 x=−1에서 기울기는 5입니다. 점 (−1,3)을 지나므로 y−3=5(x+1), 즉 y=5x+8입니다.'},
+
+{id:9,label:'9',group:'기본',title:'평균값 정리',kind:'평균값 정리',base:14,
+q:`<div>함수 <span class="math"><i>f</i>(<i>x</i>)=3<i>x</i><span class="sup">2</span>+2<i>x</i>+1</span>에 대하여</div><div>구간 <span class="math">[−1,1]</span>에서 평균값의 정리를 만족시키는 <span class="math"><i>c</i></span>의 값을 구하시오.</div>`,
+type:'mc',choices:['−1/2','0','1/2','1'],ans:'0',
+hints:['구간에서의 평균변화율과 f′(c)를 같게 놓으세요.'],
+explain:'<b>핵심:</b> 평균변화율은 '+F('f(1)−f(−1)','2')+'=2이고 f′(c)=6c+2입니다. 따라서 6c+2=2에서 c=0입니다.'},
+
+{id:10,label:'1',group:'도전',title:'극한과 미분계수',kind:'도전',boss:true,base:18,
+q:`<div>다항함수 <span class="math"><i>f</i>(<i>x</i>)</span>에 대하여</div><div class="eq">${LIM('h','0')}${F('<i>f</i>(<i>h</i>)','<i>h</i>')}</span>=5</div><div>일 때,</div><div class="eq">${LIM('x','1')}${F('<i>f</i>(<i>x</i>−1)−<i>f</i>(0)','<i>x</i><span class="sup">3</span>−1')}</span></div><div>의 값을 구하시오.</div>`,
+type:'input',ans:['5/3','5÷3'],placeholder:'답을 입력하세요',
+hints:['첫 번째 극한이 유한하려면 f(0)=0이어야 합니다.','첫 조건에서 f′(0)을 찾고, x³−1을 인수분해하세요.'],
+explain:'<b>핵심:</b> 첫 조건에서 f(0)=0이고 f′(0)=5입니다. x³−1=(x−1)(x²+x+1)이므로 두 번째 극한은 f′(0)/3=5/3입니다.'},
+
+{id:11,label:'2',group:'도전',title:'극한의 존재 조건',kind:'도전',boss:true,base:18,
+q:`<div>다항함수 <span class="math"><i>f</i>(<i>x</i>)</span>에 대하여</div><div class="math"><i>g</i>(<i>x</i>)=(<i>a</i><i>x</i><span class="sup">2</span>−2<i>a</i><i>x</i>+3)<i>f</i>(<i>x</i>)</div><div>라 하자.</div><div class="eq">${LIM('x','1')}${F('<i>g</i>(<i>x</i>)−<i>f</i>(1)','<i>x</i><span class="sup">3</span>−1')}</span>=2</div><div><span class="math"><i>f</i>(1)≠0</span>일 때, <span class="math"><i>a</i>+<i>f</i>′(1)</span>의 값은?</div>`,
+type:'input',ans:['8'],placeholder:'답을 입력하세요',
+hints:['극한이 유한하려면 x→1에서 분자도 0으로 가야 합니다.','먼저 a를 구한 뒤 g′(1)과 f′(1)의 관계를 확인하세요.'],
+explain:'<b>핵심:</b> 분자가 0으로 가야 하므로 (3−a)f(1)−f(1)=(2−a)f(1)=0입니다. f(1)≠0이므로 a=2. 이때 g′(1)=f′(1)이고 극한은 g′(1)/3=2이므로 f′(1)=6. 따라서 8입니다.'},
+
+{id:12,label:'3',group:'도전',title:'함수방정식과 도함수',kind:'도전',boss:true,base:18,
+q:`<div>실수 전체에서 미분가능한 함수 <span class="math"><i>f</i>(<i>x</i>)</span>가 모든 실수 <span class="math"><i>x</i>, <i>y</i></span>에 대하여</div><div class="math"><i>f</i>(<i>x</i>+<i>y</i>)=<i>f</i>(<i>x</i>)+<i>f</i>(<i>y</i>)−4<i>x</i><i>y</i>−<i>f</i>(0)</div><div>일 때, <span class="math"><i>f</i>′(2)−<i>f</i>′(0)</span>의 값을 구하시오.</div>`,
+type:'input',ans:['-8','−8'],placeholder:'답을 입력하세요',
+hints:[
+'주어진 식에서 y=2로 놓아 f(x+2)와 f(x)의 관계를 먼저 만들어 보세요.',
+'미분계수의 정의에 따라 f′(2)와 f′(0)을 각각 극한으로 나타내고 두 식의 차를 비교해 보세요.'
+],
+explain:`<b>핵심:</b> 주어진 식에서 y=2로 놓으면
+<div class="mathStep">f(x+2)=f(x)+f(2)−8x−f(0)</div>
+입니다. 따라서
+<div class="mathStep">f′(2)=${LIM('h','0')}${F('<i>f</i>(2+<i>h</i>)−<i>f</i>(2)','<i>h</i>')}</span></div>
+이고, 위 관계에 x=h를 대입하면
+<div class="mathStep">f(2+h)−f(2)=f(h)−f(0)−8h</div>
+이므로
+<div class="mathStep">f′(2)=${LIM('h','0')}[${F('<i>f</i>(<i>h</i>)−<i>f</i>(0)','<i>h</i>')}−8]</span>=f′(0)−8</div>
+입니다. 따라서 <b>f′(2)−f′(0)=−8</b>입니다.`},
+
+{id:13,label:'4',group:'도전',title:'미분가능한 조각함수',kind:'도전',boss:true,base:19,
+q:`<div>최고차항의 계수가 1인 이차함수 <span class="math"><i>f</i>(<i>x</i>)</span>에 대하여</div><div class="math"><i>g</i>(<i>x</i>)=<span class="piecewise"><span class="brace">{</span><span class="cases"><span><i>f</i>(<i>x</i>)</span><span class="cond"><i>x</i>≤1</span><span>${F('3<i>x</i>+<i>a</i>','<i>x</i>−1')}</span><span class="cond"><i>x</i>&gt;1</span></span></span></div><div>함수 <span class="math"><i>g</i>(<i>x</i>)</span>가 실수 전체에서 미분가능할 때, <span class="math"><i>g</i>(<i>a</i>)</span>의 값을 구하시오.</div>`,
+type:'input',ans:['19'],placeholder:'답을 입력하세요',
+hints:['x=1의 오른쪽에서 유한한 극한을 가지려면 3+a=0이어야 합니다.','a=−3일 때 x>1에서 g(x)=3입니다. x=1에서 연속·미분가능 조건을 이용하세요.'],
+explain:'<b>핵심:</b> a=−3이면 x>1에서 g(x)=3입니다. 따라서 f(1)=3, f′(1)=0. 최고차항 계수가 1인 이차함수이므로 f(x)=(x−1)²+3입니다. a=−3≤1이므로 g(a)=f(−3)=19입니다.'},
+
+{id:14,label:'5',group:'도전',title:'평균값 정리와 값의 범위',kind:'도전',boss:true,base:20,
+q:`<div>닫힌구간 <span class="math">[0,2]</span>에서 정의된 함수</div><div class="math"><i>f</i>(<i>x</i>)=<i>x</i><span class="sup">3</span>−6<i>x</i><span class="sup">2</span>+4</div><div>서로 다른 임의의 두 수 <span class="math"><i>a</i>,<i>b</i> (a&lt;b)</span>에 대하여</div><div class="math">${F('<i>f</i>(<i>b</i>)−<i>f</i>(<i>a</i>)','<i>b</i>−<i>a</i>')}=<i>k</i></div><div>일 때, 실수 <span class="math"><i>k</i></span>의 값의 범위를 구하시오.</div>`,
+type:'input',ans:['-12<k<0','−12<k<0'],placeholder:'예: -12<k<0',
+hints:[
+'평균값 정리를 이용하면 두 점을 잇는 직선의 기울기와 같은 미분계수를 갖는 점이 두 점 사이에 존재합니다.',
+'f′(x)를 구한 뒤, 0&lt;x&lt;2에서 f′(x)가 어떤 값들 사이에서 변하는지 살펴보세요. 단, 양 끝의 값이 실제로 포함되는지도 확인하세요.'
+],
+explain:'<b>핵심:</b> 평균값 정리에 의해 k=f′(c), 0&lt;c&lt;2인 c가 존재합니다. f′(c)=3c²−12c는 0&lt;c&lt;2에서 −12&lt;k&lt;0의 값을 가지며 양 끝값은 포함되지 않습니다.'},
+
+{id:15,label:'6',group:'도전',title:'접선과 좌표축이 만드는 넓이',kind:'도전',boss:true,base:20,
+q:`<div>미분가능한 함수 <span class="math"><i>f</i>(<i>x</i>)</span>가 다음을 만족시킬 때,</div><div>곡선 <span class="math"><i>y</i>=<i>f</i>(<i>x</i>)</span> 위의 점 <span class="math">(1,<i>f</i>(1))</span>에서의 접선과</div><div>x축, y축으로 둘러싸인 도형의 넓이를 구하시오.</div><div style="margin-top:12px">㈎ <span class="math"><i>f</i>(1)=0</span></div><div class="eq">㈏ ${LIM('x','1')}${F('{<i>f</i>(<i>x</i>)}<span class="sup">2</span>−2<i>f</i>(<i>x</i>)','1−<i>x</i>')}</span>=6</div>`,
+type:'input',ans:['3/2','1.5'],placeholder:'답을 입력하세요',
+hints:['f(1)=0을 이용하여 주어진 극한을 f′(1)과 연결하세요.','접선은 점 (1,0)을 지나며, 기울기를 알면 두 좌표축과 만드는 삼각형의 넓이를 구할 수 있습니다.'],
+explain:'<b>핵심:</b> f(1)=0이고 f(x)→0이므로 주어진 극한은 2f′(1)=6이 되어 f′(1)=3입니다. 접선은 y=3(x−1)=3x−3. x절편 1, y절편 −3이므로 넓이는 1/2·1·3=3/2입니다.'}
+];
+
+let state={name:'',xp:0,hints:0,miss:0,cleared:{},unknown:{},firstTry:{},usedHints:{},answers:{},attempts:{},current:null,review:false};
+let stageTimer=null,stageStartMs=null,lastShownSecond=-1;
+
+function showHow(){document.getElementById('how').classList.toggle('hidden')}
+function startGame(){state.name=(document.getElementById('teamName').value||'무명 팀').trim();document.getElementById('setup').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('playerLabel').textContent=state.name;renderMap();updateStats()}
+function resetGame(){stopStageTimer();if(!confirm('진행 기록을 모두 지우고 처음부터 시작할까요?'))return;state={name:state.name,xp:0,hints:0,miss:0,cleared:{},unknown:{},firstTry:{},usedHints:{},answers:{},attempts:{},current:null,review:false};resultPanel.classList.add('hidden');gamePanel.classList.add('hidden');mapPanel.classList.remove('hidden');renderMap();updateStats()}
+function unlocked(p){return p.group==='기본'||problems.filter(x=>x.group==='기본'&&state.cleared[x.id]).length>=7}
+function renderMap(){stageGrid.innerHTML='';problems.forEach(p=>{const b=document.createElement('button');b.className='stage';if(!unlocked(p))b.classList.add('locked');if(state.cleared[p.id])b.classList.add('cleared');b.disabled=!unlocked(p);const stars=p.base>=18?'★★★':p.base>=13?'★★':'★';b.innerHTML=`<div class="num">${p.group} ${p.label}</div><div class="name">${p.title}</div><div class="meta"><span class="star">${stars}</span> · ${p.base}점</div><span class="badge ${p.boss?'boss':''}">${state.unknown[p.id]?'모름':(state.cleared[p.id]?'CLEAR':p.kind)}</span>`;b.onclick=()=>openStage(p.id,!!state.cleared[p.id]);stageGrid.appendChild(b)})}
+function updateStats(){xp.textContent=state.xp;clearCount.textContent=Object.keys(state.cleared).length+'/15';hintCount.textContent=state.hints;missCount.textContent=state.miss}
+function stopStageTimer(){if(stageTimer){clearInterval(stageTimer);stageTimer=null}}
+function startStageTimer(p){stopStageTimer();if(state.review||p.group==='도전'||state.cleared[p.id]){timerArea.innerHTML='';stageStartMs=null;return}stageStartMs=Date.now();lastShownSecond=-1;const draw=()=>{const elapsed=Math.floor((Date.now()-stageStartMs)/1000)+1;if(elapsed===lastShownSecond)return;lastShownSecond=elapsed;const over=elapsed>60,warn=elapsed>=46&&!over,pct=Math.min(100,elapsed/60*100);timerArea.innerHTML=`<div class="timerWrap ${over?'over':(warn?'warn':'')}"><div class="timerTop"><span class="timerLabel">${over?'시간 초과 · −1점':'⏱ 경과 시간'}</span><span class="timerClock timerTick">${elapsed}초</span></div><div class="timerBar"><div class="timerFill" style="width:${pct}%"></div></div></div>`};draw();stageTimer=setInterval(draw,200)}
+function basicTimePenalty(p){return p.group==='기본'&&stageStartMs&&(Date.now()-stageStartMs)>60000?1:0}
+function openStage(id,review=false){const p=problems.find(x=>x.id===id);if(!review&&!unlocked(p))return;state.current=id;state.review=review;const oldHints=document.getElementById('usedHintsPersist');if(oldHints)oldHints.remove();mapPanel.classList.add('hidden');resultPanel.classList.add('hidden');gamePanel.classList.remove('hidden');stageKind.textContent=`${p.group} · ${review?'결과 다시보기':p.kind}`;stageTitle.textContent=`${p.group} ${p.label}. ${p.title}`;questionArea.innerHTML=`<div class="question">${p.q}</div><p class="instructions">${review?'내가 풀었던 문항을 다시 확인하는 화면입니다.':'풀이 과정은 활동지에 적은 뒤, 아래에서 답을 확인하세요.'}</p>`;messageArea.innerHTML='';reviewNavArea.innerHTML='';hintActionArea.innerHTML='';challengeActionArea.innerHTML='';if(review){renderReview(p)}else{renderInteraction(p);renderHintAction(p);renderChallengeAction(p);renderToolbar(p);startStageTimer(p)}}
+function renderInteraction(p){
+  if(p.type==='input'){
+    const saved=(state.answers[p.id]||'');
+    interactionArea.innerHTML=`<div class="answerRow"><input id="answerInput" type="text" inputmode="text" autocomplete="off" value="${escapeAttr(saved)}" placeholder="${p.placeholder||'답을 입력하세요'}" onkeydown="if(event.key==='Enter')checkInput(${p.id})"><button class="primary" onclick="checkInput(${p.id})">정답 확인</button></div>`;
+  }else if(p.type==='derivativefill'){
+    const saved=Array.isArray(state.answers[p.id])?state.answers[p.id]:[];
+    interactionArea.innerHTML=`<div class="derivSheet">
+      <div class="derivRow"><span class="derivEq"><i>f</i>′(<i>x</i>) = <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→<input class="dBlank" id="blank_${p.id}_0" value="${escapeAttr(saved[0]||'')}" placeholder="①"></span></span>
+      <span class="dFrac"><span class="num"><i>f</i>(<input class="dBlank wide" id="blank_${p.id}_1" value="${escapeAttr(saved[1]||'')}" placeholder="②">)−<i>f</i>(<i>x</i>)</span><span class="den"><i>h</i></span></span></span></div>
+      <div class="derivRow"><span class="derivEq">= <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→0</span></span>
+      <span class="dFrac"><span class="num">(<i>x</i>+<i>h</i>)²−(<i>x</i>+<i>h</i>)−(<i>x</i>²−<i>x</i>)</span><span class="den"><i>h</i></span></span></span></div>
+      <div class="derivRow"><span class="derivEq">= <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→0</span></span>
+      <span class="dFrac"><span class="num">2<i>x</i><i>h</i>+<i>h</i>²−<i>h</i></span><span class="den"><i>h</i></span></span></span></div>
+      <div class="derivRow"><span class="derivEq">= <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→0</span></span>(2<i>x</i>+<input class="dBlank" id="blank_${p.id}_2" value="${escapeAttr(saved[2]||'')}" placeholder="③">−1)</span></div>
+      <div class="derivRow"><span class="derivEq">= 2<i>x</i>−1</span></div>
+    </div><div style="margin-top:12px"><button class="primary" onclick="checkBlanks(${p.id})">정답 확인</button></div>`;
+  }else if(p.type==='blanks'){
+    const saved=Array.isArray(state.answers[p.id])?state.answers[p.id]:[];
+    interactionArea.innerHTML=`<div class="blankWork">${p.blanks.map((b,i)=>`<div class="blankLine">${b.before}<input id="blank_${p.id}_${i}" type="text" inputmode="text" autocomplete="off" value="${escapeAttr(saved[i]||'')}" placeholder="${b.placeholder||'빈칸에 식 입력'}">${b.after}</div>`).join('')}<button class="primary" onclick="checkBlanks(${p.id})">정답 확인</button></div>`;
+  }else{
+    interactionArea.innerHTML=`<div class="choices">${p.choices.map((c,i)=>`<button class="choice ${state.answers[p.id]===c?'selected':''}" onclick="checkMC(${p.id},${i},this)">${c}</button>`).join('')}</div>`;
+  }
+  renderUsedHints(p);
+}
+function renderReview(p){
+  stopStageTimer();timerArea.innerHTML='';hintActionArea.innerHTML='';challengeActionArea.innerHTML='';
+  reviewNavArea.innerHTML=`<div class="reviewNav"><span class="reviewNote">최종 결과에서 선택한 문항을 확인 중입니다.</span><button class="returnResultBtn" onclick="showResult()">← 점수 결과로 돌아가기</button></div>`;
+  const u=!!state.unknown[p.id],w=state.firstTry[p.id]===false;
+  const saved=state.answers[p.id];
+  if(p.type==='input'){
+    interactionArea.innerHTML=`<div class="answerRow"><input type="text" value="${escapeAttr(u?'모름':(saved||''))}" disabled></div>`;
+  }else if(p.type==='derivativefill'){
+    const vals=Array.isArray(saved)?saved:[];
+    interactionArea.innerHTML=`<div class="derivSheet">
+      <div class="derivRow"><span class="derivEq"><i>f</i>′(<i>x</i>) = <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→<input class="dBlank correctInput" value="${escapeAttr(vals[0]||'')}" disabled></span></span>
+      <span class="dFrac"><span class="num"><i>f</i>(<input class="dBlank wide correctInput" value="${escapeAttr(vals[1]||'')}" disabled>)−<i>f</i>(<i>x</i>)</span><span class="den"><i>h</i></span></span></span></div>
+      <div class="derivRow"><span class="derivEq">= <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→0</span></span><span class="dFrac"><span class="num">(<i>x</i>+<i>h</i>)²−(<i>x</i>+<i>h</i>)−(<i>x</i>²−<i>x</i>)</span><span class="den"><i>h</i></span></span></span></div>
+      <div class="derivRow"><span class="derivEq">= <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→0</span></span><span class="dFrac"><span class="num">2<i>x</i><i>h</i>+<i>h</i>²−<i>h</i></span><span class="den"><i>h</i></span></span></span></div>
+      <div class="derivRow"><span class="derivEq">= <span class="dLim"><span class="main">lim</span><span class="under"><i>h</i>→0</span></span>(2<i>x</i>+<input class="dBlank correctInput" value="${escapeAttr(vals[2]||'')}" disabled>−1)</span></div>
+      <div class="derivRow"><span class="derivEq">= 2<i>x</i>−1</span></div>
+    </div>`;
+  }else if(p.type==='blanks'){
+    const vals=Array.isArray(saved)?saved:[];
+    interactionArea.innerHTML=`<div class="blankWork">${p.blanks.map((b,i)=>`<div class="blankLine">${b.before}<input type="text" value="${escapeAttr(vals[i]||'')}" disabled>${b.after}</div>`).join('')}</div>`;
+  }else{
+    interactionArea.innerHTML=`<div class="choices">${p.choices.map(c=>`<button class="choice ${c===saved?'selected':''} ${normalize(c)===normalize(p.ans)?'correct':''}" disabled>${c}${c===saved?' · 내가 선택':''}</button>`).join('')}</div>`;
+  }
+  const answerText=(p.type==='blanks'||p.type==='derivativefill')?'① 0, ② x+h, ③ h':(Array.isArray(p.ans)?p.ans[0]:p.ans);
+  const myText=u?'모름':(Array.isArray(saved)?saved.join(' → '):(saved||'기록 없음'));
+  const tries=(state.attempts[p.id]||[]).filter(x=>x!==myText);
+  messageArea.innerHTML=`<div class="msg info"><b>내가 최종 입력/선택한 답:</b> ${escapeHtml(myText)}${tries.length?`<br><b>이전에 시도한 답:</b> ${tries.map(escapeHtml).join(' → ')}`:''}<br><b>정답:</b> ${escapeHtml(answerText)}<br>${p.explain}</div>`;
+  renderUsedHints(p);
+  toolbar.innerHTML=`<button class="ghost" onclick="showResult()">← 점수 결과로 돌아가기</button>`;
+}
+function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function escapeAttr(v){return escapeHtml(v).replace(/'/g,'&#39;')}
+function renderUsedHints(p){
+  const n=state.usedHints[p.id]||0;
+  if(!n)return;
+  const box=p.hints.slice(0,n).map((h,i)=>`<div class="hintBox"><b>사용한 힌트 ${i+1}</b> · ${h}</div>`).join('');
+  const existing=document.getElementById('usedHintsPersist');
+  if(existing)existing.remove();
+  interactionArea.insertAdjacentHTML('afterend',`<div id="usedHintsPersist" class="hintPersist">${box}</div>`);
+}
+function renderHintAction(p){
+  const u=state.usedHints[p.id]||0, solved=!!state.cleared[p.id];
+  if(solved || !p.hints || !p.hints.length){hintActionArea.innerHTML='';return;}
+  if(u<p.hints.length){
+    hintActionArea.innerHTML=`<div class="hintActionArea"><button class="hintBtn" onclick="useHint(${p.id})">💡 힌트 보기 <strong>(−2점)</strong></button></div>`;
+  }else{
+    hintActionArea.innerHTML=`<div class="hintActionArea"><button class="hintBtn used" disabled>💡 힌트 모두 사용</button></div>`;
+  }
+}
+function renderChallengeAction(p){
+  if(p.group==='도전' && !state.cleared[p.id]){
+    challengeActionArea.innerHTML=`<div class="challengeActionArea"><button class="unknownBtn" onclick="markUnknown(${p.id})">모름 · 0점으로 넘어가기</button></div>`;
+  }else{
+    challengeActionArea.innerHTML='';
+  }
+}
+function renderToolbar(p){
+  const solved=!!state.cleared[p.id];
+  let h='';
+  if(solved&&!state.unknown[p.id])h+=`<button class="ghost" onclick="showExplanation(${p.id})">풀이 핵심 보기</button>`;
+  toolbar.innerHTML=h;
+}
+function normalize(s){return String(s).trim().replace(/\s+/g,'').replace(/−/g,'-').replace(/²/g,'^2').replace(/³/g,'^3').replace(/′/g,"'").replace(/÷/g,'/').toLowerCase()}
+function checkMC(id,index,btn){const p=problems.find(x=>x.id===id);if(state.cleared[id]||state.review)return;const val=p.choices[index];(state.attempts[id]||(state.attempts[id]=[])).push(val);if(normalize(val)===normalize(p.ans)){state.answers[id]=val;btn.classList.add('correct');clearStage(p)}else{btn.classList.add('wrong');btn.disabled=true;wrongTry(p,'다시 생각해 보세요.')}}
+function checkInput(id){
+  const p=problems.find(x=>x.id===id);
+  if(state.cleared[id]||state.review)return;
+  const el=document.getElementById('answerInput'); if(!el)return;
+  const raw=el.value.trim(),v=normalize(raw);
+  if(!v){message('답을 입력하세요.','info');return;}
+  (state.attempts[id]||(state.attempts[id]=[])).push(raw);
+  const answers=Array.isArray(p.ans)?p.ans:[p.ans];
+  if(answers.some(a=>normalize(a)===v)){state.answers[id]=raw;el.disabled=true;clearStage(p)}
+  else{wrongTry(p,'다시 생각해 보세요.');el.select()}
+}
+function checkBlanks(id){
+  const p=problems.find(x=>x.id===id); if(state.cleared[id]||state.review)return;
+  const vals=p.blanks.map((b,i)=>(document.getElementById(`blank_${id}_${i}`)?.value||'').trim());
+  if(vals.some(v=>!v)){message('모든 빈칸에 식을 입력하세요.','info');return;}
+  (state.attempts[id]||(state.attempts[id]=[])).push(vals.join(' → '));
+  const oks=p.blanks.map((b,i)=>b.answers.some(a=>normalize(a)===normalize(vals[i])));
+  p.blanks.forEach((b,i)=>{const el=document.getElementById(`blank_${id}_${i}`);el.classList.remove('correctInput','wrongInput');el.classList.add(oks[i]?'correctInput':'wrongInput')});
+  if(oks.every(Boolean)){state.answers[id]=vals;clearStage(p)}
+  else{wrongTry(p,'빈칸의 식을 다시 확인해 보세요.')}
+}
+function wrongTry(p,text){state.miss++;if(state.firstTry[p.id]===undefined)state.firstTry[p.id]=false;state.xp-=3;updateStats();message(`−3점 · ${text}`,'bad')}
+function clearStage(p){const penalty=basicTimePenalty(p);stopStageTimer();hintActionArea.innerHTML='';challengeActionArea.innerHTML='';if(state.firstTry[p.id]===undefined)state.firstTry[p.id]=true;state.cleared[p.id]=true;state.xp+=p.base-penalty;updateStats();const tm=p.group==='기본'?(penalty?' · 1분 초과 −1점':' · 1분 안에 해결'):'';message(`STAGE CLEAR! +${p.base-penalty}점${tm}<br><span style="font-weight:600">${p.explain}</span>`,'good');renderToolbar(p);renderMap();if(Object.keys(state.cleared).length===15)setTimeout(showResult,700)}
+function useHint(id){
+  const p=problems.find(x=>x.id===id),u=state.usedHints[id]||0;
+  if(state.cleared[id]||u>=p.hints.length)return;
+  state.usedHints[id]=u+1;state.hints++;state.xp-=2;updateStats();
+  message(`<b>힌트 ${u+1}</b> · ${p.hints[u]}<br><span style="font-size:13px;font-weight:900">힌트 사용: −2점</span>`,'info');
+  renderUsedHints(p);renderHintAction(p);renderChallengeAction(p);renderToolbar(p);
+}
+function markUnknown(id){
+  const p=problems.find(x=>x.id===id);
+  if(p.group!=='도전'||state.cleared[id])return;
+  stopStageTimer();
+  state.unknown[id]=true;
+  state.cleared[id]=true;
+  state.firstTry[id]=false;
+  state.answers[id]='모름';
+  // 모름은 점수 가산/감점 없이 0점 처리
+  hintActionArea.innerHTML='';
+  challengeActionArea.innerHTML='';
+  interactionArea.innerHTML='';
+  updateStats();
+  message('「모름」으로 기록했습니다. 이 문항은 <b>0점</b>으로 처리되며 다음 문제로 넘어갈 수 있습니다.','info');
+  renderToolbar(p);
+  renderMap();
+  if(Object.keys(state.cleared).length===15)setTimeout(showResult,700);
+}
+function showExplanation(id){const p=problems.find(x=>x.id===id);message(`<b>풀이 핵심</b><br>${p.explain}`,'info')}
+function message(t,y){messageArea.innerHTML=`<div class="msg ${y}">${t}</div>`}
+function backToMap(){stopStageTimer();state.review=false;state.current=null;gamePanel.classList.add('hidden');resultPanel.classList.add('hidden');mapPanel.classList.remove('hidden');renderMap()}
+function showResult(){stopStageTimer();state.review=false;reviewNavArea.innerHTML='';gamePanel.classList.add('hidden');mapPanel.classList.add('hidden');resultPanel.classList.remove('hidden');const max=209,pct=state.xp/max,g=pct>=.9?'S':pct>=.78?'A':pct>=.65?'B':'C';grade.textContent=g;resultText.innerHTML=`${state.name}의 DIFFERENTIATION QUEST가 완료되었습니다.<br><span style="font-size:13px;color:#64748b">아래 문항을 클릭하면 자신이 풀었던 문제 화면으로 다시 들어갈 수 있습니다.</span>`;finalXp.textContent=state.xp;finalHints.textContent=state.hints+'회';finalMiss.textContent=state.miss+'회';const items=problems.map(p=>{const u=!!state.unknown[p.id],w=state.firstTry[p.id]===false;return `<button class="problemResultItem ${u?'unknown':(w?'retry':'ok')}" onclick="openStage(${p.id},true)"><b>${p.group} ${p.label}</b> · ${u?'모름':(w?'틀린 적 있음':'한 번에 정답')}<br><span style="font-size:12px;font-weight:700">문제 다시보기 →</span></button>`}).join('');problemResultList.innerHTML=`<div class="problemResultGrid">${items}</div>`}
+function downloadResult(){const rows=problems.map(p=>`${p.group} ${p.label}. ${p.title}: ${state.unknown[p.id]?'모름':(state.firstTry[p.id]===false?'틀린 적 있음':'한 번에 정답')}`).join('\n');const text=`DIFFERENTIATION QUEST 결과\n이름/팀: ${state.name}\n최종 점수: ${state.xp}\n힌트 사용: ${state.hints}회\n오답 횟수: ${state.miss}회\n완료: ${Object.keys(state.cleared).length}/15\n\n${rows}`;const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`DIFFERENTIATION_QUEST_${state.name.replace(/[\\/:*?"<>|]/g,'_')}_결과.txt`;a.click();URL.revokeObjectURL(a.href)}
+
+</script>
+</body></html>
