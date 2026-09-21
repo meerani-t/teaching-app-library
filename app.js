@@ -95,6 +95,18 @@
     url: "./apps/continuity-quest/index.html?v=20260904-v15",
     date: "2026. 9. 4.",
   },
+  {
+    title: "미분 1차 형성평가",
+    subject: "수학",
+    category: "미적분",
+    description: "미분계수와 도함수, 접선의 방정식, 평균값 정리를 기본·도전 문제로 확인하는 게임형 형성평가입니다.",
+    tags: ["미분계수", "도함수", "접선", "평균값 정리", "형성평가"],
+    icon: "✏️",
+    colors: ["#3b82f6", "#4338ca"],
+    subjectColors: ["#e8efff", "#3346a8"],
+    url: "./apps/differentiation-quest/index.html?v=20260922-v11",
+    date: "2026. 9. 22.",
+  },
 ];
 
 
@@ -110,19 +122,7 @@ let selectedCategory = "전체";
 
 
 function categories() {
-  return ["전체", ...new Set(apps.map((app) => app.category))  {
-    title: "미분 1차 형성평가",
-    subject: "수학",
-    category: "미적분",
-    description: "미분계수와 도함수, 접선의 방정식, 평균값 정리를 기본·도전 문제로 확인하는 게임형 형성평가입니다.",
-    tags: ["미분계수", "도함수", "접선", "평균값 정리", "형성평가"],
-    icon: "✏️",
-    colors: ["#3b82f6", "#4338ca"],
-    subjectColors: ["#e8efff", "#3346a8"],
-    url: "./apps/differentiation-quest/index.html?v=20260922-v11",
-    date: "2026. 9. 22.",
-  },
-];
+  return ["전체", ...new Set(apps.map((app) => app.category))];
 }
 
 
