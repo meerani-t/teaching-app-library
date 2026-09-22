@@ -104,7 +104,7 @@
     icon: "✏️",
     colors: ["#3b82f6", "#4338ca"],
     subjectColors: ["#e8efff", "#3346a8"],
-    url: "./apps/differentiation-quest/index.html?v=20260922-v11",
+    url: "./apps/differentiation-quest/index.html?v=20260922-v12",
     date: "2026. 9. 22.",
   },
 ];
