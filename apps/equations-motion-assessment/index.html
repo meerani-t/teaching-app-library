@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>26. 방부등식, 속도가속도 형성평가</title><style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#1f2937;--muted:#64748b;--line:#dbe3ee;--accent:#3b82f6;--accent2:#8b5cf6;--good:#16a34a;--bad:#dc2626;--gold:#f59e0b}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink)} button,input{font:inherit} button{cursor:pointer}.shell{max-width:1180px;margin:0 auto;padding:20px}.topbar{display:flex;gap:14px;justify-content:space-between;align-items:center;background:#0f172a;color:#fff;border-radius:20px;padding:16px 18px;position:sticky;top:8px;z-index:10;box-shadow:0 10px 30px rgba(15,23,42,.15)}.brand{font-weight:900;letter-spacing:.4px;font-size:20px}.brand small{display:block;font-size:12px;font-weight:700;color:#cbd5e1;margin-top:2px}.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.pill{background:#1e293b;border:1px solid #334155;padding:8px 11px;border-radius:999px;font-weight:800;font-size:13px}.pill strong{color:#fde68a}.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:18px;box-shadow:0 8px 24px rgba(15,23,42,.06)}.setup{max-width:700px;margin:40px auto}.setup h1{margin:0 0 8px;font-size:36px}.setup p{color:var(--muted);line-height:1.7}.field{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}.field input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:14px}.primary{border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;padding:13px 18px;border-radius:14px}.ghost{border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:800;padding:11px 14px;border-radius:12px}.hidden{display:none!important}.mapTitle{display:flex;align-items:end;justify-content:space-between;gap:12px}.mapTitle h2{margin:0}.mapTitle p{margin:0;color:var(--muted);font-size:14px}.stageGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.stage{min-height:115px;border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px;text-align:left;position:relative;transition:.18s}.stage:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(15,23,42,.08)}.stage.locked{opacity:.42}.stage.cleared{border-color:#86efac;background:#f0fdf4}.stage .num{font-size:12px;font-weight:900;color:var(--muted)}.stage .name{font-weight:900;margin-top:7px}.stage .meta{font-size:12px;color:var(--muted);margin-top:6px}.badge{position:absolute;right:10px;top:10px;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900;background:#eef2ff;color:#4338ca}.badge.boss{background:#fff7ed;color:#c2410c}.badge.trap{background:#fef2f2;color:#b91c1c}.star{color:var(--gold)}.gameHead{display:flex;justify-content:space-between;gap:14px;align-items:center}.gameHead h2{margin:0}.stageKind{font-size:12px;font-weight:900;color:#475569;background:#f1f5f9;border-radius:999px;padding:6px 10px}.question{margin-top:18px;padding:22px;border-radius:18px;background:#fbfdff;border:1px solid #dbeafe;font-size:25px;font-weight:800;line-height:1.7;text-align:center}.math{font-family:Georgia,"Times New Roman",serif;font-weight:500}.frac{display:inline-grid;vertical-align:middle;text-align:center;line-height:1.15;margin:0 .15em}.frac>span:first-child{border-bottom:1.6px solid currentColor;padding:0 .16em .08em}.frac>span:last-child{padding:.08em .16em 0}.smallMath{font-size:.86em}
+.piecewise{
+  display:inline-flex;
+  align-items:center;
+  vertical-align:middle;
+  margin-left:.15em;
+  white-space:nowrap;
+}
+.piecewise .brace{
+  font-family:"Times New Roman",serif;
+  font-size:3.4em;
+  font-weight:400;
+  line-height:.72;
+  margin-right:.10em;
+  transform:scaleX(.72);
+  transform-origin:center;
+}
+.piecewise .cases{
+  display:grid;
+  grid-template-columns:max-content max-content;
+  column-gap:.65em;
+  row-gap:.18em;
+  align-items:center;
+  text-align:left;
+  line-height:1.15;
+}
+.piecewise .cases > span{
+  display:block;
+}
+.piecewise .cond{
+  font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  font-size:.72em;
+  font-style:normal;
+  font-weight:600;
+  color:#475569;
+}
+.instructions{margin:14px 0 0;color:var(--muted);line-height:1.7}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.choice{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px;font-weight:850}.choice:hover{border-color:#93c5fd;background:#eff6ff}.choice.correct{border-color:#86efac;background:#f0fdf4;color:#166534}.choice.wrong{border-color:#fecaca;background:#fef2f2;color:#991b1b}.answerRow{display:flex;gap:10px;margin-top:16px}.answerRow input{flex:1;border:1px solid var(--line);border-radius:14px;padding:14px;font-weight:800}.blankWork{display:grid;gap:12px;margin-top:16px}.blankLine{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}.blankLine input{flex:1;min-width:220px;border:1px solid var(--line);border-radius:12px;padding:12px;font-weight:800;background:#fff}.blankLine input.correctInput{border-color:#86efac;background:#f0fdf4}.inlineBlank{display:inline-block;width:86px;min-width:70px;border:0;border-bottom:2px solid #64748b;background:#fff7d6;padding:3px 6px;margin:0 4px;text-align:center;font-family:inherit;font-size:.95em;font-weight:900;border-radius:6px}.inlineBlank.correctInput{border-bottom-color:#16a34a;background:#ecfdf5}.inlineBlank.wrongInput{border-bottom-color:#dc2626;background:#fef2f2}.derivWork{margin:11px 0;line-height:2.15}.blankLine input.wrongInput{border-color:#fecaca;background:#fef2f2}.savedAnswer{margin-top:8px;font-size:13px;color:#475569}.hintPersist{margin-top:10px;display:grid;gap:8px}.hintPersist .hintBox{margin-top:0}.msg{margin-top:14px;padding:12px 14px;border-radius:14px;font-weight:800;line-height:1.55}.msg.good{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}.msg.bad{background:#fff1f2;color:#9f1239;border:1px solid #fecdd3}.msg.info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.hintBox{margin-top:12px;border-left:4px solid #f59e0b;background:#fffbeb;padding:12px 14px;border-radius:10px;line-height:1.6}.trapList{display:grid;gap:10px;margin-top:16px}.trapStep{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left}.trapStep:hover{background:#fff7ed;border-color:#fdba74}.graphWrap{display:flex;justify-content:center;margin:18px 0}svg{max-width:100%;height:auto}.footerNote{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.6}.resultCard{text-align:center}.grade{font-size:64px;font-weight:1000;margin:8px 0;background:linear-gradient(135deg,#2563eb,#7c3aed);-webkit-background-clip:text;color:transparent}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.sumBox{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:14px}.sumBox b{display:block;font-size:22px;margin-top:4px}@media(max-width:850px){.stageGrid{grid-template-columns:repeat(3,1fr)}.field{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.shell{padding:10px}.topbar{position:static;border-radius:16px;align-items:flex-start;flex-direction:column}.stats{justify-content:flex-start}.stageGrid{grid-template-columns:repeat(2,1fr)}.choices{grid-template-columns:1fr}.question{font-size:20px;padding:16px}.answerRow{flex-direction:column}}
+
+math{
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;
+  font-size:1.08em;
+}
+.question math[display="block"]{
+  display:block;
+  margin:.15em auto;
+}
+.mathStack{display:grid;gap:10px;justify-items:center}
+.choice math{font-size:1.08em;pointer-events:none}
+
+
+.question math{
+  display:inline-block !important;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+.question .mathStack{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.question .mathStack math{
+  display:inline-block !important;
+}
+
+
+.eq{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.28em;
+  white-space:nowrap;
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;
+  font-weight:500;
+}
+.limbox{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  line-height:.88;
+  flex:0 0 auto;
+  margin-right:.04em;
+}
+.limbox .lim{font-size:1em}
+.limbox .sub{font-size:.52em;margin-top:.12em;letter-spacing:-.02em}
+.fr{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:stretch;
+  vertical-align:middle;
+  line-height:1.05;
+  text-align:center;
+  margin:0 .08em;
+}
+.fr .top{border-bottom:1.5px solid currentColor;padding:0 .16em .10em}
+.fr .bot{padding:.10em .16em 0}
+.sqrtx{
+  display:inline-flex;
+  align-items:flex-start;
+  position:relative;
+  padding-left:.72em;
+  line-height:1.08;
+}
+.sqrtx::before{
+  content:"√";
+  position:absolute;
+  left:0;
+  top:.02em;
+  font-size:1.17em;
+  line-height:1;
+}
+.sqrtx .rad{
+  border-top:1.5px solid currentColor;
+  padding:.02em .12em 0 .10em;
+  min-width:.55em;
+}
+.sup{font-size:.63em;vertical-align:super;line-height:0}
+.casebox{display:inline-flex;align-items:center;gap:.18em}
+.casebrace{font-size:2.25em;line-height:.9}
+.cases{display:grid;grid-template-columns:auto auto;gap:.08em .6em;text-align:left;font-size:.86em}
+.multilineEq{display:flex;flex-direction:column;align-items:center;gap:12px}
+.question .eq{font-size:1em}
+
+
+.timerWrap{
+  margin:14px auto 18px;max-width:560px;padding:16px 18px;
+  border:3px solid #93c5fd;background:#eff6ff;border-radius:18px;
+  box-shadow:0 8px 20px rgba(59,130,246,.12)
+}
+.timerTop{
+  display:flex;justify-content:center;align-items:center;gap:16px;
+  font-size:16px;font-weight:900;color:#1e3a8a;margin-bottom:10px
+}
+.timerLabel{font-size:16px}
+.timerClock{
+  min-width:110px;text-align:center;font-size:38px;line-height:1;
+  font-weight:1000;font-variant-numeric:tabular-nums;
+  letter-spacing:.03em;color:#1d4ed8
+}
+.timerTick{
+  animation:timerPop .32s ease-out
+}
+@keyframes timerPop{
+  0%{transform:scale(1.28);opacity:.45}
+  55%{transform:scale(.94);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
+.timerBar{height:14px;background:#dbeafe;border-radius:999px;overflow:hidden}
+.timerFill{height:100%;background:#22c55e;transition:width .25s linear,background .2s}
+.timerWrap.warn{border-color:#fbbf24;background:#fffbeb}
+.timerWrap.warn .timerTop,.timerWrap.warn .timerClock{color:#92400e}
+.timerWrap.warn .timerFill{background:#f59e0b}
+.timerWrap.over{border-color:#ef4444;background:#fff1f2}
+.timerWrap.over .timerTop,.timerWrap.over .timerClock{color:#b91c1c}
+.timerWrap.over .timerFill{background:#ef4444}
+
+.problemResultGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.problemResultItem{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:800;background:#fff;text-align:left;cursor:pointer;transition:.18s}
+.problemResultItem:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,23,42,.10)}
+.problemResultItem.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+.problemResultItem.retry{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+.problemResultItem.unknown{background:#f1f5f9;border-color:#cbd5e1;color:#475569}
+@media (max-width:700px){.problemResultGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.multiCheck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.multiCheck label{display:flex;align-items:center;gap:9px;padding:13px;border:1px solid var(--line);border-radius:14px;font-weight:800;background:#fff}@media(max-width:650px){.multiCheck{grid-template-columns:1fr}}
+.derivSheet{margin-top:16px;background:#fbfcff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;font-family:"Cambria Math","Times New Roman",serif;font-size:22px;overflow-x:auto}
+.derivRow{display:flex;align-items:center;justify-content:center;gap:8px;min-height:62px;white-space:nowrap}
+.derivEq{display:inline-flex;align-items:center;gap:6px}
+.dLim{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;vertical-align:middle;margin:0 3px}
+.dLim .main{font-size:1.05em}.dLim .under{font-size:.56em;margin-top:3px}
+.dFrac{display:inline-flex;flex-direction:column;align-items:stretch;text-align:center;vertical-align:middle;line-height:1.15;margin:0 4px}
+.dFrac .num{border-bottom:1.7px solid currentColor;padding:0 8px 5px}
+.dFrac .den{padding-top:5px}
+.dBlank{display:inline-block;width:70px;border:1px solid #94a3b8;border-bottom:3px solid #64748b;border-radius:9px;background:#fff;padding:7px 6px;text-align:center;font:inherit;font-weight:900;line-height:1}
+.dBlank.wide{width:105px}.dBlank.correctInput{border-color:#22c55e;background:#f0fdf4}.dBlank.wrongInput{border-color:#ef4444;background:#fef2f2}
+
+
+.hintBtn{border:1px solid #f2c94c;background:#fff8d8;color:#6b4f00;border-radius:12px;padding:11px 15px;font-weight:950;cursor:pointer;box-shadow:0 3px 10px rgba(120,90,0,.08)}
+.hintBtn:hover{background:#fff1a8;border-color:#e0b52d}.hintBtn.used{opacity:.62;cursor:default}
+.mathStep{margin:9px 0;text-align:center;font-family:"Cambria Math","Times New Roman",serif;font-size:1.05em}
+
+
+.hintActionArea{display:flex;justify-content:center;margin:16px 0 4px}
+.hintActionArea .hintBtn{font-size:16px;padding:13px 22px;min-width:190px}
+
+.challengeActionArea{display:flex;justify-content:center;margin:8px 0 12px}
+.challengeActionArea .unknownBtn{border:1px solid #fca5a5;background:#fff1f2;color:#9f1239;border-radius:12px;padding:12px 22px;min-width:190px;font-weight:950;font-size:15px;cursor:pointer}
+.challengeActionArea .unknownBtn:hover{background:#ffe4e6}
+
+.reviewNav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;border:1px solid #cbd5e1;border-radius:14px;background:#f8fafc}
+.reviewNav .reviewNote{font-size:14px;font-weight:850;color:#475569}
+.returnResultBtn{border:0;border-radius:12px;padding:11px 16px;background:#111827;color:#fff;font-weight:950;font-size:14px;cursor:pointer}
+.returnResultBtn:hover{opacity:.9}
+
+:root{--accent:#3b82f6;--accent2:#8b5cf6}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #2563eb;outline-offset:3px}button:disabled{cursor:default}.setup{max-width:820px}.setup h1{font-size:clamp(24px,4vw,36px)}.eyebrow{color:#4f46e5;font-weight:900;letter-spacing:2px;font-size:12px}.introGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.introGrid>div{background:#f1f5f9;padding:18px;border-radius:14px}.introGrid strong{display:block;font-size:25px}.introGrid span{font-size:13px;color:var(--muted)}.rules{font-size:14px;line-height:1.9;color:#475569}.stageGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.sectionLabel{display:flex;justify-content:space-between;gap:10px;margin:24px 0 0;align-items:center}.sectionLabel h3{margin:0}.sectionLabel small{color:var(--muted)}.progressTrack{height:8px;border-radius:8px;background:#e2e8f0;margin-top:14px;overflow:hidden}.progressTrack span{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#8b5cf6)}.question{font-size:22px;overflow-wrap:anywhere}.question .math{display:inline-block;max-width:100%}.answerFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}.answerField{display:flex;flex-direction:column;gap:8px;font-weight:750;font-size:14px}.answerField input,.answerField select{width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:12px;padding:13px;background:white;color:#1f2937}.answerField.wide{grid-column:1/-1}.answerHelp{font-size:13px;color:#64748b;line-height:1.7}.successBox{padding:28px;text-align:center;border:1px solid #86efac;background:#f0fdf4;border-radius:16px;margin-top:20px}.successBox strong{display:block;font-size:25px;color:#166534;margin-bottom:10px}.reviewContent{line-height:1.9;text-align:left}.reviewContent h3{margin-top:24px}.answerKey{padding:16px;background:#eef2ff;border-radius:12px;font-weight:800}.history{overflow-wrap:anywhere;color:#475569;font-size:14px}.statusNote{font-size:13px;color:#475569}.graphWrap{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:12px}.graphWrap svg{width:620px}.graphFeatureNote{border-left:4px solid #8b5cf6;background:#f5f3ff;padding:12px;line-height:1.7;font-size:14px}.sessionNote{font-size:12px;color:#64748b;margin-top:12px}.pill{font-variant-numeric:tabular-nums}.timerWrap{padding:10px 16px;margin:16px auto}.timerClock{font-size:30px}.timerTop{margin-bottom:6px}.timerBar{height:8px}.formula{font-family:Cambria,'Times New Roman',serif;font-size:1.15em}.resultCard p{line-height:1.8}.modelTable{width:100%;border-collapse:collapse;font-size:14px}.modelTable td,.modelTable th{padding:8px;border:1px solid #dbe3ee;text-align:center}.modelTable th{background:#f1f5f9}.printOnly{display:none}@media(max-width:600px){.stageGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.answerFields{grid-template-columns:1fr}.question{font-size:19px}.introGrid{gap:6px}.introGrid>div{padding:12px 8px}.introGrid strong{font-size:22px}.panel{padding:16px}.gameHead{align-items:flex-start}.gameHead h2{font-size:21px}.sectionLabel{align-items:flex-start;flex-direction:column}.problemResultGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media print{.topbar,.toolbar,.reviewNav,.gameHead>button,.footerNote{display:none}.panel{box-shadow:none;border:0}.shell{padding:0}}
+
+.choiceSet{border:0;margin:20px 0 0;padding:0;min-width:0}.choiceSet legend{font-weight:850;font-size:15px}.optionCard{display:block;text-align:left;cursor:pointer;line-height:1.6}.optionCard.selected,.optionCard:has(input:checked){border:2px solid #4f46e5;background:#eef2ff;padding:13px 11px}.optionHeader{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.optionHeader input{width:18px;height:18px;margin:0;accent-color:#4f46e5;flex:0 0 auto}.optionHeader>span{flex:1}.optionCard.readonly{cursor:default;opacity:1}.optionCard.readonly input{opacity:1}.myChoice{font-size:12px;background:#4f46e5;color:white;border-radius:999px;padding:3px 9px;white-space:nowrap}.optionCard svg{display:block;width:100%;margin-top:12px;background:#fff;border-radius:10px}.retainedAnswer{margin-top:18px;padding:18px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:14px}.retainedAnswer p{margin-bottom:0;overflow-wrap:anywhere}.graphChoices{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:560px){.graphChoices{grid-template-columns:1fr}}
+.fileDownloadBar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:16px;margin-bottom:16px}.fileDownloadBar span{font-size:14px;color:#475569}.fileDownloadBar button{white-space:nowrap}@media(max-width:560px){.fileDownloadBar{flex-direction:column;align-items:stretch;text-align:center}}@media print{.fileDownloadBar{display:none}}
+
+.limitQuestion{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:16px 0}.mathButtons{align-items:center}.mathButtons button{min-width:90px}.mathButtons .answerHelp{flex-basis:100%}.modelTable{font-size:clamp(11px,2.5vw,14px)}.modelTable th,.modelTable td{padding:6px 3px}</style></head><body><div class="shell">
+<div class="fileDownloadBar"><button class="primary" id="downloadFileBtn" type="button">↓ HTML 파일 다운로드</button></div>
+<section id="setup" class="panel setup">
+<div class="eyebrow">DIFFERENTIATION QUEST · No.26</div><h1>26. 방부등식, 속도가속도 형성평가</h1>
+<p>도함수로 풀어 보는 방정식과 운동.<br>실근의 개수, 부등식, 속도와 가속도를 15개의 스테이지로 탐험하세요.</p>
+<div class="introGrid"><div><strong>9 + 6</strong><span>기본 문제 + 도전 문제</span></div><div><strong>7 CLEAR</strong><span>기본 7문제 해결 시 도전 해제</span></div><div><strong>210점</strong><span>기본 10점 · 도전 20점</span></div></div>
+<label class="answerField" for="teamName">학생 이름 또는 팀 이름<input id="teamName" maxlength="30" placeholder="예: 홍길동(1모둠)" autocomplete="off"></label>
+<div class="toolbar"><button class="primary" id="startBtn">게임 시작</button><button class="ghost" id="resumeBtn" hidden="">이어서 하기</button><button class="ghost" id="howBtn" aria-expanded="false">게임 방법</button></div>
+<div id="how" class="hintBox hidden rules"><b>점수와 진행 규칙</b><br>기본 정답 +10점, 도전 정답 +20점 · 오답 제출마다 −3점 · 힌트 사용 −2점(문항당 1회). 정답을 맞힌 뒤에도 힌트를 볼 수 있으며, 처음 열 때만 −2점입니다.<br>기본 문제는 처음 연 뒤 60초를 초과하면 문항당 한 번만 −1점입니다. 맵 이동·새로고침·창을 닫은 동안에도 시간이 이어집니다.<br>도전의 「모름」은 추가 가점·감점 없이 완료 처리됩니다. 앞서 발생한 오답·힌트 감점은 유지됩니다. 「모름」 문항은 다시 열어 「다시 풀기」로 답을 제출할 수 있습니다. 다시 푸는 동안에는 해당 문항이 미완료로 바뀝니다.<br>기본 문제는 정답을 맞혀야 완료됩니다. 완료한 문제에서도 내 선택·입력은 그대로 확인할 수 있습니다. 모든 15문제를 완료해야 결과 및 전체 정답·해설 리뷰가 열립니다.<br>기본 9문제는 모두 선다형입니다. 도전 문제는 수 또는 식을 입력하며, 도전 5번에서는 부등호 버튼을 사용할 수 있습니다.<br>점수는 음수가 될 수 있습니다. 진행 기록은 가능할 경우 이 브라우저에만 저장됩니다.</div>
+<p id="storageNotice" class="sessionNote"></p>
+</section>
+<div id="app" class="hidden">
+<header class="topbar"><div class="brand">DIFFERENTIATION QUEST<small id="playerLabel"></small></div><div class="stats"><span class="pill">점수 <strong id="xp">0</strong></span><span class="pill">완료 <strong id="clearCount">0/15</strong></span><span class="pill">HINT <strong id="hintCount">0</strong></span><span class="pill">MISS <strong id="missCount">0</strong></span></div></header>
+<section class="panel" id="mapPanel"><div class="mapTitle"><div><h2>스테이지 맵</h2><p>열린 문제 중 원하는 문제부터 선택하세요.</p></div><button class="ghost" id="resetBtn">처음부터</button></div><div class="progressTrack"><span id="progressFill"></span></div><div id="unlockNote" class="sessionNote"></div><div id="stageGrid"></div><div id="mapResultArea" class="toolbar"></div></section>
+<section class="panel hidden" id="gamePanel"><div class="gameHead"><div><div class="stageKind" id="stageKind"></div><h2 id="stageTitle" tabindex="-1"></h2></div><button class="ghost" id="mapBtn">맵으로</button></div><div id="reviewNavArea"></div><div id="questionArea"></div><div id="timerArea"></div><div id="interactionArea"></div><div id="hintArea"></div><div id="messageArea" aria-live="polite"></div><div id="toolbar" class="toolbar"></div></section>
+<section class="panel hidden resultCard" id="resultPanel"><div class="eyebrow">ALL 15 STAGES COMPLETE</div><h2>QUEST COMPLETE</h2><div id="grade" class="grade"></div><p id="resultText"></p><div class="summary"><div class="sumBox">최종 점수<b id="finalXp"></b></div><div class="sumBox">힌트 사용<b id="finalHints"></b></div><div class="sumBox">오답 횟수<b id="finalMiss"></b></div><div class="sumBox">시간 초과<b id="finalTime"></b></div></div><div class="panel" style="text-align:left"><h3>문제별 답·해설 보기</h3><p class="answerHelp">문항을 선택하면 내 답, 정답, 풀이와 문항별 점수를 확인할 수 있습니다.</p><div id="problemResultList" class="problemResultGrid"></div></div><div class="toolbar" style="justify-content:center"><button class="primary" id="downloadBtn">결과 저장</button><button class="ghost" id="resultMapBtn">스테이지 맵</button><button class="ghost" id="restartBtn">다시 하기</button></div></section>
+<p class="footerNote">No.26 형성평가 &amp; 도전문제 · 기본 9문제 + 도전 6문제<br>풀이 과정은 활동지에 남기세요. 정답·해설은 모든 문제를 완료한 뒤 확인할 수 있습니다.</p>
+</div></div>
+<script>'use strict';
+const N=(label,expected,placeholder='수 또는 식 입력')=>({label,expected,placeholder,type:'number'});
+const S=(label,expected,options)=>({label,expected,options,type:'select'});
+const half='<span class="frac"><span>1</span><span>2</span></span>';
+const oneSided=side=>`<span class="eq"><span class="limbox"><span class="lim">lim</span><span class="sub">t→a${side}</span></span> f(t)</span>`;
+const problems=[
+{id:1,title:'서로 다른 실근의 개수',q:'방정식 <span class="math">x³−3x²+1=0</span>의 서로 다른 실근의 개수를 구하시오.',choices:['0개','1개','2개','3개'],correct:3,answer:'3개',hint:'좌변을 f(x)로 놓고 극댓값과 극솟값의 부호를 확인하세요. 그래프가 x축과 몇 번 만나는지 생각해 보세요.',explain:'<p>f(x)=x³−3x²+1이라 하면 f′(x)=3x(x−2)입니다. x=0에서 극댓값 f(0)=1&gt;0, x=2에서 극솟값 f(2)=−3&lt;0입니다.</p><p>그래프는 (−∞,0)에서 증가하고, (0,2)에서 감소하며, (2,∞)에서 증가합니다. 세 구간에서 각각 x축과 한 번씩 만나므로 서로 다른 실근은 <b>3개</b>입니다.</p>'},
+{id:2,title:'서로 다른 세 실근',q:'방정식 <span class="math">2x³−3x²−12x−k=0</span>이 서로 다른 세 실근을 갖도록 하는 실수 k의 값의 범위를 구하시오.',choices:['−20 ≤ k ≤ 7','−20 < k < 7','−7 < k < 20','k < −20 또는 k > 7'],correct:1,answer:'−20 < k < 7',hint:'y=2x³−3x²−12x와 수평선 y=k의 교점으로 생각하세요. 극댓값과 극솟값 사이에 수평선이 있어야 합니다.',explain:'<p>F(x)=2x³−3x²−12x라 하면 F′(x)=6(x+1)(x−2)입니다. x=−1에서 극댓값 F(−1)=7, x=2에서 극솟값 F(2)=−20을 가집니다.</p><p>수평선 y=k가 그래프와 서로 다른 세 점에서 만나려면 <b>−20&lt;k&lt;7</b>이어야 합니다. k=−20 또는 7에서는 접점이 생겨 서로 다른 실근이 두 개가 되므로 경계값은 제외합니다.</p>'},
+{id:3,title:'서로 다른 두 실근',q:'방정식 <span class="math">x³−3x+a=0</span>이 서로 다른 두 실근을 갖도록 하는 실수 a의 값을 모두 구하시오.',choices:['a=0','−2 < a < 2','a=−2 또는 a=2','a=−1 또는 a=1'],correct:2,answer:'a=−2 또는 a=2',hint:'삼차방정식의 서로 다른 실근이 두 개가 되려면 한 근이 중근이어야 합니다. 극대점 또는 극소점이 x축 위에 있는 경우를 살펴보세요.',explain:'<p>f(x)=x³−3x+a라 하면 f′(x)=3(x+1)(x−1)입니다. 극댓값은 f(−1)=a+2, 극솟값은 f(1)=a−2입니다.</p><p>극댓값 또는 극솟값이 0이어야 하므로 a+2=0 또는 a−2=0, 즉 <b>a=−2 또는 a=2</b>입니다.</p><p>a=−2이면 (x+1)²(x−2)=0, a=2이면 (x−1)²(x+2)=0이므로 각 경우 서로 다른 실근이 정확히 두 개입니다.</p>'},
+{id:4,title:'곡선과 직선의 세 교점',q:'곡선 <span class="math">y=x³−x</span>와 직선 <span class="math">y=2x+k</span>가 서로 다른 세 점에서 만나도록 하는 실수 k의 값의 범위를 구하시오.',choices:['−2 < k < 2','−2 ≤ k ≤ 2','−1 < k < 1','k < −2 또는 k > 2'],correct:0,answer:'−2 < k < 2',hint:'두 식을 같게 놓아 x³−3x=k로 정리하세요. y=x³−3x의 극값과 수평선 y=k의 위치를 비교합니다.',explain:'<p>교점의 x좌표는 x³−x=2x+k, 즉 x³−3x=k의 해입니다. F(x)=x³−3x의 도함수는 3(x+1)(x−1)입니다.</p><p>x=−1에서 극댓값 2, x=1에서 극솟값 −2이므로 서로 다른 세 교점을 가지는 조건은 <b>−2&lt;k&lt;2</b>입니다. 경계값에서는 교점이 두 개입니다.</p>'},
+{id:5,title:'항상 성립하는 부등식',q:'모든 실수 x에 대하여 부등식 <span class="math">x⁴−4x+a ≥ 0</span>이 성립하도록 하는 실수 a의 최솟값을 구하시오.',choices:['−3','1','4','3'],correct:3,answer:'3',hint:'x⁴−4x의 최솟값을 먼저 구하세요. 그 최솟값에 a를 더한 값이 0 이상이어야 합니다.',explain:'<p>F(x)=x⁴−4x라 하면 F′(x)=4(x³−1)=4(x−1)(x²+x+1)입니다. x²+x+1=(x+1/2)²+3/4&gt;0이므로 x&lt;1에서 감소, x&gt;1에서 증가합니다.</p><p>따라서 F의 최솟값은 F(1)=−3입니다. 주어진 부등식이 항상 성립하려면 a−3≥0, 즉 a≥3이어야 하므로 a의 최솟값은 <b>3</b>입니다.</p>'},
+{id:6,title:'양수 구간에서 항상 양수',q:'x&gt;0일 때, 부등식 <span class="math">x³−3x²+k &gt; 0</span>이 항상 성립하도록 하는 실수 k의 값의 범위를 구하시오.',choices:['k ≥ 4','k > 4','k > 0','k < 4'],correct:1,answer:'k > 4',hint:'x>0에서 x³−3x²의 최솟값을 구하세요. 문제의 부등호가 ≥가 아니라 >임에 주의하세요.',explain:'<p>F(x)=x³−3x²라 하면 F′(x)=3x(x−2)입니다. 0&lt;x&lt;2에서 감소, x&gt;2에서 증가하므로 x=2에서 최솟값 F(2)=−4를 가집니다.</p><p>x=2는 주어진 범위에 포함되므로 F(x)+k의 최솟값 k−4가 0보다 커야 합니다. 따라서 <b>k&gt;4</b>입니다. k=4이면 x=2에서 0이 되어 조건을 만족하지 않습니다.</p>'},
+{id:7,title:'속도와 가속도',q:'수직선 위를 움직이는 점 P의 시각 t에서의 위치 x가 <span class="math">x=t³−6t²+5t</span>일 때, t=3에서의 점 P의 속도와 가속도를 구하시오.',choices:['속도 4, 가속도 6','속도 −4, 가속도 −6','속도 −4, 가속도 6','속도 −12, 가속도 −4'],correct:2,answer:'속도 −4, 가속도 6',hint:'위치를 한 번 미분하면 속도, 두 번 미분하면 가속도입니다. 미분한 식에 t=3을 대입하세요.',explain:'<p>속도는 v(t)=x′(t)=3t²−12t+5, 가속도는 a(t)=v′(t)=6t−12입니다.</p><p>따라서 v(3)=27−36+5=<b>−4</b>, a(3)=18−12=<b>6</b>입니다. 속도에는 방향을 나타내는 부호가 있으므로 속력 4와 구별해야 합니다.</p>'},
+{id:8,title:'운동 방향이 바뀌는 시각',q:'수직선 위를 움직이는 점 P의 시각 t (t≥0)에서의 위치 x가 <span class="math">x=t³−9t²+15t</span>일 때, 점 P가 운동 방향을 바꾸는 시각을 모두 구하시오.',choices:['t=1, t=5','t=0, t=3','t=3','t=1'],correct:0,answer:'t=1, t=5',hint:'속도가 0이 되는 시각을 구한 뒤, 그 시각의 앞뒤에서 속도의 부호가 바뀌는지 확인하세요.',explain:'<p>v(t)=3t²−18t+15=3(t−1)(t−5)입니다. t≥0에서 속도는 0≤t&lt;1일 때 양수, 1&lt;t&lt;5일 때 음수, t&gt;5일 때 양수입니다.</p><p>t=1과 t=5에서 속도의 부호가 바뀌므로 운동 방향을 바꾸는 시각은 <b>t=1, t=5</b>입니다. 단순히 속도가 0인지뿐 아니라 부호 변화도 확인해야 합니다.</p>'},
+{id:9,title:'최고 높이에 도달할 때',q:'지면에서 수직으로 쏘아 올린 물체의 t초 후의 높이 h m가 <span class="math">h=30t−5t²</span>일 때, 이 물체가 최고 높이에 도달할 때까지 걸린 시간과 최고 높이를 구하시오.',choices:['3초, 90 m','6초, 45 m','6초, 0 m','3초, 45 m'],correct:3,answer:'3초, 45 m',hint:'최고 높이에서는 위로 올라가던 속도가 0이 됩니다. 높이를 미분해 그 시각을 구하고, 높이 식에 대입하세요.',explain:'<p>속도는 v(t)=h′(t)=30−10t입니다. v(t)=0에서 t=3이고, 그 전에는 양수, 그 후에는 음수이므로 이때 최고 높이에 도달합니다.</p><p>h(3)=30·3−5·3²=90−45=<b>45 m</b>입니다. 따라서 걸린 시간은 <b>3초</b>, 최고 높이는 <b>45 m</b>입니다.</p>'},
+{id:10,title:'중근으로 상수 찾기',q:'방정식 <span class="math">(x−1)(x−a)²=32</span>의 서로 다른 실근의 개수가 2일 때, 상수 a의 값을 구하시오.',fields:[N('a',7)],answer:'a=7',hint:'서로 다른 실근이 두 개이면 한 근은 중근입니다. F(x)=(x−1)(x−a)²로 놓고, F′(x)=0인 점 중 F(x)=32가 되는 점을 찾으세요.',explain:'<p>F(x)=(x−1)(x−a)²라 하면 F′(x)=(x−a)(3x−a−2)입니다. 중근이 있으려면 F(x)=32와 F′(x)=0을 동시에 만족해야 합니다.</p><p>x=a에서는 F(a)=0이므로 불가능합니다. 따라서 중근의 후보는 x=(a+2)/3입니다. 이를 F에 대입하면 F((a+2)/3)=4(a−1)³/27입니다.</p><p>4(a−1)³/27=32에서 (a−1)³=216이므로 <b>a=7</b>입니다. 실제로 a=7일 때 (x−1)(x−7)²−32=(x−3)²(x−9)이므로 서로 다른 실근은 3과 9의 두 개입니다.</p>'},
+{id:11,title:'교점 개수의 좌극한·우극한',q:`실수 t에 대하여 직선 <span class="math">y=x+t</span>가 곡선 <span class="math">y=x³+3x²+x</span>와 만나는 서로 다른 점의 개수를 f(t)라 하자.<br><div class="limitQuestion">${oneSided('⁻')} − ${oneSided('⁺')} = 2</div>를 만족시키는 실수 a의 값을 구하시오.`,fields:[N('a',4)],answer:'a=4',hint:'교점의 x좌표는 x³+3x²=t를 만족합니다. y=x³+3x²의 극값을 구하고, t가 각 극값을 지날 때 교점 개수가 어떻게 바뀌는지 살펴보세요.',explain:'<p>교점 조건을 정리하면 x³+3x²=t입니다. F(x)=x³+3x²라 하면 F′(x)=3x(x+2)이므로 x=−2에서 극댓값 4, x=0에서 극솟값 0을 가집니다.</p><table class="modelTable"><tr><th>t의 범위</th><th>t&lt;0</th><th>t=0</th><th>0&lt;t&lt;4</th><th>t=4</th><th>t&gt;4</th></tr><tr><th>f(t)</th><td>1</td><td>2</td><td>3</td><td>2</td><td>1</td></tr></table><p>a=0에서는 좌극한−우극한=1−3=−2입니다. a=4에서는 3−1=2이고, 나머지 a에서는 두 극한이 같아 차가 0입니다. 따라서 <b>a=4</b>입니다. f(4)=2라는 함숫값 자체와 좌우 극한을 구별하세요.</p>'},
+{id:12,title:'두 함수 사이의 부등식',q:'두 함수 <span class="math">f(x)=2x³+3x²</span>, <span class="math">g(x)=−3x²+6</span>에 대하여 −3≤x≤1에서 부등식 <span class="math">f(x)≥g(x)+k</span>가 항상 성립하도록 하는 실수 k의 최댓값을 구하시오.',fields:[N('k의 최댓값',-6)],answer:'−6',hint:'f(x)−g(x)≥k로 정리하세요. 구간 전체에서 성립하려면 k가 f−g의 최솟값보다 클 수 없습니다.',explain:'<p>H(x)=f(x)−g(x)=2x³+6x²−6이라 하면 H(x)≥k가 항상 성립해야 합니다. 따라서 k는 H의 최솟값 이하여야 합니다.</p><p>H′(x)=6x(x+2)이므로 임계점은 x=−2,0입니다. 양 끝점까지 함께 계산하면 H(−3)=−6, H(−2)=2, H(0)=−6, H(1)=2입니다.</p><p>최솟값이 −6이므로 k≤−6이고, k의 최댓값은 <b>−6</b>입니다.</p>'},
+{id:13,title:'음의 근 하나, 양의 근 둘',q:'방정식 <span class="math">x³−3x²−24x−k=0</span>이 한 개의 음수인 근과 서로 다른 두 개의 양수인 근을 갖도록 하는 정수 k의 개수를 구하시오.',fields:[N('정수 k의 개수',79)],answer:'79개 (k=−79, −78, …, −1)',hint:'먼저 y=x³−3x²−24x와 y=k가 세 점에서 만나는 조건을 구하세요. 가운데 교점의 x좌표가 양수인지 확인할 때 F(0)=0을 이용하세요.',explain:'<p>F(x)=x³−3x²−24x라 하면 F′(x)=3(x+2)(x−4)입니다. 극댓값 F(−2)=28, 극솟값 F(4)=−80이므로 서로 다른 세 실근의 조건은 −80&lt;k&lt;28입니다.</p><p>이때 왼쪽 교점은 x&lt;−2에 있어 음수이고, 오른쪽 교점은 x&gt;4에 있어 양수입니다. 가운데 교점은 (−2,4)에 있고, 이 구간에서 F는 감소합니다.</p><p>F(0)=0이므로 가운데 교점의 x좌표가 양수이려면 k&lt;0이어야 합니다. 따라서 <b>−80&lt;k&lt;0</b>이고, 정수는 −79부터 −1까지 <b>79개</b>입니다. k=−80은 양의 중근이 생기고, k=0은 0인 근이 생기므로 제외합니다.</p>'},
+{id:14,title:'서로 반대 방향으로 운동',q:`원점을 출발하여 수직선 위를 움직이는 두 점 P, Q의 시각 t에서의 위치가 각각 <span class="math">f(t)=${half}t²−2t</span>, <span class="math">g(t)=t²−6t</span>일 때, 두 점 P, Q가 서로 반대 방향으로 움직이는 t의 값의 범위를 구하시오.`,fields:[{type:'inequality',label:'t의 범위 (부등식 전체)',placeholder:'',expected:[2,3]}],note:'숫자와 t를 직접 입력하고, 아래 버튼으로 부등호를 넣으세요. 부등식 전체를 한 칸에 입력합니다.',answer:'2 < t < 3',hint:'두 점의 위치가 아니라 속도를 비교해야 합니다. 반대 방향으로 움직일 때 두 속도의 곱은 음수입니다.',explain:'<p>두 점의 속도는 vP(t)=f′(t)=t−2, vQ(t)=g′(t)=2t−6=2(t−3)입니다.</p><p>반대 방향으로 움직이려면 vP(t)·vQ(t)=2(t−2)(t−3)&lt;0이어야 하므로 <b>2&lt;t&lt;3</b>입니다. 이때 P의 속도는 양수이고 Q의 속도는 음수입니다.</p><p>t=2 또는 t=3에서는 한 점의 속도가 0이므로 두 점이 서로 반대 방향으로 움직인다고 할 수 없습니다. 따라서 양 끝값은 포함하지 않습니다.</p>'},
+{id:15,title:'두 물체가 만날 때의 속도',q:'지면에 수직인 직선을 따라 움직이는 두 물체 A, B가 있다. A는 지면으로부터 40 m 높이에서 자유 낙하하고, B는 A가 떨어지기 시작할 때 동시에 지면에서 위로 쏘아 올려졌다.<br>움직이기 시작한 지 t초 후 두 물체의 높이는 각각 <span class="math">h₁=40−5t²</span>, <span class="math">h₂=20t−5t²</span>이다.<br>두 물체가 만나는 순간 물체 A의 속도를 구하시오. (단, 물체의 크기는 무시한다.)',fields:[N('물체 A의 속도 (m/s)',-20,'부호를 포함한 수 입력')],note:'위쪽을 양의 방향으로 봅니다. 속도는 방향을 나타내는 부호까지 입력하세요.',answer:'−20 m/s (아래쪽으로 20 m/s)',hint:'두 물체가 만날 때는 높이가 같습니다. h₁=h₂로 만나는 시각을 구한 뒤, A의 높이를 미분한 속도 식에 대입하세요.',explain:'<p>두 물체가 만나는 시각은 40−5t²=20t−5t²에서 40=20t, 즉 t=2초입니다. 이때 높이는 h₁(2)=h₂(2)=20 m로 지면 위에서 만납니다.</p><p>물체 A의 속도는 vA(t)=h₁′(t)=−10t이므로 vA(2)=<b>−20 m/s</b>입니다. 음수는 아래쪽 방향을 뜻하며, 속력 20 m/s와 구별해야 합니다.</p>'}
+].map(p=>({...p,group:p.id<=9?'기본':'도전',label:p.id<=9?p.id:p.id-9,base:p.id<=9?10:20,...(p.choices?{fields:[S('선택한 답',p.choices[p.correct],p.choices)],note:'보기 하나를 선택한 뒤 「답 제출」을 누르세요.'}:{})}));
+
+const $=id=>document.getElementById(id);
+// Capture the clean page before player names, answers, or results enter the DOM.
+const cleanGameHtml='<!doctype html>\n'+(document.documentElement?.outerHTML||'');
+function downloadGameFile(){
+ const blob=new Blob([cleanGameHtml],{type:'text/html;charset=utf-8'});
+ const url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='26. 방부등식, 속도가속도 형성평가.html';
+ document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+$('downloadFileBtn').onclick=downloadGameFile;
+const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KEY='calculus-no26-quest-v1';
+const blankRecord=()=>({done:false,unknown:false,miss:0,hint:false,timedOut:false,openedAt:null,finishedAt:null,draft:[],answer:[],attempts:[]});
+const freshState=name=>({version:1,name,started:true,records:problems.map(blankRecord)});
+let state=null,current=null,view='setup',saved=null,storageOK=true;
+try{const data=JSON.parse(localStorage.getItem(KEY)||'null');if(data&&data.version===1&&Array.isArray(data.records)&&data.records.length===15&&data.records.every(r=>r&&typeof r.done==='boolean'&&Array.isArray(r.draft)&&Array.isArray(r.attempts)))saved=data;}catch{storageOK=false;}
+if(saved)migrateIntervalRecord(saved.records[13]);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{storageOK=false;$('storageNotice').textContent='이 브라우저에서는 자동 저장을 사용할 수 없습니다. 완료할 때까지 창을 열어 두세요.';}}
+const record=p=>state.records[p.id-1];
+const allDone=()=>!!state&&state.records.every(r=>r.done);
+const basicDone=()=>state?state.records.slice(0,9).filter(r=>r.done&&!r.unknown).length:0;
+const unlocked=p=>p.id<=9||basicDone()>=7;
+const points=p=>{const r=record(p);return (r.done&&!r.unknown?p.base:0)-3*r.miss-2*Number(r.hint)-Number(r.timedOut);};
+const total=()=>problems.reduce((s,p)=>s+points(p),0);
+function setPanel(id){['setup','mapPanel','gamePanel','resultPanel'].forEach(x=>$(x).classList.toggle('hidden',x!==id));$('app').classList.toggle('hidden',id==='setup');view=id;}
+function message(t,type='info'){$('messageArea').innerHTML=`<div class="msg ${type}">${t}</div>`;}
+function updateStats(){if(!state)return;$('playerLabel').textContent=state.name+' · No.26 형성평가';$('xp').textContent=total();$('clearCount').textContent=state.records.filter(r=>r.done).length+'/15';$('hintCount').textContent=state.records.filter(r=>r.hint).length;$('missCount').textContent=state.records.reduce((s,r)=>s+r.miss,0);}
+function applyTimeouts(now=Date.now()){if(!state)return;let changed=false;problems.slice(0,9).forEach(p=>{const r=record(p);if(!r.done&&r.openedAt!==null&&!r.timedOut&&now-r.openedAt>60000){r.timedOut=true;changed=true;}});if(changed){save();updateStats();}return changed;}
+function drawTimer(){if(!state||current===null||view!=='gamePanel')return;const p=problems[current-1],r=record(p);if(p.id>9||r.done){$('timerArea').innerHTML='';return;}const seconds=Math.max(0,Math.floor((Date.now()-r.openedAt)/1000)),over=r.timedOut;$('timerArea').innerHTML=`<div class="timerWrap ${over?'over':seconds>=45?'warn':''}"><div class="timerTop"><span class="timerLabel">${over?'60초 초과 · −1점 적용':'첫 입장 후 경과 시간'}</span><span class="timerClock">${seconds}초</span></div><div class="timerBar"><div class="timerFill" style="width:${Math.min(100,seconds/60*100)}%"></div></div></div>`;}
+setInterval(()=>{applyTimeouts();drawTimer();},250);
+function startGame(resume=false){state=resume&&saved?saved:freshState($('teamName').value.trim()||'무명 팀');current=null;applyTimeouts();save();updateStats();if(allDone())showResult();else showMap();}
+function showMap(){if(!state)return;current=null;applyTimeouts();setPanel('mapPanel');updateStats();const count=basicDone();$('unlockNote').textContent=count>=7?'도전 스테이지가 열렸습니다. 남은 기본 문제도 모두 완료하세요.':`기본 ${count}/7 해결 · ${7-count}문제를 더 해결하면 도전 스테이지가 열립니다.`;$('progressFill').style.width=state.records.filter(r=>r.done).length/15*100+'%';$('stageGrid').innerHTML=['기본','도전'].map(group=>`<div class="sectionLabel"><h3>${group==='기본'?'01 · 기본 스테이지':'02 · 도전 스테이지'}</h3><small>${group==='기본'?'각 10점 · 60초 초과 −1점':'각 20점 · 시간 제한 없음'}</small></div><div class="stageGrid">${problems.filter(p=>p.group===group).map(p=>{const r=record(p),locked=!unlocked(p);return `<button class="stage ${locked?'locked':''} ${r.done?'cleared':''}" data-stage="${p.id}" ${locked?'disabled':''}><div class="num">${p.group} ${p.label}</div><div class="name">${p.title}</div><div class="meta">${r.done?(r.unknown?'모름 · 다시 풀기 가능':allDone()?'정답·해설 보기':'완료 · 내 선택 보기'):r.openedAt!==null?'이어서 풀기':`${p.base}점`}</div><span class="badge ${p.id>9?'boss':''}">${locked?'잠김':r.done?(r.unknown?'모름':'CLEAR'):'도전'}</span></button>`;}).join('')}</div>`).join('');$('stageGrid').querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>openStage(Number(b.dataset.stage),allDone()));$('mapResultArea').innerHTML=allDone()?'<button id="mapToResult" class="primary">전체 결과 보기</button>':'';if($('mapToResult'))$('mapToResult').onclick=showResult;}
+function fieldMarkup(f,i,value){const id='field_'+i;return `<label class="answerField" for="${id}"><span>${escapeHtml(f.label)}</span>${f.type==='select'?`<select id="${id}" data-field="${i}"><option value="">선택하세요</option>${f.options.map(v=>`<option value="${escapeHtml(v)}" ${value===v?'selected':''}>${escapeHtml(v)}</option>`).join('')}</select>`:`<input id="${id}" data-field="${i}" type="text" autocomplete="off" spellcheck="false" maxlength="100" value="${escapeHtml(value||'')}" placeholder="${escapeHtml(f.placeholder)}">`}</label>`;}
+function openStage(id,review=false){if(!state)return;const p=problems.find(p=>p.id===id);if(!p||!unlocked(p))return;if(review&&!allDone())return;applyTimeouts();current=id;setPanel('gamePanel');const r=record(p);$('stageKind').textContent=`${p.group} ${p.label} · ${review?'정답·해설 리뷰':p.base+'점'}`;$('stageTitle').textContent=p.title;$('questionArea').innerHTML=`<div class="question">${p.q}</div>`;$('reviewNavArea').innerHTML='';$('timerArea').innerHTML='';$('interactionArea').innerHTML='';$('messageArea').innerHTML='';$('hintArea').innerHTML='';$('toolbar').innerHTML='';if(review){renderReview(p);return;}if(r.done){renderCompleted(p);return;}if(r.openedAt===null){r.openedAt=Date.now();save();}const note=p.note||'수를 입력하세요. 분수(예: 3/2)와 계산식도 입력할 수 있습니다. 단위는 제외하세요.';$('interactionArea').innerHTML=`${p.graph?'<div class="graphFeatureNote">그래프 선다형 · 활동지에 개형을 그린 뒤 보기와 비교하세요.</div>':''}<p class="answerHelp">${note}</p><form id="answerForm">${p.choices?choiceMarkup(p,r.draft[0],false):`<div class="answerFields">${p.fields.map((f,i)=>fieldMarkup(f,i,r.draft[i])).join('')}</div>`}${p.id>9?mathButtons(p):''}<div class="toolbar"><button class="primary" type="submit">답 제출</button></div></form>`;$('answerForm').onsubmit=e=>{e.preventDefault();submitAnswer();};$('answerForm').querySelectorAll('[data-field]').forEach(el=>el.addEventListener('input',()=>{r.draft=readValues(p);save();}));if(p.choices)$('answerForm').querySelectorAll('[data-choice]').forEach(el=>el.addEventListener('change',()=>{r.draft=[p.choices[Number(el.dataset.choice)]];save();}));if(p.id>9){lastNumberField=0;if(p.id===14){$('answerForm').querySelectorAll('[data-inequality]').forEach(el=>el.onclick=()=>insertInequality(el.dataset.inequality));}else{$('radicalBtn').onclick=insertRadical;}$('answerForm').querySelectorAll('input[data-field]').forEach(el=>el.addEventListener('focus',()=>{lastNumberField=Number(el.dataset.field);}));}renderActions(p);drawTimer();$('stageTitle').focus({preventScroll:true});}
+function readValues(p){if(p.choices)return [record(p).draft[0]||''];return p.fields.map((_,i)=>$('field_'+i)?.value.trim()||'');}
+function renderHint(p){const r=record(p);$('hintArea').innerHTML=`<div class="toolbar"><button class="hintBtn" id="hintBtn" ${r.hint?'disabled':''}>${r.hint?'💡 힌트 사용 완료':'💡 힌트 보기 (−2점)'}</button></div>${r.hint?`<div class="hintBox"><b>사용한 힌트</b><br>${p.hint}</div>`:''}`;$('hintBtn').onclick=useHint;}
+function renderActions(p){const r=record(p);renderHint(p);$('toolbar').innerHTML=p.id>9&&!r.done?'<button class="ghost" id="unknownBtn">모름 · 0점으로 완료</button>':'';if($('unknownBtn'))$('unknownBtn').onclick=markUnknown;}
+// A small arithmetic parser; no eval, Function constructor, or external library.
+function parseNumber(raw){let s=String(raw).trim().toLowerCase().replace(/²/g,'^2').replace(/³/g,'^3').normalize('NFKC').replace(/[−–]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/²/g,'^2').replace(/³/g,'^3').replace(/\s+/g,'').replace(/√/g,'sqrt');if(!s||s.length>100)return NaN;const tokens=s.match(/sqrt|(?:\d+(?:\.\d*)?|\.\d+)|[()+\-*/^]/g)||[];if(tokens.join('')!==s||tokens.length>80)return NaN;let pos=0,depth=0;const isStart=t=>t==='sqrt'||t==='('||/^\d|^\./.test(t||'');function atom(){if(++depth>25)throw Error();const t=tokens[pos++];let v;if(t==='('){v=expr();if(tokens[pos++]!==')')throw Error();}else if(t==='sqrt'){v=Math.sqrt(unary());}else if(t&&/^(\d|\.)/.test(t)){v=Number(t);}else throw Error();depth--;return v;}function power(){let v=atom();if(tokens[pos]==='^'){pos++;v=v**unary();}return v;}function unary(){if(tokens[pos]==='+'){pos++;return unary();}if(tokens[pos]==='-'){pos++;return -unary();}return power();}function term(){let v=unary();while(pos<tokens.length){const t=tokens[pos];if(t==='*'||t==='/'){pos++;const w=unary();v=t==='*'?v*w:v/w;}else if(isStart(t)){v*=unary();}else break;}return v;}function expr(){let v=term();while(tokens[pos]==='+'||tokens[pos]==='-'){const t=tokens[pos++],w=term();v=t==='+'?v+w:v-w;}return v;}try{const v=expr();return pos===tokens.length&&Number.isFinite(v)?v:NaN;}catch{return NaN;}}
+function fieldCorrect(f,v){if(f.type==='inequality')return inequalityCorrect(v,f.expected);if(f.type==='select')return v===f.expected;const n=parseNumber(v);return Number.isFinite(n)&&Math.abs(n-f.expected)<=0.00005;}
+function activeProblem(){if(!state||current===null||view!=='gamePanel')return null;const p=problems[current-1];return !record(p).done&&unlocked(p)?p:null;}
+function submitAnswer(){const p=activeProblem();if(!p)return;const r=record(p),values=readValues(p);r.draft=values;if(values.some(v=>!v)){message('모든 항목을 입력하거나 선택하세요. 점수는 차감되지 않았습니다.');return;}const invalid=p.fields.findIndex((f,i)=>f.type==='number'&&!Number.isFinite(parseNumber(values[i])));if(invalid>=0){message(`${escapeHtml(p.fields[invalid].label)}: 수 또는 계산식으로 입력하세요. 분수는 3/2, 근호는 √ 버튼을 누르거나 2√(3)처럼 쓰세요. 점수는 차감되지 않았습니다.`);return;}applyTimeouts();const correct=p.fields.every((f,i)=>fieldCorrect(f,values[i]));r.attempts.push({values:[...values],correct});if(correct){r.done=true;r.answer=values;r.finishedAt=Date.now();save();updateStats();renderCompleted(p);if(allDone())showResult();}else{r.miss++;save();updateStats();message('−3점 · 아직 맞지 않는 항목이 있습니다. 풀이와 입력값을 다시 확인하세요.','bad');}}
+function useHint(){if(!state||current===null||view!=='gamePanel')return;const p=problems[current-1];if(!p||!unlocked(p))return;const r=record(p);if(r.hint)return;applyTimeouts();r.hint=true;save();updateStats();if(allDone())renderReview(p);else if(r.done)renderCompleted(p);else renderHint(p);message('힌트를 열었습니다. −2점이 적용되었습니다.');}
+function markUnknown(){const p=activeProblem();if(!p||p.id<=9)return;const r=record(p);r.draft=readValues(p);r.done=true;r.unknown=true;r.answer=['모름'];r.finishedAt=Date.now();save();updateStats();renderCompleted(p);if(allDone())showResult();}
+function renderCompleted(p){const r=record(p);$('timerArea').innerHTML='';$('hintArea').innerHTML='';$('toolbar').innerHTML='';$('messageArea').innerHTML='';$('interactionArea').innerHTML=`${completedAnswerMarkup(p)}<div class="successBox"><strong>${r.unknown?'모름 · 다시 풀기 가능':'STAGE CLEAR!'}</strong>${r.unknown?'정답 점수는 0점입니다. 앞서 사용한 힌트·오답 감점은 유지됩니다.':`정답 보상 +${p.base}점` }<p>문항 누적 점수: <b>${points(p)}점</b></p><p class="statusNote">내가 선택·입력한 답은 위에 남아 있습니다. 전체 정답·해설은 15문제 완료 후 공개됩니다.<br>현재 ${state.records.filter(r=>r.done).length}/15 완료</p><button id="continueMap" class="primary">맵으로 · 다음 문제 선택</button></div>`;$('continueMap').onclick=showMap;renderRetry(p);renderHint(p);}
+function answerDescription(p,values){return p.fields.map((f,i)=>`${f.label}: ${values[i]??'미입력'}`).join(' / ');}
+function renderReview(p){if(!allDone())return;const r=record(p);$('reviewNavArea').innerHTML='<div class="reviewNav"><span class="reviewNote">모든 문제 완료 · 정답과 해설을 확인하세요.</span><button class="returnResultBtn" id="returnResult">← 결과로 돌아가기</button></div>';$('returnResult').onclick=showResult;$('interactionArea').innerHTML=`${p.choices?choiceMarkup(p,r.answer[0],true):''}<div class="reviewContent"><h3>내 최종 답</h3><div class="history">${escapeHtml(r.unknown?'모름':answerDescription(p,r.answer))}</div><p class="statusNote">문항 점수 ${points(p)}점 · 오답 ${r.miss}회 · 힌트 ${r.hint?'사용':'미사용'} · 시간 초과 ${r.timedOut?'−1점':'없음'}</p>${r.attempts.length?`<details class="history"><summary>제출 기록 ${r.attempts.length}회</summary><ol>${r.attempts.map(a=>`<li>${escapeHtml(answerDescription(p,a.values))} · ${a.correct?'정답':'오답'}</li>`).join('')}</ol></details>`:''}<h3>정답</h3><div class="answerKey">${escapeHtml(p.answer)}</div><h3>해설</h3>${p.explain}${p.graph?graphSvg():''}</div>`;$('toolbar').innerHTML='<button id="returnBottom" class="ghost">← 결과로 돌아가기</button>';$('returnBottom').onclick=showResult;renderRetry(p);renderHint(p);}
+function graphSvg(){const W=620,H=420,L=48,R=20,T=20,B=35,xmin=-2.5,xmax=2.5,ymin=-5,ymax=7;const X=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R),Y=y=>T+(ymax-y)/(ymax-ymin)*(H-T-B);let grid='';for(let x=-2;x<=2;x++)grid+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${H-B}" stroke="#e2e8f0"/><text x="${X(x)}" y="${Y(0)+20}" text-anchor="middle" font-size="12">${x}</text>`;for(let y=-4;y<=6;y+=2)grid+=`<line x1="${L}" y1="${Y(y)}" x2="${W-R}" y2="${Y(y)}" stroke="#e2e8f0"/><text x="${L-10}" y="${Y(y)+4}" text-anchor="end" font-size="12">${y}</text>`;let path='';for(let i=0;i<=400;i++){const x=xmin+(xmax-xmin)*i/400;path+=(i?'L':'M')+X(x).toFixed(2)+','+Y(x*x*x-3*x+1).toFixed(2);}return `<div class="graphWrap"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="y=x³−3x+1의 그래프. 극대점 (-1,3), 극소점 (1,-1), y절편 1."><defs><clipPath id="plotClip"><rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}"/></clipPath></defs>${grid}<line x1="${L}" y1="${Y(0)}" x2="${W-R}" y2="${Y(0)}" stroke="#64748b"/><line x1="${X(0)}" y1="${T}" x2="${X(0)}" y2="${H-B}" stroke="#64748b"/><text x="${W-R}" y="${Y(0)-8}" font-size="13">x</text><text x="${X(0)+8}" y="${T+8}" font-size="13">y</text><path d="${path}" fill="none" stroke="#4f46e5" stroke-width="3" clip-path="url(#plotClip)"/>${[[-1,3,'극대 (−1, 3)',-14],[1,-1,'극소 (1, −1)',25],[0,1,'(0, 1)',-14]].map(([x,y,label,dy])=>`<circle cx="${X(x)}" cy="${Y(y)}" r="5" fill="#7c3aed"/><text x="${X(x)}" y="${Y(y)+dy}" text-anchor="middle" font-size="13" fill="#312e81">${label}</text>`).join('')}</svg></div>`;}
+function showResult(){if(!allDone())return false;current=null;setPanel('resultPanel');updateStats();const score=total(),pct=score/210;$('grade').textContent=pct>=.9?'S':pct>=.78?'A':pct>=.65?'B':'C';$('resultText').textContent=state.name+'의 15문제 도전이 완료되었습니다. 이제 모든 문항의 정답과 해설을 볼 수 있습니다.';$('finalXp').textContent=score+' / 210';$('finalHints').textContent=state.records.filter(r=>r.hint).length+'회';$('finalMiss').textContent=state.records.reduce((s,r)=>s+r.miss,0)+'회';$('finalTime').textContent=state.records.filter(r=>r.timedOut).length+'문항';$('problemResultList').innerHTML=problems.map(p=>{const r=record(p);return `<button class="problemResultItem ${r.unknown?'unknown':r.miss?'retry':'ok'}" data-review="${p.id}"><b>${p.group} ${p.label}</b> · ${r.unknown?'모름':r.miss?'재도전 후 정답':'한 번에 정답'}<br><span class="answerHelp">${points(p)}점 · 답·해설 보기 →</span></button>`;}).join('');$('problemResultList').querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>openStage(Number(b.dataset.review),true));return true;}
+function downloadResult(){if(!allDone())return;const lines=['미적분 형성평가 No.26 · 도전 퀘스트','이름/팀: '+state.name,'최종 점수: '+total()+' / 210','완료: 15/15','',...problems.map(p=>{const r=record(p);return `${p.group} ${p.label}. ${p.title}\n내 답: ${r.unknown?'모름':answerDescription(p,r.answer)}\n정답: ${p.answer}\n점수: ${points(p)}점 / 오답 ${r.miss}회 / 힌트 ${r.hint?'사용':'미사용'} / 시간 초과 ${r.timedOut?'있음':'없음'}\n`;})];const blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/plain;charset=utf-8'}),a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='미적분_No26_퀘스트_'+state.name.replace(/[\\/:*?"<>|]/g,'_')+'_결과.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function resetGame(){if(!confirm('진행 기록과 점수를 지우고 처음부터 시작할까요?'))return;state=freshState(state?.name||'무명 팀');current=null;save();showMap();}
+$('startBtn').onclick=()=>{if(saved&&!confirm('저장된 진행 기록을 지우고 새로 시작할까요?'))return;startGame(false);};$('resumeBtn').hidden=!saved;$('resumeBtn').onclick=()=>startGame(true);$('howBtn').onclick=()=>{const hidden=$('how').classList.toggle('hidden');$('howBtn').setAttribute('aria-expanded',String(!hidden));};$('mapBtn').onclick=showMap;$('resetBtn').onclick=resetGame;$('restartBtn').onclick=resetGame;$('downloadBtn').onclick=downloadResult;$('resultMapBtn').onclick=showMap;$('storageNotice').textContent=saved?'저장된 진행 기록이 있습니다. 「이어서 하기」로 계속할 수 있습니다.':storageOK?'설치·인터넷 연결 없이 이 파일에서 실행됩니다.':'자동 저장을 사용할 수 없습니다. 완료할 때까지 창을 열어 두세요.';
+document.addEventListener('visibilitychange',()=>{applyTimeouts();drawTimer();});
+
+function choiceMarkup(p,selected,readonly){
+ return `<fieldset class="choiceSet"><legend>${readonly?'내가 선택한 답':'답 선택'}</legend><div class="choices ${p.graph?'graphChoices':''}">${p.choices.map((c,i)=>`<label class="choice optionCard ${readonly&&selected===c?'selected':''} ${readonly?'readonly':''}"><span class="optionHeader"><input type="radio" name="basicAnswer" data-choice="${i}" value="${i}" ${selected===c?'checked':''} ${readonly?'disabled':''}><span>${p.graph?escapeHtml(c):'①②③④'[i]+' '+escapeHtml(c)}</span>${readonly&&selected===c?'<b class="myChoice">내 선택</b>':''}</span>${p.graph?choiceGraph(i):''}</label>`).join('')}</div></fieldset>`;
+}
+function completedAnswerMarkup(p){
+ const r=record(p);if(p.choices)return choiceMarkup(p,r.answer[0],true);
+ return `<div class="retainedAnswer"><b>내가 입력한 답</b><p>${escapeHtml(r.unknown?'모름':answerDescription(p,r.answer))}</p></div>`;
+}
+function choiceGraph(i){
+ const W=400,H=280,L=32,R=16,T=16,B=24;
+ const X=x=>L+(x+2.5)/5*(W-L-R),Y=y=>T+(6-y)/12*(H-T-B);
+ const functions=[x=>x*x*x+3*x+1,x=>x*x*x-3*x+1,x=>-x*x*x+3*x+1,x=>x*x*x-3*x-1];
+ let grid='';for(let x=-2;x<=2;x++)grid+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${H-B}" stroke="#e2e8f0"/><text x="${X(x)}" y="${Y(0)+16}" text-anchor="middle" font-size="11">${x}</text>`;
+ for(let y=-4;y<=4;y+=2)grid+=`<line x1="${L}" y1="${Y(y)}" x2="${W-R}" y2="${Y(y)}" stroke="#e2e8f0"/><text x="${L-7}" y="${Y(y)+4}" text-anchor="end" font-size="11">${y}</text>`;
+ let d='';for(let j=0;j<=300;j++){let x=-2.5+5*j/300;d+=(j?'L':'M')+X(x).toFixed(2)+','+Y(functions[i](x)).toFixed(2);}
+ const extrema=[[],[[-1,3],[1,-1]],[[-1,-1],[1,3]],[[-1,1],[1,-3]]][i];
+ const desc=['항상 증가, y절편 1','극대 (−1,3), 극소 (1,−1), y절편 1, 왼쪽 아래·오른쪽 위','극소 (−1,−1), 극대 (1,3), y절편 1, 왼쪽 위·오른쪽 아래','극대 (−1,1), 극소 (1,−3), y절편 −1, 왼쪽 아래·오른쪽 위'][i];
+ return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${i+1}번 그래프: ${desc}"><defs><clipPath id="choiceClip${i}"><rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}"/></clipPath></defs>${grid}<line x1="${L}" y1="${Y(0)}" x2="${W-R}" y2="${Y(0)}" stroke="#64748b"/><line x1="${X(0)}" y1="${T}" x2="${X(0)}" y2="${H-B}" stroke="#64748b"/><text x="${W-R-4}" y="${Y(0)-8}" font-size="12">x</text><text x="${X(0)+7}" y="${T+8}" font-size="12">y</text><path d="${d}" fill="none" stroke="#4f46e5" stroke-width="2.6" clip-path="url(#choiceClip${i})"/>${extrema.map(([x,y])=>`<circle cx="${X(x)}" cy="${Y(y)}" r="4" fill="#7c3aed"/><text x="${X(x)}" y="${Y(y)+(y>0?-12:23)}" font-size="12" text-anchor="middle">(${x}, ${y})</text>`).join('')}<circle cx="${X(0)}" cy="${Y(functions[i](0))}" r="3.5" fill="#db2777"/><text x="${X(0)+10}" y="${Y(functions[i](0))-4}" font-size="11" fill="#9d174d">${functions[i](0)}</text></svg>`;
+}
+
+function renderRetry(p){
+ if(!record(p).unknown)return;
+ $('toolbar').insertAdjacentHTML('afterbegin','<button class="primary" id="retryUnknownBtn">다시 풀기 · 답 입력하기</button><span class="answerHelp">정답을 제출하면 20점이 반영됩니다. 이전 감점은 유지됩니다.</span>');
+ $('retryUnknownBtn').onclick=()=>retryUnknown(p.id);
+}
+function retryUnknown(id){
+ if(!state||view!=='gamePanel'||current!==id)return;
+ const p=problems.find(p=>p.id===id);if(!p||p.id<=9||!unlocked(p))return;
+ const r=record(p);if(!r.done||!r.unknown)return;
+ r.done=false;r.unknown=false;r.answer=[];r.finishedAt=null;
+ save();updateStats();openStage(id);
+ message('다시 답을 입력할 수 있습니다. 정답이면 20점, 오답이면 −3점입니다. 다시 「모름」을 선택할 수도 있습니다.');
+}
+let lastNumberField=0;
+function mathButtons(p){if(p.id===14)return '<div class="toolbar mathButtons">'+['<','≤','>','≥'].map(symbol=>'<button class="ghost" type="button" data-inequality="'+escapeHtml(symbol)+'" aria-label="'+escapeHtml(symbol)+' 부등호 넣기">'+escapeHtml(symbol)+'</button>').join('')+'</div>';return '<div class="toolbar mathButtons"><button class="ghost" type="button" id="radicalBtn">√ 루트 넣기</button></div>';}
+
+function insertMathText(symbol){
+ const p=activeProblem();if(!p||p.id<=9||p.fields[lastNumberField]?.type!=='number')return;
+ const el=$('field_'+lastNumberField);if(!el)return;
+ const start=el.selectionStart??el.value.length,end=el.selectionEnd??start;
+ const selected=el.value.slice(start,end),text=symbol==='√'?'√('+selected+')':symbol;
+ if(el.value.length-(end-start)+text.length>100)return;
+ el.value=el.value.slice(0,start)+text+el.value.slice(end);el.focus();
+ if(symbol==='√')el.setSelectionRange(start+2,start+2+selected.length);else el.setSelectionRange(start+text.length,start+text.length);
+ record(p).draft=readValues(p);save();
+}
+function insertRadical(){insertMathText('√');}
+
+function inequalityCorrect(value,expected){
+ const s=String(value).normalize('NFKC').replace(/\s+/g,'').replace(/≤|≦/g,'<=').replace(/≥|≧/g,'>=').toLowerCase();
+ const match=s.match(/^([^<>]+)(<=|>=|<|>)t(<=|>=|<|>)([^<>]+)$/);
+ if(!match)return false;
+ const left=parseNumber(match[1]),right=parseNumber(match[4]);
+ if(!Number.isFinite(left)||!Number.isFinite(right))return false;
+ return (match[2]==='<'&&match[3]==='<'&&left===expected[0]&&right===expected[1])||
+        (match[2]==='>'&&match[3]==='>'&&left===expected[1]&&right===expected[0]);
+}
+function insertInequality(symbol){
+ const p=activeProblem();if(!p||p.id!==14||!['<','≤','>','≥'].includes(symbol))return;
+ const el=$('field_0');if(!el)return;
+ const start=el.selectionStart??el.value.length,end=el.selectionEnd??start;
+ if(el.value.length-(end-start)+1>100)return;
+ el.value=el.value.slice(0,start)+symbol+el.value.slice(end);el.focus();el.setSelectionRange(start+1,start+1);
+ record(p).draft=readValues(p);save();
+}
+function migrateIntervalRecord(r){
+ if(!r)return;
+ const convert=values=>{
+  if(Array.isArray(values)&&values.length===1&&/^[<≤>≥]\s*t\s*[<≤>≥]$/.test(String(values[0]).trim()))return [''];
+  if(!Array.isArray(values)||values.length!==3)return values;
+  if(!String(values[0]).trim()||!String(values[1]).trim())return [''];
+  const incl=values[2];
+  const lo=incl==='양쪽 모두 포함'||incl==='왼쪽만 포함'?'≤':'<';
+  const hi=incl==='양쪽 모두 포함'||incl==='오른쪽만 포함'?'≤':'<';
+  return [values[0]+lo+'t'+hi+values[1]];
+ };
+ r.draft=convert(r.draft);r.answer=convert(r.answer);
+ r.attempts.forEach(a=>{a.values=convert(a.values);});
+}
+</script></body></html>
