@@ -107,6 +107,53 @@
     url: "./apps/differentiation-quest/index.html?v=20260922-v12",
     date: "2026. 9. 22.",
   },
+{
+  "title": "극값, 최대최소 형성평가",
+  "subject": "수학",
+  "category": "미적분",
+  "description": "함수의 증가와 감소, 극값과 최대·최소를 기본 문제와 도전 문제로 확인하는 게임형 형성평가입니다.",
+  "tags": [
+    "증가와 감소",
+    "극값",
+    "최대·최소",
+    "형성평가"
+  ],
+  "icon": "📈",
+  "colors": [
+    "#0ea5e9",
+    "#4f46e5"
+  ],
+  "subjectColors": [
+    "#e8efff",
+    "#3346a8"
+  ],
+  "url": "./apps/extrema-assessment/index.html",
+  "date": "2026. 10. 26."
+},
+{
+  "title": "방부등식, 속도가속도 형성평가",
+  "subject": "수학",
+  "category": "미적분",
+  "description": "미분을 활용한 방정식과 부등식, 속도와 가속도를 기본 문제와 도전 문제로 확인하는 게임형 형성평가입니다.",
+  "tags": [
+    "방정식",
+    "부등식",
+    "속도",
+    "가속도",
+    "형성평가"
+  ],
+  "icon": "🚀",
+  "colors": [
+    "#14b8a6",
+    "#0369a1"
+  ],
+  "subjectColors": [
+    "#e8efff",
+    "#3346a8"
+  ],
+  "url": "./apps/equations-motion-assessment/index.html",
+  "date": "2026. 10. 26."
+},
 ];
 
 
