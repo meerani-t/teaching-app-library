@@ -2,7 +2,7 @@
   {
     title: "곡선 속에 숨은 직선",
     subject: "수학",
-    category: "미적분",
+    category: "미적분1",
     description: "돋보기로 곡선을 점점 확대하며 Δx가 0에 가까워질 때 접선이 나타나는 과정을 발견하는 미분 도입 활동입니다.",
     tags: ["미분", "접선", "극한", "동기유발"],
     icon: "🔍",
@@ -14,7 +14,7 @@
   {
     title: "몬티홀 실험실",
     subject: "수학",
-    category: "확률",
+    category: "확률과 통계",
     description: "문을 직접 고르고 선택 유지와 변경 전략의 승률을 비교하며 조건부확률의 직관을 확인하는 실험입니다.",
     tags: ["확률", "시뮬레이션", "게임", "통계"],
     icon: "🚪",
@@ -26,7 +26,7 @@
   {
     title: "삼각함수 탱크 대전",
     subject: "수학",
-    category: "삼각함수",
+    category: "미적분2",
     description: "모둠별 탱크가 삼각함수식을 입력해 미사일 궤적을 만들고 좌표, 그래프, 전략을 함께 탐구하는 활동입니다.",
     tags: ["삼각함수", "좌표평면", "그래프", "게임"],
     icon: "🎯",
@@ -38,7 +38,7 @@
   {
     title: "극한 좀비 생존전",
     subject: "수학",
-    category: "미적분",
+    category: "미적분1",
     description: "좀비가 다가오기 전에 다항·유리·무리함수의 극한값을 계산하고 레벨별 점수를 모으는 생존형 연습 게임입니다.",
     tags: ["극한", "좌극한", "우극한", "무한대", "게임"],
     icon: "🧟",
@@ -50,7 +50,7 @@
   {
     title: "퍼셉트론 손글씨 숫자 분류",
     subject: "인공지능 수학",
-    category: "퍼셉트론",
+    category: "인공지능 수학",
     description: "학생이 직접 쓴 숫자를 10 x 10 이진 행렬로 바꾸고, 퍼셉트론의 가중치와 편향 변화를 보며 숫자를 분류하는 실습입니다.",
     tags: ["퍼셉트론", "이미지분류", "손글씨", "가중치", "편향"],
     icon: "✍️",
@@ -62,7 +62,7 @@
   {
     title: "경사하강법 수행평가",
     subject: "인공지능 수학",
-    category: "최적화",
+    category: "인공지능 수학",
     description: "주어진 자료에서 경사하강법을 적용해 최적값을 탐색하는 인공지능 수학 수행평가 실전 활동입니다.",
     tags: ["경사하강법", "최적화", "인공지능", "수행평가"],
     icon: "🎯",
@@ -74,7 +74,7 @@
   {
     title: "함수의 극한 형성평가",
     subject: "수학",
-    category: "미적분",
+    category: "미적분1",
     description: "함수의 극한 개념을 게임 형식으로 풀어보며 학습 내용을 확인하는 형성평가 활동입니다.",
     tags: ["함수의 극한", "형성평가", "게임", "미적분"],
     icon: "🎮",
@@ -86,7 +86,7 @@
   {
     title: "연속함수의 성질 형성평가",
     subject: "수학",
-    category: "미적분",
+    category: "미적분1",
     description: "연속구간, 최대·최소 정리와 중간값 정리를 기본·도전 문제로 확인하는 게임형 형성평가입니다.",
     tags: ["연속함수", "최대·최소", "중간값 정리", "형성평가", "게임"],
     icon: "🔗",
@@ -98,7 +98,7 @@
   {
     title: "미분 1차 형성평가",
     subject: "수학",
-    category: "미적분",
+    category: "미적분1",
     description: "미분계수와 도함수, 접선의 방정식, 평균값 정리를 기본·도전 문제로 확인하는 게임형 형성평가입니다.",
     tags: ["미분계수", "도함수", "접선", "평균값 정리", "형성평가"],
     icon: "✏️",
@@ -110,7 +110,7 @@
 {
   "title": "극값, 최대최소 형성평가",
   "subject": "수학",
-  "category": "미적분",
+  "category": "미적분1",
   "description": "함수의 증가와 감소, 극값과 최대·최소를 기본 문제와 도전 문제로 확인하는 게임형 형성평가입니다.",
   "tags": [
     "증가와 감소",
@@ -133,7 +133,7 @@
 {
   "title": "방부등식, 속도가속도 형성평가",
   "subject": "수학",
-  "category": "미적분",
+  "category": "미적분1",
   "description": "미분을 활용한 방정식과 부등식, 속도와 가속도를 기본 문제와 도전 문제로 확인하는 게임형 형성평가입니다.",
   "tags": [
     "방정식",
@@ -169,7 +169,7 @@ let selectedCategory = "전체";
 
 
 function categories() {
-  return ["전체", ...new Set(apps.map((app) => app.category))];
+  return ["전체", "공통수학1,2", "미적분1", "미적분2", "확률과 통계", "인공지능 수학"];
 }
 
 
@@ -215,7 +215,7 @@ function filteredApps() {
 
 function renderApps() {
   const visibleApps = filteredApps();
-  appGrid.innerHTML = visibleApps
+  const renderCards = (items) => items
     .map(
       (app, index) => `
         <article class="app-card">
@@ -228,7 +228,7 @@ function renderApps() {
             <div class="card-meta">
               <span class="subject"
                 style="color:${app.subjectColors[1]};background:${app.subjectColors[0]}">
-                ${app.subject} · ${app.category}
+                ${app.category}
               </span>
               <span class="date">${app.date}</span>
             </div>
@@ -246,8 +246,18 @@ function renderApps() {
     .join("");
 
 
-  appGrid.hidden = visibleApps.length === 0;
-  emptyState.hidden = visibleApps.length !== 0;
+  const subjects = selectedCategory === "전체" ? categories().slice(1) : [selectedCategory];
+  appGrid.innerHTML = subjects.map((subject, index) => {
+    const items = visibleApps.filter((app) => app.category === subject);
+    if (!items.length && searchInput.value.trim()) return "";
+    return `<section class="subject-group" aria-labelledby="subject-${index}">
+      <div class="subject-heading"><h2 id="subject-${index}">${subject}</h2><span>${items.length}개 활동</span></div>
+      ${items.length ? `<div class="subject-grid">${renderCards(items)}</div>` : '<p class="subject-empty">아직 등록된 활동이 없습니다.</p>'}
+    </section>`;
+  }).join("");
+
+  appGrid.hidden = visibleApps.length === 0 && Boolean(searchInput.value.trim());
+  emptyState.hidden = visibleApps.length !== 0 || !searchInput.value.trim();
   resultText.textContent =
     visibleApps.length === apps.length
       ? "전체 앱을 보여드려요."

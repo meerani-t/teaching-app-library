@@ -340,3 +340,19 @@ h1 {
   .app-grid { grid-template-columns: 1fr; }
   .section-heading { align-items: flex-start; flex-direction: column; }
 }
+
+/* Subject collections */
+.toolbox { flex-direction: column; align-items: stretch; }
+.app-grid { display: block; }
+.subject-group + .subject-group { margin-top: 44px; }
+.subject-heading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+.subject-heading h2 { margin: 0; font-size: 1.5rem; letter-spacing: -.04em; }
+.subject-heading span { color: var(--muted); font-size: .85rem; }
+.subject-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.subject-empty { padding: 24px; border: 1px dashed var(--line); border-radius: 18px; color: var(--muted); font-size: .9rem; }
+.site-footer { margin-top: 56px; text-align: center; color: #89909c; font-size: .8rem; font-weight: 400; }
+[hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .subject-grid { grid-template-columns: 1fr; }
+  .card-meta { flex-wrap: wrap; }
+}
