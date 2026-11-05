@@ -26,7 +26,7 @@
   {
     title: "삼각함수 탱크 대전",
     subject: "수학",
-    category: "미적분2",
+    category: "대수",
     description: "모둠별 탱크가 삼각함수식을 입력해 미사일 궤적을 만들고 좌표, 그래프, 전략을 함께 탐구하는 활동입니다.",
     tags: ["삼각함수", "좌표평면", "그래프", "게임"],
     icon: "🎯",
@@ -169,16 +169,22 @@ let selectedCategory = "전체";
 
 
 function categories() {
-  return ["전체", "공통수학1,2", "미적분1", "미적분2", "확률과 통계", "인공지능 수학"];
+  return ["전체", "공통수학1,2", "대수", "미적분1", "미적분2", "확률과 통계", "인공지능 수학"];
 }
 
+
+function selectCategory(category) {
+  selectedCategory = category;
+  renderFilters();
+  renderApps();
+}
 
 function renderFilters() {
   filters.innerHTML = categories()
     .map(
       (category) => `
         <button class="filter-button ${category === selectedCategory ? "active" : ""}"
-          type="button" data-category="${category}">${category}</button>
+          type="button" aria-pressed="${category === selectedCategory}" data-category="${category}">${category}</button>
       `
     )
     .join("");
@@ -186,9 +192,7 @@ function renderFilters() {
 
   filters.querySelectorAll("button").forEach((button) => {
     button.addEventListener("click", () => {
-      selectedCategory = button.dataset.category;
-      renderFilters();
-      renderApps();
+      selectCategory(button.dataset.category);
     });
   });
 }
@@ -246,15 +250,25 @@ function renderApps() {
     .join("");
 
 
-  const subjects = selectedCategory === "전체" ? categories().slice(1) : [selectedCategory];
+  const compact = selectedCategory === "전체";
+  const renderCompactCards = (items) => items.map((app) => `
+    <a class="compact-activity" href="${app.url}">
+      <span class="compact-icon" aria-hidden="true" style="background:linear-gradient(135deg,${app.colors[0]},${app.colors[1]})">${app.icon}</span>
+      <span class="compact-title">${app.title}</span>
+    </a>`).join("");
+  const subjects = compact ? categories().slice(1) : [selectedCategory];
   appGrid.innerHTML = subjects.map((subject, index) => {
     const items = visibleApps.filter((app) => app.category === subject);
     if (!items.length && searchInput.value.trim()) return "";
     return `<section class="subject-group" aria-labelledby="subject-${index}">
-      <div class="subject-heading"><h2 id="subject-${index}">${subject}</h2><span>${items.length}개 활동</span></div>
-      ${items.length ? `<div class="subject-grid">${renderCards(items)}</div>` : '<p class="subject-empty">아직 등록된 활동이 없습니다.</p>'}
+      <div class="subject-heading"><h2 id="subject-${index}"><button class="subject-button" type="button" data-subject="${subject}" aria-pressed="${!compact}">${subject}<span aria-hidden="true"> →</span></button></h2><span>${items.length}개 활동</span></div>
+      ${items.length ? `<div class="${compact ? "compact-grid" : "subject-grid"}">${compact ? renderCompactCards(items) : renderCards(items)}</div>` : '<p class="subject-empty">아직 등록된 활동이 없습니다.</p>'}
     </section>`;
   }).join("");
+
+  appGrid.querySelectorAll("[data-subject]").forEach((button) => {
+    button.addEventListener("click", () => selectCategory(button.dataset.subject));
+  });
 
   appGrid.hidden = visibleApps.length === 0 && Boolean(searchInput.value.trim());
   emptyState.hidden = visibleApps.length !== 0 || !searchInput.value.trim();
