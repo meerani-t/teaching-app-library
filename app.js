@@ -154,6 +154,28 @@
   "url": "./apps/equations-motion-assessment/index.html",
   "date": "2026. 10. 26."
 },
+{
+  "title": "부정적분, 정적분 형성평가",
+  "subject": "수학",
+  "category": "미적분1",
+  "description": "부정적분과 정적분을 기본 9문제와 도전 6문제로 연습하는 형성평가입니다.",
+  "tags": [
+    "부정적분",
+    "정적분",
+    "형성평가"
+  ],
+  "icon": "∫",
+  "colors": [
+    "#0f766e",
+    "#4338ca"
+  ],
+  "subjectColors": [
+    "#e8efff",
+    "#3346a8"
+  ],
+  "url": "./apps/integral-assessment/index.html",
+  "date": "2026. 11. 9."
+},
 ];
 
 
