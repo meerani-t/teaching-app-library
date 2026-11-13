@@ -176,6 +176,30 @@
   "url": "./apps/integral-assessment/index.html",
   "date": "2026. 11. 9."
 },
+{
+  "title": "넓이, 속도와 거리 형성평가",
+  "subject": "수학",
+  "category": "미적분1",
+  "description": "기본 9문제와 도전 6문제로 곡선 사이의 넓이, 위치의 변화량, 움직인 거리를 구합니다.",
+  "tags": [
+    "정적분",
+    "넓이",
+    "속도",
+    "거리",
+    "형성평가"
+  ],
+  "icon": "📐",
+  "colors": [
+    "#0f766e",
+    "#4338ca"
+  ],
+  "subjectColors": [
+    "#e8efff",
+    "#3346a8"
+  ],
+  "url": "./apps/area-motion-assessment/index.html",
+  "date": "2026. 11. 13."
+},
 ];
 
 
